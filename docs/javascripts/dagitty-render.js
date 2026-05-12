@@ -11,17 +11,23 @@
 (function () {
   "use strict";
 
+  function rootGlobal() {
+    if (typeof globalThis !== "undefined") return globalThis;
+    if (typeof window !== "undefined") return window;
+    if (typeof self !== "undefined") return self;
+    return Function("return this")();
+  }
+
   /** Vendored dagitty bundle exposes GraphParser + DAGittyController (no `dagitty` global). */
   function isBundledDagittyLoaded() {
-    return (
-      typeof GraphParser !== "undefined" &&
-      typeof DAGittyController !== "undefined"
-    );
+    var g = rootGlobal();
+    return !!(g.GraphParser && g.DAGittyController);
   }
 
   function parseDagGuess(code) {
-    if (typeof GraphParser !== "undefined" && GraphParser.parseGuess) {
-      return GraphParser.parseGuess(code);
+    var g = rootGlobal();
+    if (g.GraphParser && g.GraphParser.parseGuess) {
+      return g.GraphParser.parseGuess(code);
     }
     if (typeof dagitty !== "undefined" && dagitty.GraphParser) {
       return dagitty.GraphParser.parseGuess(code);
@@ -30,8 +36,9 @@
   }
 
   function relayoutGraph(graph) {
-    if (typeof GraphLayouter !== "undefined" && GraphLayouter.Spring) {
-      new GraphLayouter.Spring(graph).layout();
+    var g = rootGlobal();
+    if (g.GraphLayouter && g.GraphLayouter.Spring) {
+      new g.GraphLayouter.Spring(graph).layout();
       return;
     }
     if (typeof dagitty !== "undefined" && dagitty.Layout) {
@@ -40,8 +47,9 @@
   }
 
   function createGraphView(canvas, graph) {
-    if (typeof DAGittyController !== "undefined") {
-      var ctrl = new DAGittyController({
+    var g = rootGlobal();
+    if (g.DAGittyController) {
+      var ctrl = new g.DAGittyController({
         canvas: canvas,
         graph: graph,
         interactive: true,
@@ -72,12 +80,13 @@
           : root;
       const dagCode = codeEl.textContent.trim();
       const pre = codeEl.closest("pre") || codeEl.closest("div");
-      if (
-        pre &&
-        pre.previousElementSibling &&
-        pre.previousElementSibling.classList.contains("dagitty-wrapper")
-      ) {
-        return;
+      const prev = pre && pre.previousElementSibling;
+      if (prev && prev.classList.contains("dagitty-wrapper")) {
+        const existingCanvas = prev.querySelector(".dagitty-canvas");
+        if (existingCanvas && existingCanvas._dagittyView) {
+          return;
+        }
+        prev.remove();
       }
 
       // Create container
@@ -98,6 +107,11 @@
       pre.parentNode.insertBefore(wrapper, pre);
       pre.style.display = "none";
 
+      const canvas = wrapper.querySelector(".dagitty-canvas");
+      if (!canvas || canvas.id !== containerId) {
+        return;
+      }
+
       const libOk =
         isBundledDagittyLoaded() ||
         (typeof dagitty !== "undefined" && dagitty.GraphParser);
@@ -105,7 +119,6 @@
       if (libOk) {
         try {
           const g = parseDagGuess(dagCode);
-          const canvas = document.getElementById(containerId);
           const { view, graph } = createGraphView(canvas, g);
           canvas._dagittyView = view;
           canvas._dagittyGraph = graph;
@@ -121,6 +134,28 @@
         );
       }
     });
+  }
+
+  /** Wait for synchronous dagitty.js to finish exposing globals (covers slow devices / cache). */
+  function renderDagittyBlocksWhenReady() {
+    var maxMs = 8000;
+    var stepMs = 50;
+    var start = Date.now();
+    function tick() {
+      if (
+        isBundledDagittyLoaded() ||
+        (typeof dagitty !== "undefined" && dagitty && dagitty.GraphParser)
+      ) {
+        renderDagittyBlocks();
+        return;
+      }
+      if (Date.now() - start > maxMs) {
+        renderDagittyBlocks();
+        return;
+      }
+      setTimeout(tick, stepMs);
+    }
+    tick();
   }
 
   function renderFallback(containerId, dagCode, reason) {
@@ -173,11 +208,15 @@
 
   // Run after MkDocs instantiation (supports instant navigation)
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", renderDagittyBlocks);
+    document.addEventListener("DOMContentLoaded", renderDagittyBlocksWhenReady);
   } else {
-    renderDagittyBlocks();
+    renderDagittyBlocksWhenReady();
   }
 
+  window.addEventListener("load", function () {
+    renderDagittyBlocksWhenReady();
+  });
+
   // Re-run on MkDocs instant navigation page changes
-  document.addEventListener("DOMContentSwitch", renderDagittyBlocks);
+  document.addEventListener("DOMContentSwitch", renderDagittyBlocksWhenReady);
 })();

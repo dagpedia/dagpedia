@@ -70,8 +70,9 @@ var n="1.13.1",r="object"==typeof self&&self.self===self&&self||"object"==typeof
   global.Class = BaseClass;
 })(this);
 
-if( typeof module !== 'undefined' && typeof module.exports !== 'undefined' ){
-	global.Class = module.exports.Class
+if( typeof module !== 'undefined' && typeof module.exports !== 'undefined' && module.exports.Class ){
+	var __dagittyRoot = typeof globalThis !== 'undefined' ? globalThis : (typeof window !== 'undefined' ? window : typeof self !== 'undefined' ? self : this);
+	__dagittyRoot.Class = module.exports.Class;
 }
 
 /*  DAGitty - a browser-based software for causal modelling and analysis
