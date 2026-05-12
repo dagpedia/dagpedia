@@ -12,14 +12,26 @@
   "use strict";
 
   function renderDagittyBlocks() {
-    // MkDocs renders fenced code blocks as <code class="language-dagitty"> inside <pre>
-    const codeBlocks = document.querySelectorAll(
-      "pre code.language-dagitty, div.dagitty-code code"
+    // pymdownx `fence_div_format` → <div class="dagitty-code">raw text</div> (no <code>).
+    // Default fenced code → <pre><code class="language-dagitty">…</code></pre>
+    const roots = document.querySelectorAll(
+      "pre code.language-dagitty, div.dagitty-code"
     );
 
-    codeBlocks.forEach(function (codeEl, idx) {
+    roots.forEach(function (root, idx) {
+      const codeEl =
+        root.tagName === "DIV"
+          ? root.querySelector(":scope > code") || root
+          : root;
       const dagCode = codeEl.textContent.trim();
       const pre = codeEl.closest("pre") || codeEl.closest("div");
+      if (
+        pre &&
+        pre.previousElementSibling &&
+        pre.previousElementSibling.classList.contains("dagitty-wrapper")
+      ) {
+        return;
+      }
 
       // Create container
       const containerId = "dagitty-widget-" + idx;
