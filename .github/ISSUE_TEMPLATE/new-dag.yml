@@ -1,0 +1,70 @@
+name: New DAG proposal
+description: Propose a new DAG for dagpedia
+title: "[DAG] "
+labels: ["new-dag"]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to propose a new DAG before submitting a pull request.
+        This helps get early feedback on the causal structure and scope.
+
+  - type: input
+    id: title
+    attributes:
+      label: DAG title
+      placeholder: "Exposure → Outcome (context)"
+    validations:
+      required: true
+
+  - type: input
+    id: exposure
+    attributes:
+      label: Exposure variable
+    validations:
+      required: true
+
+  - type: input
+    id: outcome
+    attributes:
+      label: Outcome variable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: field
+    attributes:
+      label: Field
+      options:
+        - epidemiology
+        - social-epidemiology
+        - environmental-epidemiology
+        - infectious-disease
+        - other
+    validations:
+      required: true
+
+  - type: textarea
+    id: structure
+    attributes:
+      label: Proposed causal structure (dagitty code)
+      render: text
+      placeholder: |
+        dag {
+          Exposure -> Outcome
+          Confounder -> Exposure
+          Confounder -> Outcome
+        }
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Rationale
+      description: Why is this DAG useful? What research question does it address?
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Key references
+      description: DOIs or citations that support this causal structure
