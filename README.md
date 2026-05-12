@@ -4,7 +4,7 @@
 
 dagpedia implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https://doi.org/10.1093/aje/kwag029): directed acyclic graphs treated not as disposable study tools, but as shared epistemic infrastructure — annotated with evidence levels, versioned over time, and open to community contribution.
 
-→ Website Under Development (Yet to Deploy)
+→ [https://dagpedia.github.io/dagpedia/](https://dagpedia.github.io/dagpedia/)
 
 ---
 
