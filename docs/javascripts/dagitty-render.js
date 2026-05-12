@@ -11,6 +11,53 @@
 (function () {
   "use strict";
 
+  /** Vendored dagitty bundle exposes GraphParser + DAGittyController (no `dagitty` global). */
+  function isBundledDagittyLoaded() {
+    return (
+      typeof GraphParser !== "undefined" &&
+      typeof DAGittyController !== "undefined"
+    );
+  }
+
+  function parseDagGuess(code) {
+    if (typeof GraphParser !== "undefined" && GraphParser.parseGuess) {
+      return GraphParser.parseGuess(code);
+    }
+    if (typeof dagitty !== "undefined" && dagitty.GraphParser) {
+      return dagitty.GraphParser.parseGuess(code);
+    }
+    throw new Error("GraphParser missing");
+  }
+
+  function relayoutGraph(graph) {
+    if (typeof GraphLayouter !== "undefined" && GraphLayouter.Spring) {
+      new GraphLayouter.Spring(graph).layout();
+      return;
+    }
+    if (typeof dagitty !== "undefined" && dagitty.Layout) {
+      new dagitty.Layout(graph).autoLayout();
+    }
+  }
+
+  function createGraphView(canvas, graph) {
+    if (typeof DAGittyController !== "undefined") {
+      var ctrl = new DAGittyController({
+        canvas: canvas,
+        graph: graph,
+        interactive: true,
+      });
+      return { view: ctrl.getView(), graph: graph };
+    }
+    if (typeof dagitty !== "undefined" && dagitty.GraphView) {
+      var view = new dagitty.GraphView(canvas, graph);
+      if (dagitty.Layout) {
+        relayoutGraph(graph);
+      }
+      return { view: view, graph: graph };
+    }
+    throw new Error("DAGittyController / GraphView missing");
+  }
+
   function renderDagittyBlocks() {
     // pymdownx `fence_div_format` → <div class="dagitty-code">raw text</div> (no <code>).
     // Default fenced code → <pre><code class="language-dagitty">…</code></pre>
@@ -51,54 +98,27 @@
       pre.parentNode.insertBefore(wrapper, pre);
       pre.style.display = "none";
 
-      // Render with dagitty.js if available
-      if (typeof dagitty !== "undefined" && dagitty.GraphParser) {
+      const libOk =
+        isBundledDagittyLoaded() ||
+        (typeof dagitty !== "undefined" && dagitty.GraphParser);
+
+      if (libOk) {
         try {
-          const g = dagitty.GraphParser.parseGuess(dagCode);
+          const g = parseDagGuess(dagCode);
           const canvas = document.getElementById(containerId);
-          const view = new dagitty.GraphView(canvas, g);
-          // Shade exposure/outcome
-          if (typeof dagitty.GraphAnalyzer !== "undefined") {
-            const layout = new dagitty.Layout(g);
-            layout.autoLayout();
-          }
-          // Store reference for reset
+          const { view, graph } = createGraphView(canvas, g);
           canvas._dagittyView = view;
-          canvas._dagittyGraph = g;
+          canvas._dagittyGraph = graph;
           canvas._dagittyCode = dagCode;
         } catch (e) {
           renderFallback(containerId, dagCode, e.message);
         }
       } else {
-        // dagitty.js not loaded — show fallback with link
-        renderFallback(containerId, dagCode, "dagitty.js not loaded");
-      }
-    });
-
-    // Button handlers
-    document.addEventListener("click", function (e) {
-      const btn = e.target.closest(".dagitty-btn");
-      if (!btn) return;
-      const action = btn.dataset.action;
-
-      if (action === "reset") {
-        const canvas = document.getElementById(btn.dataset.target);
-        if (canvas && canvas._dagittyView && canvas._dagittyGraph) {
-          try {
-            const layout = new dagitty.Layout(canvas._dagittyGraph);
-            layout.autoLayout();
-            canvas._dagittyView.draw();
-          } catch (_) {}
-        }
-      }
-
-      if (action === "copy") {
-        const code = decodeURIComponent(btn.dataset.code);
-        navigator.clipboard.writeText(code).then(function () {
-          const orig = btn.textContent;
-          btn.textContent = "Copied!";
-          setTimeout(() => (btn.textContent = orig), 1500);
-        });
+        renderFallback(
+          containerId,
+          dagCode,
+          "dagitty.js not loaded or incompatible build"
+        );
       }
     });
   }
@@ -123,6 +143,33 @@
       </a>
     `;
   }
+
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest(".dagitty-btn");
+    if (!btn || !btn.classList.contains("dagitty-btn")) return;
+    const action = btn.dataset.action;
+
+    if (action === "reset") {
+      const canvas = document.getElementById(btn.dataset.target);
+      if (canvas && canvas._dagittyView && canvas._dagittyGraph) {
+        try {
+          relayoutGraph(canvas._dagittyGraph);
+          canvas._dagittyView.draw();
+        } catch (_) {}
+      }
+    }
+
+    if (action === "copy") {
+      const code = decodeURIComponent(btn.dataset.code);
+      navigator.clipboard.writeText(code).then(function () {
+        const orig = btn.textContent;
+        btn.textContent = "Copied!";
+        setTimeout(function () {
+          btn.textContent = orig;
+        }, 1500);
+      });
+    }
+  });
 
   // Run after MkDocs instantiation (supports instant navigation)
   if (document.readyState === "loading") {
