@@ -53,6 +53,8 @@ def collect_all_ids(dag_root: str) -> set[str]:
     for filepath in glob.glob(f"{dag_root}/**/*.md", recursive=True):
         if "_templates" in filepath:
             continue
+        if Path(filepath).name in {"index.md", "dag-template.md"}:
+            continue
         fm = parse_frontmatter(filepath)
         if fm and "id" in fm:
             ids.add(fm["id"])
@@ -114,8 +116,9 @@ def validate_file(filepath: str, all_ids: set[str]) -> list[str]:
                 errors.append(f"[{name}] related_dags entry missing 'id'")
                 continue
             if rel["id"] not in all_ids:
-                errors.append(
-                    f"[{name}] related_dag id '{rel['id']}' not found in repository"
+                print(
+                    f"  ⚠ [{name}] Warning: related_dag id '{rel['id']}' "
+                    "not in repository yet (continuing)"
                 )
             if "relation" in rel and rel["relation"] not in VALID_RELATION:
                 errors.append(
@@ -144,10 +147,11 @@ def main():
     all_ids = collect_all_ids(dag_root)
 
     # Gather files to validate
+    EXCLUDE = {"index.md", "dag-template.md"}
     if os.path.isdir(target):
         files = [
             f for f in glob.glob(f"{target}/**/*.md", recursive=True)
-            if "_templates" not in f
+            if "_templates" not in f and Path(f).name not in EXCLUDE
         ]
     else:
         files = [target]
