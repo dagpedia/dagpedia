@@ -52,7 +52,16 @@ jobs:
 
       - name: Verify dagitty custom fence output
         run: |
+          # Keep this page explicit: issue completion criteria requires SES→CVD DAG rendering.
           HTML=site/dags/epidemiology/ses-cvd-classic/index.html
-          test -f "$HTML"
-          grep -q '<div class="dagitty-code">' "$HTML"
-          grep -q 'div.dagitty-code' docs/javascripts/dagitty-render.js
+          test -f "$HTML" || { echo "Missing built SES→CVD page: $HTML"; exit 1; }
+          grep -q '<div class="dagitty-code">' "$HTML" || {
+            echo "Expected dagitty custom fence output (<div class=\"dagitty-code\">) not found in $HTML";
+            exit 1;
+          }
+          RENDER_JS=site/javascripts/dagitty-render.js
+          test -f "$RENDER_JS" || { echo "Missing built renderer script: $RENDER_JS"; exit 1; }
+          grep -q 'div.dagitty-code' "$RENDER_JS" || {
+            echo "Built dagitty-render.js no longer selects div.dagitty-code blocks";
+            exit 1;
+          }
