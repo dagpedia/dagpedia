@@ -1,0 +1,28 @@
+# Repository settings managed as code via the Probot Settings app.
+# See: https://github.com/repository-settings/app
+#
+# Branch protection rules for `main`:
+#   - Require a pull request before merging
+#   - Require status checks to pass (validate workflow)
+#   - Do not allow bypassing the above settings
+
+branches:
+  - name: main
+    protection:
+      # Require at least one approving review before merging.
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: false
+        require_code_owner_reviews: false
+
+      # Require the validate workflow jobs to pass before merging.
+      required_status_checks:
+        strict: false
+        contexts:
+          - validate
+          - build-preview
+
+      # Do not allow anyone (including admins) to bypass the above settings.
+      enforce_admins: true
+
+      restrictions: null
