@@ -1,0 +1,3 @@
+# CODEOWNERS
+/docs/dags/ @tetra4rnav
+/scripts/ @tetra4rnav
