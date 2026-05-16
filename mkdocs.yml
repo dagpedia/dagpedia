@@ -38,8 +38,7 @@ theme:
 plugins:
   - search
   - awesome-pages
-  - tags:
-      tags_file: tags.md
+  - tags
 
 extra_javascript:
   - javascripts/dagitty.js
