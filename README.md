@@ -62,5 +62,5 @@ And the conceptual foundation:
 
 ## License
 
-DAG content: [CC BY 4.0](LICENSE-content)
+DAG content: [CC BY 4.0](LICENSE-CONTENT)
 Code: [MIT](LICENSE)
