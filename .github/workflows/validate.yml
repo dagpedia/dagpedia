@@ -2,12 +2,8 @@ name: Validate DAGs
 
 on:
   pull_request:
-    paths:
-      - "docs/**"
-      - "_templates/**"
-      - "scripts/**"
-      - "mkdocs.yml"
-      - "requirements.txt"
+    branches:
+      - main
 
 jobs:
   validate:
