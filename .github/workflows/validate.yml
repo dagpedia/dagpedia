@@ -49,3 +49,10 @@ jobs:
 
       - name: Build site (dry run)
         run: mkdocs build --strict
+
+      - name: Verify dagitty custom fence output
+        run: |
+          HTML=site/dags/epidemiology/ses-cvd-classic/index.html
+          test -f "$HTML"
+          grep -q '<div class="dagitty-code">' "$HTML"
+          grep -q 'div.dagitty-code' docs/javascripts/dagitty-render.js
