@@ -1,0 +1,10 @@
+title: Architecture Decision Records
+nav:
+  - index.md
+  - 001-content-license.md
+  - 002-code-license.md
+  - 003-dag-format-dagitty.md
+  - 004-per-dag-doi.md
+  - 005-defer-tier-system.md
+  - 006-llm-as-first-reviewer.md
+  - 007-mkdocs-awesome-pages.md
