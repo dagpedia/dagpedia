@@ -1,7 +1,7 @@
 nav:
-  - index.md
   - dags
-  - adr
   - contributing.md
-  - about.md
+  - about
+  - resources.md
   - tags.md
+  - Propose a new DAG: https://github.com/dagpedia/dagpedia/issues/new?template=new-dag.yml

@@ -1,10 +1,10 @@
-# About dagpedia
+# About DAGpedia
 
 dagpedia is an open, community-maintained library of causal DAGs for epidemiology.
 
 ## Conceptual basis
 
-Reynolds RJ. *Living DAGs: the future of DAGs in epidemiology.* Am J Epidemiol. 2026;195:1365–1367. [https://doi.org/10.1093/aje/kwag029](https://doi.org/10.1093/aje/kwag029)
+Reynolds RJ. *Living DAGs: the future of DAGs in epidemiology.* Am J Epidemiol. 2026;195(5):1365–1367. [https://doi.org/10.1093/aje/kwag029](https://doi.org/10.1093/aje/kwag029)
 
 ## DAG rendering
 

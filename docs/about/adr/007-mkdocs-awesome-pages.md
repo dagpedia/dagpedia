@@ -75,7 +75,7 @@ keeping `mkdocs.yml` stable as the repository grows.
 
 ### ADR placement
 
-ADRs are placed in `docs/adr/` and rendered as part of the public site.
+ADRs are placed in `docs/about/adr/` and rendered as part of the public site.
 This aligns with Dagpedia's commitment to transparency: design decisions are
 part of the project's public epistemic record, consistent with the living
 DAGs framework of making assumptions explicit and open to scrutiny.

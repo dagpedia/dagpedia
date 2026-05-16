@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+---
+
 # dagpedia
 
 **A living repository of causal DAGs for epidemiology.**
