@@ -3,9 +3,11 @@ name: Validate DAGs
 on:
   pull_request:
     paths:
-      - "docs/dags/**/*.md"
+      - "docs/**"
       - "_templates/**"
-      - "scripts/validate_dag.py"
+      - "scripts/**"
+      - "mkdocs.yml"
+      - "requirements.txt"
 
 jobs:
   validate:
@@ -19,7 +21,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install pyyaml
+        run: pip install -r requirements.txt
 
       - name: Validate all DAG files
         run: python scripts/validate_dag.py docs/dags/
@@ -42,8 +44,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install MkDocs
-        run: pip install mkdocs-material
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
       - name: Build site (dry run)
         run: mkdocs build --strict

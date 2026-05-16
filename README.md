@@ -45,7 +45,7 @@ dagpedia/
 ├── _templates/             ← contribution template
 ├── scripts/                ← validation scripts
 ├── .github/
-│   ├── workflows/          ← CI/CD (validate + deploy)
+│   ├── workflows/          ← CI (validate on PR)
 │   └── ISSUE_TEMPLATE/     ← issue templates
 └── mkdocs.yml
 ```
@@ -54,7 +54,7 @@ dagpedia/
 
 If you use dagpedia in your research, please cite:
 
-> dagpedia contributors. *dagpedia: A living repository of causal DAGs for epidemiology*. https://dagpedia.github.io
+> dagpedia contributors. *dagpedia: A living repository of causal DAGs for epidemiology*. https://dagpedia.pages.dev
 
 And the conceptual foundation:
 
