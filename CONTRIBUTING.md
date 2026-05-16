@@ -94,6 +94,13 @@ Maintainers review PRs for:
 
 We do not require the DAG to be "correct" — causal assumptions are inherently contestable. We do require that assumptions are made explicit.
 
+## Copyright and paywalled sources
+
+When a DAG is informed by a paywalled paper, contributors must encode the causal
+structure as a new dagitty representation. Do not reproduce or trace the
+paper's original figure; submit an original encoding of the causal knowledge
+(nodes, edges, and assumptions) in your own words and structure.
+
 ## Code of conduct
 
 Be constructive. Scientific disagreement is welcome; personal criticism is not.
