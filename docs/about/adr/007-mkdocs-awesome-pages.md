@@ -6,7 +6,7 @@ Accepted
 
 ## Context and Problem Statement
 
-Dagpedia requires a site generator that can render Markdown files as a
+DAGpedia requires a site generator that can render Markdown files as a
 public website. The primary constraint is contributor experience: researchers
 contributing DAGs should be able to do so by writing Markdown files and
 submitting a pull request, without needing to understand a JavaScript
@@ -76,7 +76,7 @@ keeping `mkdocs.yml` stable as the repository grows.
 ### ADR placement
 
 ADRs are placed in `docs/about/adr/` and rendered as part of the public site.
-This aligns with Dagpedia's commitment to transparency: design decisions are
+This aligns with DAGpedia's commitment to transparency: design decisions are
 part of the project's public epistemic record, consistent with the living
 DAGs framework of making assumptions explicit and open to scrutiny.
 

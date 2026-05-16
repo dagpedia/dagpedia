@@ -6,7 +6,7 @@ Accepted
 
 ## Context and Problem Statement
 
-Dagpedia intends to implement a three-tier trust system for DAG contributions:
+DAGpedia intends to implement a three-tier trust system for DAG contributions:
 
 - **Verified** — submitted and endorsed by the original study authors
 - **Reviewed** — reviewed and approved by community experts via PR
@@ -25,7 +25,7 @@ for the initial v0.1.0 release.
 
 Chosen option: **Defer to v0.2.0**
 
-The tier system is a community governance mechanism. At v0.1.0, Dagpedia will
+The tier system is a community governance mechanism. At v0.1.0, DAGpedia will
 contain 1–2 seed DAGs authored by the project maintainer. In this state:
 
 - All DAGs are effectively "Verified" by definition (the submitter is the

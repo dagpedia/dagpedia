@@ -1,19 +1,33 @@
 # About DAGpedia
 
-dagpedia is an open, community-maintained library of causal DAGs for epidemiology.
+DAGpedia is an open, community-maintained library of causal DAGs for epidemiology.
+It implements the [living DAGs framework](../resources.md#living-dags) proposed by
+Reynolds (2026): DAGs as shared epistemic infrastructure — annotated, versioned,
+and open to community contribution.
 
-## Conceptual basis
+## Website & repository
 
-Reynolds RJ. *Living DAGs: the future of DAGs in epidemiology.* Am J Epidemiol. 2026;195(5):1365–1367. [https://doi.org/10.1093/aje/kwag029](https://doi.org/10.1093/aje/kwag029)
+- [Website](https://dagpedia.org)
+- [GitHub repository](https://github.com/dagpedia/dagpedia)
+- [Contributing guide](../contributing.md)
+- [DAG template](https://github.com/dagpedia/dagpedia/blob/main/_templates/dag-template.md) (`_templates/dag-template.md`)
+- [Propose a new DAG](https://github.com/dagpedia/dagpedia/issues/new?template=new-dag.yml)
 
-## DAG rendering
+## Site & documentation
 
-DAGs are rendered using [dagitty.js](https://dagitty.net), developed by Johannes Textor and colleagues.
+The public site is built with [MkDocs](https://www.mkdocs.org/) and the
+[Material theme](https://squidfunk.github.io/mkdocs-material/), with navigation
+managed via the [awesome-pages](https://github.com/lukasgeiter/mkdocs-awesome-pages-plugin)
+plugin. See [ADR-007](adr/007-mkdocs-awesome-pages.md) for rationale.
+
+DAG pages render interactively in the browser using
+[dagitty.js](https://dagitty.net), developed by Johannes Textor and colleagues.
+Custom scripts live under `docs/javascripts/`.
 
 ## License
 
 - DAG content: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
-- Code: MIT
+- Code: [MIT](https://opensource.org/licenses/MIT)
 
 ## Contact
 

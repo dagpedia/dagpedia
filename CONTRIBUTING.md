@@ -1,6 +1,6 @@
-# Contributing to dagpedia
+# Contributing to DAGpedia
 
-Thank you for contributing. dagpedia grows through community contribution — every DAG added strengthens the shared epistemic infrastructure for causal inference in epidemiology.
+Thank you for contributing. DAGpedia grows through community contribution — every DAG added strengthens the shared epistemic infrastructure for causal inference in epidemiology.
 
 ## Who can contribute?
 

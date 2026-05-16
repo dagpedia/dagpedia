@@ -6,7 +6,7 @@ Accepted
 
 ## Context and Problem Statement
 
-Dagpedia's core value is sharing and evolving causal DAGs across the research
+DAGpedia's core value is sharing and evolving causal DAGs across the research
 community. The content (DAG files, annotations, evidence grades) needs a license
 that encourages reuse, adaptation, and redistribution while maintaining
 attribution to contributors. At the same time, many source DAGs are derived
@@ -30,7 +30,7 @@ receive credit for their work.
 ### Consequences
 
 - Good: Maximum reuse — any researcher, tool, or platform can incorporate
-  Dagpedia content with attribution
+  DAGpedia content with attribution
 - Good: Consistent with academic norms around citation and credit
 - Good: Compatible with downstream integration (e.g., epi-atlas)
 - Bad: CC BY-SA would have ensured derivative databases remain open, but the
@@ -39,7 +39,7 @@ receive credit for their work.
 
 ### Copyright boundary
 
-CC BY 4.0 covers Dagpedia's *original contributions* — the dagitty encoding,
+CC BY 4.0 covers DAGpedia's *original contributions* — the dagitty encoding,
 evidence grades, and annotations. It does not alter the copyright status of
 source papers. The protection against copyright claims from paywalled papers
 rests on the idea-expression dichotomy: causal structures (nodes and edges as

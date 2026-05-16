@@ -6,7 +6,7 @@ Accepted (implementation deferred to v0.2.0)
 
 ## Context and Problem Statement
 
-Dagpedia aims to maintain scientific quality of contributed DAGs at scale.
+DAGpedia aims to maintain scientific quality of contributed DAGs at scale.
 Manual expert review of every submission is the gold standard but does not
 scale with community growth. LLMs (large language models) have broad domain
 knowledge and can reason about causal structures, making them a candidate
@@ -31,7 +31,7 @@ LLMs are well-suited to flagging common structural and semantic issues in DAGs
 before human review. However, LLMs can hallucinate citations, misread
 context-specific causal reasoning, and lack access to unpublished or
 non-English literature. Granting them final authority would introduce
-systematic errors that undermine Dagpedia's scientific credibility.
+systematic errors that undermine DAGpedia's scientific credibility.
 
 The role of the LLM is to reduce the cognitive load on human reviewers by
 surfacing obvious problems — not to replace expert judgment.

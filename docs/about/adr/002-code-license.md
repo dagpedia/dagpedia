@@ -22,7 +22,7 @@ Chosen option: **MIT**
 
 MIT is the simplest and most widely recognized permissive license. The academic
 and research community is familiar with it. The additional patent clause in
-Apache 2.0 is unnecessary given Dagpedia's scope, and GPL's copyleft requirement
+Apache 2.0 is unnecessary given DAGpedia's scope, and GPL's copyleft requirement
 would discourage adoption by research groups building on the infrastructure.
 
 ### Consequences

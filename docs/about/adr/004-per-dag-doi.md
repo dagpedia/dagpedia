@@ -6,7 +6,7 @@ Accepted (implementation deferred to v0.2.0 — see ADR-005 rationale)
 
 ## Context and Problem Statement
 
-A key motivation for Dagpedia is to provide academic credit for DAG
+A key motivation for DAGpedia is to provide academic credit for DAG
 contributions, creating an incentive for researchers to contribute and
 share their work. DOIs (Digital Object Identifiers) issued via Zenodo
 enable contributors to cite their work in publications and CVs.
@@ -27,16 +27,16 @@ per release) and per-DAG (one DOI per individual DAG file or version).
 Chosen option: **Per-DAG DOI**, with repository-level DOI as a fallback
 during v0.1.0.
 
-A repository-level DOI supports the citation "We used Dagpedia (doi:...)" but
+A repository-level DOI supports the citation "We used DAGpedia (doi:...)" but
 does not enable a contributor to write "My DAG (doi:...) was cited by X
 studies." The per-DAG model is essential for the contributor incentive
-structure that makes Dagpedia sustainable as a community resource.
+structure that makes DAGpedia sustainable as a community resource.
 
 The expected citation format for a per-DAG DOI:
 
 ```
 Sakamaki M. Cannabis dispensary access and binge drinking DAG v1.0.
-Dagpedia. 2026. doi: 10.5281/zenodo.XXXXXXX
+DAGpedia. 2026. doi: 10.5281/zenodo.XXXXXXX
 ```
 
 ### Consequences

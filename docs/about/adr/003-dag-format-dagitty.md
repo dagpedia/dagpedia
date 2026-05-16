@@ -6,7 +6,7 @@ Accepted
 
 ## Context and Problem Statement
 
-DAGs in Dagpedia must be stored in a machine-readable, interoperable format.
+DAGs in DAGpedia must be stored in a machine-readable, interoperable format.
 The format must support interactive rendering in the browser, be widely
 understood in the epidemiology community, and allow programmatic analysis
 (identification of adjustment sets, d-separation queries, etc.).

@@ -1,5 +1,5 @@
-site_name: dagpedia
-site_url: https://dagpedia.pages.dev
+site_name: DAGpedia
+site_url: https://dagpedia.org
 site_description: >
   A living repository of causal DAGs for epidemiology —
   annotated with evidence levels, versioned, and open to contribution.
@@ -25,6 +25,7 @@ theme:
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.indexes
     - navigation.top
     - navigation.footer
     - search.highlight

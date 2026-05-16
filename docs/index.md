@@ -3,11 +3,11 @@ hide:
   - navigation
 ---
 
-# dagpedia
+# DAGpedia
 
 **A living repository of causal DAGs for epidemiology.**
 
-dagpedia is a community-maintained library of directed acyclic graphs (DAGs) for causal inference in epidemiology. Each DAG is annotated with evidence levels, versioned, and open to contribution via GitHub pull requests.
+DAGpedia is a community-maintained library of directed acyclic graphs (DAGs) for causal inference in epidemiology. Each DAG is annotated with evidence levels, versioned, and open to contribution via GitHub pull requests.
 
 The project implements the *living DAGs* framework proposed by [Reynolds (2026)](https://doi.org/10.1093/aje/kwag029): DAGs treated not as disposable study tools, but as shared epistemic infrastructure that supports cumulative science.
 
@@ -27,7 +27,7 @@ The project implements the *living DAGs* framework proposed by [Reynolds (2026)]
 
 ## How it works
 
-Each DAG in dagpedia is a structured Markdown file with:
+Each DAG in DAGpedia is a structured Markdown file with:
 
 - **Interactive visualization** powered by [dagitty.js](https://dagitty.net)
 - **Evidence levels** for every edge (*speculative → strong*)
