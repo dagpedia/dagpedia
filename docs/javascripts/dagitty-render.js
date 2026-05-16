@@ -4,7 +4,7 @@
  * Converts fenced ```dagitty code blocks into interactive dagitty widgets.
  * dagitty.js must be loaded before this script (see mkdocs.yml extra_javascript).
  *
- * Dagitty.js source: https://github.com/jtextor/dagitty
+ * Dagitty.js source: https://github.com/jtextor/dagitty/blob/master/website/js/dagitty.js
  * Vendor into docs/javascripts/dagitty.js
  */
 
