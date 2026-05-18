@@ -14,7 +14,7 @@ It implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https:
 - **Next.js 15** (App Router) on **Vercel**
 - **Content:** Markdown + YAML frontmatter in `src/content/`
 - **DAG rendering:** [dagitty.js](https://dagitty.net) (vendored)
-- **Validation:** `scripts/validate_dag.py` in CI
+- **Validation:** `scripts/dag/`, `scripts/nodes/`, `scripts/docs/` in CI
 - **DNS/CDN:** Cloudflare → Vercel
 
 ---
@@ -24,7 +24,7 @@ It implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https:
 ```bash
 npm ci
 npm run dev          # http://localhost:3000
-npm run validate     # python scripts/validate_dag.py --all
+npm run validate     # nodes → dag → docs (ADR)
 npm run build
 ```
 
@@ -38,6 +38,10 @@ Optional: `SKIP_MESH_VALIDATION=1` to skip live MeSH API checks locally.
 
 ```
 dagpedia/
+├── docs/                 # ADRs, conventions, workflow (not site content)
+│   ├── adr/
+│   ├── conventions/
+│   └── workflow/
 ├── src/
 │   ├── app/              # Next.js routes (/ , /dags , /dags/[slug])
 │   ├── components/       # DagViewer, MarkdownBody
@@ -46,7 +50,11 @@ dagpedia/
 │   │   └── nodes/        # MeSH-backed node vocabulary
 │   └── lib/              # Content loaders
 ├── public/vendor/        # dagitty.js
-├── scripts/validate_dag.py
+├── scripts/
+│   ├── dag/              # validate_dag.py
+│   ├── nodes/            # validate_nodes.py
+│   ├── docs/             # validate_adr.py, generate_docs_index.py
+│   └── deploy/           # reserved
 └── .github/workflows/ci.yml
 ```
 
@@ -54,7 +62,7 @@ dagpedia/
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Propose a new DAG via GitHub Issues.
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) and [docs/](docs/). Propose a new DAG via GitHub Issues.
 
 ---
 

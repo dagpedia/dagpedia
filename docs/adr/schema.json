@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dagpedia.org/schemas/adr-frontmatter.json",
+  "title": "DAGpedia ADR frontmatter",
+  "type": "object",
+  "required": ["date", "sequence", "title", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Decision date (YYYY-MM-DD); must match filename"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 999,
+      "description": "Order within the day (001 in filename); unique per date"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Short title (also used as the document H1)"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["proposed", "accepted", "deprecated", "superseded"]
+    },
+    "status_note": {
+      "type": "string",
+      "description": "Optional qualifier (e.g. deferred implementation)"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "uniqueItems": true
+    },
+    "related": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}-\\d{3}-[a-z0-9-]+$"
+      },
+      "uniqueItems": true,
+      "description": "Related ADR file stems (e.g. 2026-05-16-005-defer-tier-system)"
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}-\\d{3}-[a-z0-9-]+$"
+      },
+      "uniqueItems": true
+    },
+    "superseded_by": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}-\\d{3}-[a-z0-9-]+$",
+      "description": "ADR file stem that replaces this one"
+    }
+  }
+}

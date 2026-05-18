@@ -20,11 +20,18 @@ jobs:
       - name: Install Python dependencies
         run: pip install pyyaml aiohttp
 
-      - name: Validate all DAGs and Nodes
-        run: python scripts/validate_dag.py --all
+      - name: Validate nodes
+        run: python scripts/nodes/validate_nodes.py --all
         env:
           SKIP_MESH_VALIDATION: ${{ github.event_name == 'pull_request' && '1' || secrets.SKIP_MESH_VALIDATION }}
-        timeout-minutes: 3
+
+      - name: Validate DAGs
+        run: python scripts/dag/validate_dag.py --all
+
+      - name: Validate ADRs and refresh docs/MAP.md
+        run: |
+          python scripts/docs/validate_adr.py --all
+          git diff --exit-code docs/MAP.md
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

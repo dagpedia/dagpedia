@@ -11,7 +11,7 @@ Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. Am J Epidemiol. 20
 
 ## Roadmap
 
-- **v0.1**: baseline DAG repository and contribution workflow (template, DAG validation, MkDocs publication).
+- **v0.1**: baseline DAG repository and contribution workflow (template, DAG validation, Next.js site).
 - **v0.2**: richer evidence annotations, cross-DAG linkage, and expanded epidemiology coverage.
 
 ## License

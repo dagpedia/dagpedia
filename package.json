@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "validate": "python scripts/validate_dag.py --all"
+    "validate": "python scripts/nodes/validate_nodes.py --all && python scripts/dag/validate_dag.py --all && python scripts/docs/validate_adr.py --all"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
