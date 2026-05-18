@@ -2,7 +2,8 @@
 
 **A living repository of causal DAGs for epidemiology.**
 
-DAGpedia implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https://doi.org/10.1093/aje/kwag029): directed acyclic graphs treated not as disposable study tools, but as shared epistemic infrastructure — annotated with evidence levels, versioned over time, and open to community contribution.
+DAGpedia is currently developed as a personal project, but its design is grounded in a published methodological direction rather than ad hoc ideas.
+It implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https://doi.org/10.1093/aje/kwag029): directed acyclic graphs treated not as disposable study tools, but as shared epistemic infrastructure — annotated with evidence levels, versioned over time, and open to community contribution.
 
 **Site:** https://dagpedia.org
 
