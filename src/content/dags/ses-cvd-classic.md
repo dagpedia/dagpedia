@@ -12,9 +12,15 @@ nodes:
   - key: age
   - key: sex
 evidence_level: strong
+tier: verified
+dagType: domain-level
+workflowStatus: ratified
 version: 1.0.0
 authors:
-  - dagpedia
+  - name: dagpedia
+contributors:
+  - name: dagpedia
+    initials: DP
 created_at: "2026-05-18"
 updated_at: "2026-05-18"
 references:

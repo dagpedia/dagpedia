@@ -9,7 +9,18 @@ export interface DagFrontmatter {
   related_dags?: string[];
   tags?: string[];
   version: string;
-  authors?: string[];
+  authors?: (string | { name: string; affiliation?: string; orcid?: string })[];
+  tier?: "verified" | "reviewed" | "community";
+  dagType?: "domain-level" | "study-specific";
+  workflowStatus?: "draft" | "under-review" | "ratified";
+  contributors?: { name: string; affiliation?: string; initials: string }[];
+  alternativeDags?: {
+    slug: string;
+    title: string;
+    nodeCount: number;
+    note: string;
+  }[];
+  adjustment_sets?: { nodes: string[]; estimand: string }[];
   created_at: string;
   updated_at: string;
 }

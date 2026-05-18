@@ -35,7 +35,7 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
-        <main className="mx-auto max-w-4xl px-4 py-8">{children}</main>
+        <main className="mx-auto max-w-7xl px-4 py-8">{children}</main>
         <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
           DAGpedia — causal DAGs for epidemiology
         </footer>
