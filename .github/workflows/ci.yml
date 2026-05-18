@@ -8,7 +8,6 @@ on:
 
 jobs:
   validate:
-    name: Validate DAGs & Nodes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
