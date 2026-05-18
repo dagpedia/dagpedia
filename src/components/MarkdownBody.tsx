@@ -43,7 +43,7 @@ function renderMarkdown(text: string) {
   const flushList = () => {
     if (listItems.length === 0) return;
     elements.push(
-      <ul key={key++} className="mb-4 list-disc space-y-1 pl-6">
+      <ul key={key++} className="mb-4 list-disc space-y-1 pl-6 text-base">
         {listItems.map((item, i) => (
           <li key={i}>{item}</li>
         ))}
@@ -61,7 +61,7 @@ function renderMarkdown(text: string) {
     if (trimmed.startsWith("## ")) {
       flushList();
       elements.push(
-        <h2 key={key++} className="mb-3 mt-8 text-xl font-semibold text-slate-900">
+        <h2 key={key++} className="mb-3 mt-8 text-2xl font-semibold text-slate-900">
           {trimmed.slice(3)}
         </h2>
       );
@@ -73,7 +73,7 @@ function renderMarkdown(text: string) {
     }
     flushList();
     elements.push(
-      <p key={key++} className="mb-4 leading-relaxed text-slate-700">
+      <p key={key++} className="mb-4 text-base leading-relaxed text-slate-700">
         {trimmed}
       </p>
     );
@@ -95,7 +95,7 @@ export function MarkdownBody({ body, renderDagitty = false }: MarkdownBodyProps)
           return (
             <pre
               key={i}
-              className="mb-6 overflow-x-auto rounded-lg bg-slate-100 p-4 text-sm"
+              className="mb-6 overflow-x-auto rounded-lg bg-slate-100 p-4 text-base"
             >
               <code>{block.content}</code>
             </pre>

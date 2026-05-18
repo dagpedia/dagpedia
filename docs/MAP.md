@@ -28,6 +28,13 @@ ADR index (newest first). Filename format: `YYYY-MM-DD-NNN-slug.md`. Schema: [ad
 
 | ID | Date | Title | Status | Tags |
 |----|------|-------|--------|------|
+| 2026-05-18-007 | 2026-05-18 | [Command palette (⌘K) as the primary search UX](adr/2026-05-18-007-command-palette-search-ux.md) | accepted | search, ui |
+| 2026-05-18-006 | 2026-05-18 | [Build-time static search index generation](adr/2026-05-18-006-build-time-search-index.md) | accepted | search |
+| 2026-05-18-005 | 2026-05-18 | [Four principles for Node-DAG referential integrity](adr/2026-05-18-005-node-dag-referential-integrity.md) | accepted | nodes, validation |
+| 2026-05-18-004 | 2026-05-18 | [Node Library as a separate content collection](adr/2026-05-18-004-node-library-separation.md) | accepted | nodes, content |
+| 2026-05-18-003 | 2026-05-18 | [Markdown + YAML frontmatter for DAGs and nodes](adr/2026-05-18-003-content-format.md) | accepted | content, markdown |
+| 2026-05-18-002 | 2026-05-18 | [UI stack — shadcn/ui, Tailwind, React Flow, dagitty.js](adr/2026-05-18-002-ui-stack.md) | accepted | ui, react-flow, dagitty |
+| 2026-05-18-001 | 2026-05-18 | [Next.js + Vercel hybrid rendering strategy](adr/2026-05-18-001-nextjs-vercel-rendering-strategy.md) | accepted | site, nextjs, vercel |
 | 2026-05-16-007 | 2026-05-16 | [MkDocs with awesome-pages for site generation](adr/2026-05-16-007-mkdocs-awesome-pages.md) | superseded (replaced by Next.js 15 on Vercel (2025)) | site, mkdocs |
 | 2026-05-16-006 | 2026-05-16 | [LLM as First Reviewer, Not Final Judge](adr/2026-05-16-006-llm-as-first-reviewer.md) | accepted (implementation deferred to v0.2.0) | review, llm, ci |
 | 2026-05-16-005 | 2026-05-16 | [Defer Trust Tier System to v0.2.0](adr/2026-05-16-005-defer-tier-system.md) | accepted | governance, tiers |
