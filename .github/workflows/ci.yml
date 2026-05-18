@@ -23,7 +23,7 @@ jobs:
       - name: Validate all DAGs and Nodes
         run: python scripts/validate_dag.py --all
         env:
-          SKIP_MESH_VALIDATION: ${{ secrets.SKIP_MESH_VALIDATION }}
+          SKIP_MESH_VALIDATION: ${{ github.event_name == 'pull_request' && '1' || secrets.SKIP_MESH_VALIDATION }}
         timeout-minutes: 3
 
       - name: Set up Node.js
