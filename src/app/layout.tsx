@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "DAGpedia",
@@ -15,9 +20,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={cn("font-sans", geist.variable)}>
       <body>
-        <header className="border-b border-slate-200 bg-white">
+        <TooltipProvider>
+        <header className="border-b border-border bg-card">
           <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
             <Link href="/" className="text-lg font-semibold text-brand">
               DAGpedia
@@ -35,6 +41,7 @@ export default function RootLayout({
         </footer>
         <Analytics />
         <SpeedInsights />
+        </TooltipProvider>
       </body>
     </html>
   );
