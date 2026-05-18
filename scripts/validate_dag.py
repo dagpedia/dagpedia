@@ -1,178 +1,146 @@
 #!/usr/bin/env python3
 """
-dagpedia — DAG file validator
-
-Checks required YAML frontmatter fields, evidence level values,
-related_dag ID cross-references, and basic dagitty syntax.
-
-Usage:
-    python scripts/validate_dag.py docs/dags/epidemiology/ses-cvd-classic.md
-    python scripts/validate_dag.py docs/dags/             # validate all
+DAGpedia validation script
+Usage: python scripts/validate_dag.py [path/to/dag.md]
+       python scripts/validate_dag.py --all
 """
 
 import sys
-import os
-import re
 import glob
+import yaml
+import os
+import asyncio
 from pathlib import Path
 
-try:
-    import yaml
-except ImportError:
-    print("ERROR: pyyaml not installed. Run: pip install pyyaml")
-    sys.exit(1)
+CONTENT_DIR = Path("src/content")
+DAGS_DIR = CONTENT_DIR / "dags"
+NODES_DIR = CONTENT_DIR / "nodes"
 
 REQUIRED_FIELDS = [
-    "id", "title", "version", "status",
-    "field", "exposure", "outcome",
-    "dagitty", "edges", "adjustment_set", "identification",
+    "id", "title", "exposure", "outcome",
+    "nodes", "evidence_level", "version",
 ]
-
-VALID_STATUS = {"draft", "review", "stable"}
-VALID_EVIDENCE = {"speculative", "weak", "moderate", "strong"}
-VALID_IDENTIFICATION = {"backdoor", "frontdoor", "iv", "unidentified", "unknown"}
-VALID_RELATION = {
-    "shared_exposure", "shared_outcome",
-    "subgraph", "supergraph",
-    "structural_variant", "competing",
-}
+VALID_EVIDENCE = {"strong", "moderate", "limited", "theoretical"}
 
 
-def parse_frontmatter(filepath: str) -> dict | None:
-    """Extract and parse YAML frontmatter from a markdown file."""
-    content = Path(filepath).read_text(encoding="utf-8")
-    match = re.match(r"^---\s*\n(.*?)\n---\s*\n", content, re.DOTALL)
-    if not match:
-        return None
-    return yaml.safe_load(match.group(1))
+def parse_frontmatter(path: str) -> dict:
+    with open(path) as f:
+        content = f.read()
+    if not content.startswith("---"):
+        raise ValueError(f"{path}: frontmatter not found")
+    parts = content.split("---", 2)
+    return yaml.safe_load(parts[1])
 
 
-def collect_all_ids(dag_root: str) -> set[str]:
-    """Collect all DAG IDs from the repository."""
-    ids = set()
-    for filepath in glob.glob(f"{dag_root}/**/*.md", recursive=True):
-        if "_templates" in filepath:
-            continue
-        if Path(filepath).name in {"index.md", "dag-template.md"}:
-            continue
-        fm = parse_frontmatter(filepath)
-        if fm and "id" in fm:
-            ids.add(fm["id"])
-    return ids
+def get_all_node_keys() -> set:
+    keys = set()
+    for f in glob.glob(str(NODES_DIR / "*.md")):
+        fm = parse_frontmatter(f)
+        keys.add(fm["key"])
+    return keys
 
 
-def validate_file(filepath: str, all_ids: set[str]) -> list[str]:
-    """Validate a single DAG file. Returns list of error messages."""
+def validate_dag(path: str, node_keys: set) -> list[str]:
     errors = []
-    name = Path(filepath).name
+    try:
+        fm = parse_frontmatter(path)
+    except Exception as e:
+        return [f"Parse error: {e}"]
 
-    fm = parse_frontmatter(filepath)
-    if fm is None:
-        errors.append(f"[{name}] No YAML frontmatter found")
-        return errors
-
-    # Required fields
     for field in REQUIRED_FIELDS:
-        if field not in fm or fm[field] is None or fm[field] == "":
-            errors.append(f"[{name}] Missing required field: '{field}'")
+        if field not in fm:
+            errors.append(f"Missing required field: '{field}'")
 
-    if errors:
-        return errors  # Skip further checks if basics are missing
+    if fm.get("evidence_level") not in VALID_EVIDENCE:
+        errors.append(
+            f"Invalid evidence_level: '{fm.get('evidence_level')}'. "
+            f"Must be one of {VALID_EVIDENCE}"
+        )
 
-    # Status
-    if fm["status"] not in VALID_STATUS:
-        errors.append(f"[{name}] Invalid status '{fm['status']}'. Must be one of: {VALID_STATUS}")
+    slug = Path(path).stem
+    if fm.get("id") != slug:
+        errors.append(f"id '{fm.get('id')}' must match filename '{slug}'")
 
-    # Identification
-    if fm["identification"] not in VALID_IDENTIFICATION:
-        errors.append(f"[{name}] Invalid identification '{fm['identification']}'. Must be one of: {VALID_IDENTIFICATION}")
+    dag_nodes = [n["key"] for n in fm.get("nodes", [])]
+    for key in dag_nodes:
+        if key not in node_keys:
+            errors.append(
+                f"Node key '{key}' not found in src/content/nodes/. "
+                f"Add it first via a separate PR."
+            )
 
-    # ID matches filename
-    expected_id = Path(filepath).stem
-    if fm["id"] != expected_id:
-        errors.append(f"[{name}] id '{fm['id']}' does not match filename '{expected_id}'")
+    for field in ["exposure", "outcome"]:
+        val = fm.get(field)
+        if val and val not in dag_nodes:
+            errors.append(f"'{field}' value '{val}' not listed in nodes")
 
-    # Edges
-    if not isinstance(fm.get("edges"), list) or len(fm["edges"]) == 0:
-        errors.append(f"[{name}] 'edges' must be a non-empty list")
-    else:
-        for i, edge in enumerate(fm["edges"]):
-            if not isinstance(edge, dict):
-                errors.append(f"[{name}] edges[{i}] must be a mapping")
-                continue
-            for req in ("from", "to", "evidence"):
-                if req not in edge:
-                    errors.append(f"[{name}] edges[{i}] missing '{req}'")
-            if "evidence" in edge and edge["evidence"] not in VALID_EVIDENCE:
+    return errors
+
+
+async def validate_mesh_id(session, mesh_id: str) -> bool:
+    url = f"https://id.nlm.nih.gov/mesh/{mesh_id}.json"
+    try:
+        async with session.get(url) as r:
+            return r.status == 200
+    except Exception:
+        return False
+
+
+async def validate_nodes(paths: list[str]) -> list[str]:
+    import aiohttp
+
+    errors = []
+    async with aiohttp.ClientSession() as session:
+        for path in paths:
+            fm = parse_frontmatter(path)
+            mesh_id = fm.get("mesh_id")
+            if mesh_id:
+                valid = await validate_mesh_id(session, mesh_id)
+                if not valid:
+                    errors.append(
+                        f"{path}: MeSH ID '{mesh_id}' not found in NLM API"
+                    )
+            elif not fm.get("dagpedia_id"):
                 errors.append(
-                    f"[{name}] edges[{i}] invalid evidence '{edge['evidence']}'. "
-                    f"Must be one of: {VALID_EVIDENCE}"
+                    f"{path}: Either mesh_id or dagpedia_id is required"
                 )
-
-    # Related DAGs cross-reference
-    if fm.get("related_dags"):
-        for rel in fm["related_dags"]:
-            if not isinstance(rel, dict) or "id" not in rel:
-                errors.append(f"[{name}] related_dags entry missing 'id'")
-                continue
-            if rel["id"] not in all_ids:
-                print(
-                    f"  ⚠ [{name}] Warning: related_dag id '{rel['id']}' "
-                    "not in repository yet (continuing)"
-                )
-            if "relation" in rel and rel["relation"] not in VALID_RELATION:
-                errors.append(
-                    f"[{name}] related_dag relation '{rel['relation']}' invalid. "
-                    f"Must be one of: {VALID_RELATION}"
-                )
-
-    # Dagitty code: basic check
-    dag_code = str(fm.get("dagitty", ""))
-    if "dag {" not in dag_code and "dag{" not in dag_code:
-        errors.append(f"[{name}] 'dagitty' field does not appear to contain valid dagitty syntax (missing 'dag {{')")
-
     return errors
 
 
 def main():
     args = sys.argv[1:]
-    if not args:
-        print("Usage: validate_dag.py <file.md|directory>")
-        sys.exit(1)
+    node_keys = get_all_node_keys()
 
-    target = args[0]
-    dag_root = "docs/dags"
-
-    # Collect all IDs for cross-reference checking
-    all_ids = collect_all_ids(dag_root)
-
-    # Gather files to validate
-    EXCLUDE = {"index.md", "dag-template.md"}
-    if os.path.isdir(target):
-        files = [
-            f for f in glob.glob(f"{target}/**/*.md", recursive=True)
-            if "_templates" not in f and Path(f).name not in EXCLUDE
-        ]
+    if "--all" in args or not args:
+        dag_paths = glob.glob(str(DAGS_DIR / "*.md"))
+        node_paths = glob.glob(str(NODES_DIR / "*.md"))
     else:
-        files = [target]
-
-    if not files:
-        print("No DAG files found.")
-        sys.exit(0)
+        dag_paths = [p for p in args if "dags/" in p]
+        node_paths = [p for p in args if "nodes/" in p]
 
     all_errors = []
-    for filepath in sorted(files):
-        errors = validate_file(filepath, all_ids)
-        all_errors.extend(errors)
+
+    for path in dag_paths:
+        errors = validate_dag(path, node_keys)
+        if errors:
+            all_errors.extend([f"[{path}] {e}" for e in errors])
+        else:
+            print(f"OK {path}")
+
+    if node_paths:
+        if os.getenv("SKIP_MESH_VALIDATION") == "1":
+            print("WARN SKIP_MESH_VALIDATION=1 - skipping MeSH API checks")
+        else:
+            mesh_errors = asyncio.run(validate_nodes(node_paths))
+            all_errors.extend(mesh_errors)
 
     if all_errors:
-        print(f"Validation failed — {len(all_errors)} error(s):\n")
-        for err in all_errors:
-            print(f"  ✗ {err}")
+        print("\nFAIL Validation failed:")
+        for e in all_errors:
+            print(f"  {e}")
         sys.exit(1)
     else:
-        print(f"✓ All {len(files)} file(s) valid.")
-        sys.exit(0)
+        print("\nOK All validations passed")
 
 
 if __name__ == "__main__":

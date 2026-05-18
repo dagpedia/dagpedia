@@ -1,0 +1,14 @@
+{
+  "redirects": [
+    {
+      "source": "/dags/epidemiology/ses-cvd-classic",
+      "destination": "/dags/ses-cvd-classic",
+      "permanent": true
+    },
+    {
+      "source": "/dags/epidemiology/ses-cvd-classic/",
+      "destination": "/dags/ses-cvd-classic",
+      "permanent": true
+    }
+  ]
+}
