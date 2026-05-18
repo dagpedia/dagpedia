@@ -4,6 +4,7 @@ sequence: 7
 title: MkDocs with awesome-pages for site generation
 status: superseded
 status_note: replaced by Next.js 15 on Vercel (2025)
+superseded_by: 2026-05-18-001-nextjs-vercel-rendering-strategy
 tags:
 - site
 - mkdocs
