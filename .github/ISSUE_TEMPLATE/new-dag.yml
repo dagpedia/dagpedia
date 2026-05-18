@@ -1,70 +1,56 @@
-name: New DAG proposal
-description: Propose a new DAG for dagpedia
-title: "[DAG] "
+name: Add New DAG
+description: Propose a new causal DAG for DAGpedia
+title: "[DAG] <exposure> and <outcome>"
 labels: ["new-dag"]
-
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Use this template to propose a new DAG before submitting a pull request.
-        This helps get early feedback on the causal structure and scope.
-
   - type: input
-    id: title
+    id: dag_id
     attributes:
-      label: DAG title
-      placeholder: "Exposure → Outcome (context)"
-    validations:
-      required: true
-
-  - type: input
-    id: exposure
-    attributes:
-      label: Exposure variable
-    validations:
-      required: true
-
-  - type: input
-    id: outcome
-    attributes:
-      label: Outcome variable
+      label: DAG ID (slug)
+      description: "kebab-case: exposure-outcome-context"
+      placeholder: ses-cvd-classic
     validations:
       required: true
 
   - type: dropdown
-    id: field
+    id: evidence_level
     attributes:
-      label: Field
+      label: Evidence Level
       options:
-        - epidemiology
-        - social-epidemiology
-        - environmental-epidemiology
-        - infectious-disease
-        - other
+        - strong
+        - moderate
+        - limited
+        - theoretical
     validations:
       required: true
 
   - type: textarea
-    id: structure
+    id: nodes_used
     attributes:
-      label: Proposed causal structure (dagitty code)
-      render: text
+      label: Nodes used
+      description: "List node keys. If any are new, open a separate Node PR first."
       placeholder: |
-        dag {
-          Exposure -> Outcome
-          Confounder -> Exposure
-          Confounder -> Outcome
-        }
+        - socioeconomic_status
+        - cardiovascular_disease
+    validations:
+      required: true
 
   - type: textarea
-    id: rationale
+    id: dagitty_string
     attributes:
-      label: Rationale
-      description: Why is this DAG useful? What research question does it address?
+      label: DAG (dagitty syntax)
+      render: shell
+      placeholder: |
+        dag {
+          exposure -> outcome
+        }
+    validations:
+      required: true
 
   - type: textarea
     id: references
     attributes:
-      label: Key references
-      description: DOIs or citations that support this causal structure
+      label: Key references (PMID or DOI)
+      placeholder: |
+        pmid: 12345678
+        doi: 10.xxxx/xxxxx

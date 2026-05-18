@@ -5,68 +5,65 @@
 DAGpedia is currently developed as a personal project, but its design is grounded in a published methodological direction rather than ad hoc ideas.
 It implements the *living DAGs* vision proposed by [Reynolds (2026, AJE)](https://doi.org/10.1093/aje/kwag029): directed acyclic graphs treated not as disposable study tools, but as shared epistemic infrastructure — annotated with evidence levels, versioned over time, and open to community contribution.
 
+**Site:** https://dagpedia.org
+
 ---
 
-## What is a living DAG?
+## Stack (MVP)
 
-A living DAG is:
+- **Next.js 15** (App Router) on **Vercel**
+- **Content:** Markdown + YAML frontmatter in `src/content/`
+- **DAG rendering:** [dagitty.js](https://dagitty.net) (vendored)
+- **Validation:** `scripts/validate_dag.py` in CI
+- **DNS/CDN:** Cloudflare → Vercel
 
-- **Annotated** — each edge carries an evidence level (*speculative / weak / moderate / strong*)
-- **Versioned** — git history traces how causal understanding evolves
-- **Modular** — domain-level structures from which study-specific DAGs are derived
-- **Open** — contributed and refined via GitHub pull requests
+---
 
-## Contributing
-
-Anyone can contribute a DAG. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide.
-
-Quick start:
+## Development
 
 ```bash
-# 1. Fork this repo and clone it
-git clone https://github.com/YOUR_USERNAME/dagpedia.git
-
-# 2. Copy the template
-cp _templates/dag-template.md docs/dags/epidemiology/your-dag-name.md
-
-# 3. Fill in the YAML frontmatter and dagitty code
-
-# 4. Submit a pull request
+npm ci
+npm run dev          # http://localhost:3000
+npm run validate     # python scripts/validate_dag.py --all
+npm run build
 ```
+
+Python 3.12 + `pip install pyyaml aiohttp` for local validation.
+
+Optional: `SKIP_MESH_VALIDATION=1` to skip live MeSH API checks locally.
+
+---
 
 ## Repository structure
 
 ```
 dagpedia/
-├── docs/
-│   ├── dags/
-│   │   └── epidemiology/   ← DAG files (.md)
-│   ├── javascripts/        ← dagitty.js + render script
-│   └── stylesheets/        ← custom CSS
-├── _templates/             ← contribution template
-├── scripts/                ← validation scripts
-├── .github/
-│   ├── workflows/          ← CI (validate on PR)
-│   └── ISSUE_TEMPLATE/     ← issue templates
-└── mkdocs.yml
+├── src/
+│   ├── app/              # Next.js routes (/ , /dags , /dags/[slug])
+│   ├── components/       # DagViewer, MarkdownBody
+│   ├── content/
+│   │   ├── dags/         # DAG markdown files
+│   │   └── nodes/        # MeSH-backed node vocabulary
+│   └── lib/              # Content loaders
+├── public/vendor/        # dagitty.js
+├── scripts/validate_dag.py
+└── .github/workflows/ci.yml
 ```
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Propose a new DAG via GitHub Issues.
+
+---
 
 ## Citation
 
-If you use DAGpedia in your research, please cite:
-
 > DAGpedia contributors. *DAGpedia: A living repository of causal DAGs for epidemiology*. https://dagpedia.org
 
-And the conceptual foundation:
-
-> Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. Am J Epidemiol. 2026;195(5):1365–1367. https://doi.org/10.1093/aje/kwag029
-
-## Roadmap
-
-- **v0.1**: baseline DAG repository and contribution workflow (template, DAG validation, MkDocs publication).
-- **v0.2**: richer evidence annotations, cross-DAG linkage, and expanded epidemiology coverage.
+> Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. *Am J Epidemiol.* 2026;195:1365–1367. https://doi.org/10.1093/aje/kwag029
 
 ## License
 
-DAG content: [CC BY 4.0](LICENSE-CONTENT)
-Code: [MIT](LICENSE)
+DAG content: [CC BY 4.0](LICENSE-CONTENT) · Code: [MIT](LICENSE)

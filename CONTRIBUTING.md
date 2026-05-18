@@ -18,11 +18,13 @@ cd dagpedia
 ### 2. Copy the template
 
 ```bash
-cp _templates/dag-template.md docs/dags/epidemiology/your-dag-id.md
+cp _templates/dag-template.md src/content/dags/your-dag-id.md
 ```
 
-Use a short, descriptive slug as the filename: `exposure-outcome-context.md`
-Examples: `ses-cvd-classic.md`, `cannabis-binge-drinking-usa.md`
+Use a short, descriptive slug as the filename (flat under `src/content/dags/`).
+Examples: `ses-cvd-classic.md`
+
+Add any new variables as `src/content/nodes/<key>.md` in a **separate PR** before referencing them in a DAG.
 
 ### 3. Fill in the frontmatter
 
@@ -63,7 +65,7 @@ The body of the markdown file (below the frontmatter) should include:
 
 ```bash
 pip install pyyaml
-python scripts/validate_dag.py docs/dags/epidemiology/your-dag-id.md
+python scripts/validate_dag.py src/content/dags/your-dag-id.md
 ```
 
 ### 6. Submit a pull request

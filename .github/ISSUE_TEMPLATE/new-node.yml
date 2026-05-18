@@ -1,0 +1,58 @@
+name: Add New Node
+description: Propose a new node (variable) for the controlled vocabulary
+title: "[Node] <node_key>"
+labels: ["new-node"]
+body:
+  - type: input
+    id: key
+    attributes:
+      label: Node key (snake_case)
+      placeholder: residential_segregation
+    validations:
+      required: true
+
+  - type: input
+    id: mesh_id
+    attributes:
+      label: MeSH ID
+      description: "Find at https://meshb.nlm.nih.gov. Leave blank if no MeSH entry."
+      placeholder: D012345
+
+  - type: textarea
+    id: no_mesh_reason
+    attributes:
+      label: If no MeSH ID, explain why
+      description: "What concept does this represent? Why is MeSH insufficient?"
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - exposure
+        - outcome
+        - confounder
+        - mediator
+        - collider
+        - social_determinant
+        - biological
+        - demographic
+        - other
+    validations:
+      required: true
+
+  - type: textarea
+    id: aliases
+    attributes:
+      label: Aliases / synonyms
+      placeholder: |
+        - SES
+        - socioeconomic position
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why is this node needed?
+      description: "Which DAG will use it? Link the DAG PR if possible."
+    validations:
+      required: true
