@@ -6,8 +6,10 @@
     "node": ">=20"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "npm run generate-index && next dev",
+    "prebuild": "tsx scripts/generate-search-index.ts",
     "build": "next build",
+    "generate-index": "tsx scripts/generate-search-index.ts",
     "start": "next start",
     "lint": "next lint",
     "validate": "python scripts/nodes/validate_nodes.py --all && python scripts/dag/validate_dag.py --all && python scripts/docs/validate_adr.py --all"
@@ -41,6 +43,7 @@
     "eslint-config-next": "^15.0.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.22.2",
     "typescript": "^5.6.0"
   }
 }
