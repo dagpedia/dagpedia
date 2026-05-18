@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContributeDropdown } from "@/components/layout/ContributeDropdown";
+import { SearchCommand } from "@/components/layout/SearchCommand";
 
 const NAV_ITEMS = [
   { label: "DAGs", href: "/dags" },
@@ -69,15 +70,15 @@ export function Topbar() {
   const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    function handleKeyDown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
-        setSearchOpen(true);
+        setSearchOpen((prev) => !prev);
       }
-    };
+    }
 
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
@@ -141,6 +142,8 @@ export function Topbar() {
 
         <ContributeDropdown />
       </div>
+
+      <SearchCommand open={searchOpen} onOpenChange={setSearchOpen} />
     </header>
   );
 }
