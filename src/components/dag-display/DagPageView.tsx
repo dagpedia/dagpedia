@@ -27,6 +27,19 @@ export function DagPageView({ data }: { data: DagPageData }) {
     scriptLoaded
   );
 
+  const adjustmentSets =
+    data.adjustmentSets.length > 0
+      ? data.adjustmentSets
+      : analysis.adjustmentSets;
+  const conditionalIndependencies =
+    data.conditionalIndependencies.length > 0
+      ? data.conditionalIndependencies
+      : analysis.conditionalIndependencies;
+  const adjustmentLoading =
+    data.adjustmentSets.length === 0 && analysis.loading;
+  const indepLoading =
+    data.conditionalIndependencies.length === 0 && analysis.loading;
+
   return (
     <>
       <Script
@@ -62,17 +75,17 @@ export function DagPageView({ data }: { data: DagPageData }) {
             />
             <EdgeList edges={data.edges} nodes={data.nodes} />
             <ConditionalIndep
-              items={analysis.conditionalIndependencies}
-              loading={analysis.loading}
+              items={conditionalIndependencies}
+              loading={indepLoading}
             />
           </div>
 
           <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-[220px]">
             <NodeList nodes={data.nodes} />
             <AdjustmentSets
-              sets={analysis.adjustmentSets}
+              sets={adjustmentSets}
               nodes={data.nodes}
-              loading={analysis.loading}
+              loading={adjustmentLoading}
             />
             <VersionPanel
               version={data.version}

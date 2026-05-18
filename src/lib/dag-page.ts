@@ -82,6 +82,26 @@ const dagFrontmatterSchema = z.object({
     .optional(),
   related_dags: z.array(z.string()).optional(),
   dag: z.string().optional(),
+  edges: z
+    .array(
+      z.object({
+        from: z.string(),
+        to: z.string(),
+        evidence: z
+          .enum(["strong", "moderate", "weak", "assumed", "limited", "theoretical"])
+          .optional(),
+      })
+    )
+    .optional(),
+  adjustmentSets: z
+    .array(
+      z.object({
+        nodes: z.array(z.string()),
+        estimand: z.string(),
+      })
+    )
+    .optional(),
+  conditionalIndependencies: z.array(z.string()).optional(),
 });
 
 function normalizeAuthors(raw: z.infer<typeof dagFrontmatterSchema>["authors"]): DagAuthor[] {
@@ -117,6 +137,23 @@ function normalizeReferences(
     pmid: ref.pmid,
     citation: ref.citation ?? ref.label ?? "",
   }));
+}
+
+function buildEdges(
+  structure: ReturnType<typeof parseDagittyStructure>,
+  fmEdges: z.infer<typeof dagFrontmatterSchema>["edges"],
+  defaultEvidence: ReturnType<typeof mapLegacyEvidence>
+) {
+  if (fmEdges?.length) {
+    return fmEdges.map((edge) => ({
+      from: edge.from,
+      to: edge.to,
+      evidence: edge.evidence
+        ? mapLegacyEvidence(edge.evidence)
+        : defaultEvidence,
+    }));
+  }
+  return buildDagEdges(structure, defaultEvidence);
 }
 
 function resolveAlternativeDags(
@@ -180,8 +217,8 @@ export function getDagPageData(slug: string): DagPageData | null {
     dagittyCode,
     alternativeDags: resolveAlternativeDags(fm, titleBySlug),
     nodes: buildDagNodes(structure, fm.exposure, fm.outcome, centrality),
-    edges: buildDagEdges(structure, defaultEvidence),
-    adjustmentSets: [],
-    conditionalIndependencies: [],
+    edges: buildEdges(structure, fm.edges, defaultEvidence),
+    adjustmentSets: fm.adjustmentSets ?? [],
+    conditionalIndependencies: fm.conditionalIndependencies ?? [],
   };
 }
