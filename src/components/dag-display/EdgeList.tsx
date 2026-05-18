@@ -14,10 +14,10 @@ export function EdgeList({
   return (
     <Card size="sm" className="gap-2 py-3">
       <CardHeader className="px-3 pb-0">
-        <CardTitle className="text-sm font-semibold">Edges</CardTitle>
+        <CardTitle className="text-base font-semibold">Edges</CardTitle>
       </CardHeader>
       <CardContent className="px-3 pt-2">
-        <div className="grid grid-cols-[1fr_20px_1fr_80px] gap-x-2 gap-y-2 text-xs">
+        <div className="grid grid-cols-[1fr_20px_1fr_80px] gap-x-2 gap-y-2 text-sm">
           <span className="font-medium text-muted-foreground">From</span>
           <span />
           <span className="font-medium text-muted-foreground">To</span>

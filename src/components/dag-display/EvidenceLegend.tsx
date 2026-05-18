@@ -2,7 +2,7 @@ import { EvidenceBadge } from "./badges";
 
 export function EvidenceLegend() {
   return (
-    <div className="mt-3 space-y-1.5 border-t pt-3 text-[0.65rem] text-muted-foreground">
+    <div className="mt-3 space-y-1.5 border-t pt-3 text-xs text-muted-foreground">
       <p className="font-medium uppercase tracking-wide">Evidence</p>
       <ul className="space-y-1">
         <li className="flex items-center gap-2">

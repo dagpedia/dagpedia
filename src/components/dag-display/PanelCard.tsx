@@ -10,7 +10,7 @@ export function PanelCard({
   return (
     <Card size="sm" className="gap-2 py-3">
       <CardHeader className="px-3 pb-0">
-        <CardTitle className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+        <CardTitle className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           {title}
         </CardTitle>
       </CardHeader>

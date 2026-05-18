@@ -12,15 +12,15 @@ export function ContributorsPanel({
       <ul className="space-y-2">
         {contributors.map((person) => (
           <li key={person.name} className="flex items-center gap-2">
-            <Avatar className="size-7">
-              <AvatarFallback className="text-[0.65rem]">
+            <Avatar className="size-8">
+              <AvatarFallback className="text-xs">
                 {person.initials}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="truncate text-xs font-medium">{person.name}</p>
+              <p className="truncate text-sm font-medium">{person.name}</p>
               {person.affiliation && (
-                <p className="truncate text-[0.65rem] text-muted-foreground">
+                <p className="truncate text-xs text-muted-foreground">
                   {person.affiliation}
                 </p>
               )}

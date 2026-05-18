@@ -12,11 +12,11 @@ export function AlternativeDags({ items }: { items: AlternativeDag[] }) {
           <li key={alt.slug}>
             <Link
               href={`/dags/${alt.slug}`}
-              className="text-xs font-medium text-brand hover:underline"
+              className="text-sm font-medium text-brand hover:underline"
             >
               {alt.title}
             </Link>
-            <p className="text-[0.65rem] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {alt.nodeCount > 0 && `${alt.nodeCount} nodes · `}
               {alt.note}
             </p>

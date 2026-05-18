@@ -23,7 +23,7 @@ export function CustomDagNode({ data }: NodeProps) {
   return (
     <div
       className={cn(
-        "min-w-[100px] rounded-md border-2 bg-card px-3 py-2 text-center text-xs font-medium shadow-sm",
+        "min-w-[110px] rounded-md border-2 bg-card px-3 py-2.5 text-center text-sm font-medium shadow-sm",
         borderByRole[nodeData.role]
       )}
     >

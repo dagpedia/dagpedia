@@ -30,7 +30,7 @@ export function VersionPanel({
   return (
     <PanelCard title="Version">
       <div className="space-y-3">
-        <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center justify-between text-sm">
           <span className="font-medium">v{version}</span>
           {updatedAt && (
             <span className="text-muted-foreground">{updatedAt}</span>
@@ -52,7 +52,7 @@ export function VersionPanel({
                       : "border-muted-foreground/40 bg-transparent"
                   )}
                 />
-                <span className="text-[0.6rem] text-muted-foreground">
+                <span className="text-xs text-muted-foreground">
                   {step.label}
                 </span>
               </li>
@@ -61,9 +61,9 @@ export function VersionPanel({
         </ol>
         <Link
           href={`/dags/${slug}#changelog`}
-          className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
-          <History className="size-3.5" />
+          <History className="size-4" />
           Changelog
         </Link>
       </div>

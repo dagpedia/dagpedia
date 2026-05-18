@@ -28,7 +28,7 @@ export function TierBadge({ tier }: { tier: DagTier }) {
   const label =
     tier === "verified" ? "Verified" : tier === "reviewed" ? "Reviewed" : "Community";
   return (
-    <Badge variant="secondary" className={cn(tierStyles[tier])}>
+    <Badge variant="secondary" className={cn("text-sm", tierStyles[tier])}>
       {label}
     </Badge>
   );
@@ -37,7 +37,7 @@ export function TierBadge({ tier }: { tier: DagTier }) {
 export function DagTypeBadge({ dagType }: { dagType: DagType }) {
   const label = dagType === "domain-level" ? "Domain-level" : "Study-specific";
   return (
-    <Badge variant="outline">
+    <Badge variant="outline" className="text-sm">
       {label}
     </Badge>
   );
@@ -45,7 +45,7 @@ export function DagTypeBadge({ dagType }: { dagType: DagType }) {
 
 export function RoleBadge({ role }: { role: NodeRole }) {
   return (
-    <Badge className={cn(roleStyles[role])}>
+    <Badge className={cn("text-sm", roleStyles[role])}>
       {role}
     </Badge>
   );
@@ -53,7 +53,7 @@ export function RoleBadge({ role }: { role: NodeRole }) {
 
 export function EvidenceBadge({ level }: { level: EvidenceLevel }) {
   return (
-    <Badge className={cn(evidenceStyles[level])}>
+    <Badge className={cn("text-sm", evidenceStyles[level])}>
       {level}
     </Badge>
   );

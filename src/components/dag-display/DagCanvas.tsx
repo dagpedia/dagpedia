@@ -13,6 +13,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import { CustomDagNode, type CustomDagNodeData } from "./CustomDagNode";
 import { layoutDagElements } from "./layout-dag";
+import { cn } from "@/lib/utils";
 import type { DagEdge, DagNode } from "@/types/dag";
 
 const nodeTypes = { dagNode: CustomDagNode };
@@ -22,9 +23,10 @@ interface DagCanvasProps {
   edges: DagEdge[];
   exposure: string;
   outcome: string;
+  className?: string;
 }
 
-function DagCanvasInner({ nodes, edges }: DagCanvasProps) {
+function DagCanvasInner({ nodes, edges, className }: DagCanvasProps) {
   const flowNodes = useMemo(() => {
     const initial: Node<CustomDagNodeData>[] = nodes.map((node) => ({
       id: node.id,
@@ -50,7 +52,12 @@ function DagCanvasInner({ nodes, edges }: DagCanvasProps) {
   const showMiniMap = nodes.length > 15;
 
   return (
-    <div className="h-[360px] w-full rounded-xl border bg-muted ring-1 ring-foreground/10">
+    <div
+      className={cn(
+        "h-full w-full rounded-xl border bg-muted ring-1 ring-foreground/10",
+        className
+      )}
+    >
       <ReactFlow
         nodes={flowNodes.nodes}
         edges={flowNodes.edges}

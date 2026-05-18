@@ -11,8 +11,8 @@ export function DagListCard({ dag }: { dag: DagListItem }) {
         <Card>
           <CardContent className="flex flex-col gap-3 pt-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="min-w-0 flex-1 space-y-2">
-              <h2 className="text-lg font-semibold tracking-tight">{dag.title}</h2>
-              <div className="flex flex-wrap items-center gap-2 text-sm">
+              <h2 className="text-xl font-semibold tracking-tight">{dag.title}</h2>
+              <div className="flex flex-wrap items-center gap-2 text-base">
                 <Badge className="bg-red-100 text-red-800 border-transparent">
                   {dag.exposureLabel}
                 </Badge>
@@ -27,7 +27,7 @@ export function DagListCard({ dag }: { dag: DagListItem }) {
               {dag.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
                   {dag.tags.map((tag) => (
-                    <Badge key={tag} variant="outline" className="text-xs font-normal">
+                    <Badge key={tag} variant="outline" className="text-sm font-normal">
                       {tag}
                     </Badge>
                   ))}
@@ -37,7 +37,7 @@ export function DagListCard({ dag }: { dag: DagListItem }) {
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               <TierBadge tier={dag.tier} />
               {dag.dagType && <DagTypeBadge dagType={dag.dagType} />}
-              <span className="text-xs text-muted-foreground">v{dag.version}</span>
+              <span className="text-sm text-muted-foreground">v{dag.version}</span>
             </div>
           </CardContent>
         </Card>

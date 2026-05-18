@@ -73,7 +73,7 @@ export function getDag(slug: string): DagContent | null {
 }
 
 export function extractDagittyString(body: string): string | null {
-  const match = body.match(/```dagitty\n([\s\S]*?)```/);
+  const match = body.match(/```dagitty\r?\n([\s\S]*?)```/);
   return match ? match[1].trim() : null;
 }
 

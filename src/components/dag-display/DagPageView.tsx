@@ -9,6 +9,8 @@ import { ConditionalIndep } from "./ConditionalIndep";
 import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
 import { DagPageHeader } from "./DagPageHeader";
+import { ResizableHeight } from "./ResizableHeight";
+import { ResizableSplit } from "./ResizableSplit";
 import { EdgeList } from "./EdgeList";
 import { KeywordsPanel } from "./KeywordsPanel";
 import { NodeList } from "./NodeList";
@@ -47,8 +49,9 @@ export function DagPageView({ data }: { data: DagPageData }) {
         strategy="afterInteractive"
         onLoad={() => setScriptLoaded(true)}
       />
-      <article className="space-y-6">
+      <article className="w-full space-y-6">
         <DagPageHeader
+          dagittyCode={data.dagittyCode}
           title={data.title}
           exposure={{
             id: data.exposure,
@@ -65,23 +68,27 @@ export function DagPageView({ data }: { data: DagPageData }) {
           version={data.version}
         />
 
-        <div className="flex flex-col gap-4 lg:flex-row">
-          <div className="flex min-w-0 flex-[2] flex-col gap-4">
-            <DagCanvas
-              nodes={data.nodes}
-              edges={data.edges}
-              exposure={data.exposure}
-              outcome={data.outcome}
-            />
+        <ResizableSplit
+          left={
+            <>
+              <ResizableHeight defaultHeight={420} minHeight={280} maxHeight={800}>
+                <DagCanvas
+                  nodes={data.nodes}
+                  edges={data.edges}
+                  exposure={data.exposure}
+                  outcome={data.outcome}
+                />
+              </ResizableHeight>
             <EdgeList edges={data.edges} nodes={data.nodes} />
             <ConditionalIndep
               items={conditionalIndependencies}
               loading={indepLoading}
             />
-          </div>
-
-          <aside className="flex w-full shrink-0 flex-col gap-3 lg:w-[220px]">
-            <NodeList nodes={data.nodes} />
+            </>
+          }
+          right={
+            <>
+              <NodeList nodes={data.nodes} />
             <AdjustmentSets
               sets={adjustmentSets}
               nodes={data.nodes}
@@ -95,9 +102,10 @@ export function DagPageView({ data }: { data: DagPageData }) {
             />
             <ContributorsPanel contributors={data.contributors} />
             <AlternativeDags items={data.alternativeDags} />
-            <KeywordsPanel tags={data.tags} />
-          </aside>
-        </div>
+              <KeywordsPanel tags={data.tags} />
+            </>
+          }
+        />
 
         {data.body.trim() && (
           <section className="border-t pt-6">
@@ -107,8 +115,8 @@ export function DagPageView({ data }: { data: DagPageData }) {
 
         {data.references.length > 0 && (
           <section className="border-t pt-6">
-            <h2 className="mb-3 text-lg font-semibold">References</h2>
-            <ul className="space-y-2 text-sm text-muted-foreground">
+            <h2 className="mb-3 text-xl font-semibold">References</h2>
+            <ul className="space-y-2 text-base text-muted-foreground">
               {data.references.map((ref, i) => (
                 <li key={i}>
                   {ref.citation}

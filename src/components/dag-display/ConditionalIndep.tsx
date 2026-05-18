@@ -23,19 +23,19 @@ export function ConditionalIndep({
   return (
     <Card size="sm" className="gap-2 py-3">
       <CardHeader className="px-3 pb-0">
-        <CardTitle className="text-sm font-semibold">
+        <CardTitle className="text-base font-semibold">
           Conditional independencies
         </CardTitle>
       </CardHeader>
       <CardContent className="px-3 pt-2">
         {loading ? (
-          <p className="text-xs text-muted-foreground">Computing…</p>
+          <p className="text-sm text-muted-foreground">Computing…</p>
         ) : items.length === 0 ? (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             No implied conditional independencies found.
           </p>
         ) : (
-          <ul className="space-y-1.5 font-mono text-xs">
+          <ul className="space-y-1.5 font-mono text-sm">
             {items.map((line) => (
               <li key={line}>{formatLine(line)}</li>
             ))}

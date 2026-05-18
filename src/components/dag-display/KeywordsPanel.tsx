@@ -8,7 +8,7 @@ export function KeywordsPanel({ tags }: { tags: string[] }) {
     <PanelCard title="Keywords">
       <div className="flex flex-wrap gap-1.5">
         {tags.map((tag) => (
-          <Badge key={tag} variant="secondary" className="text-[0.65rem]">
+          <Badge key={tag} variant="secondary" className="text-xs">
             {tag}
           </Badge>
         ))}
