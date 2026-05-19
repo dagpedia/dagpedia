@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const dagDetail = isDagDetailPage(pathname);
+  const isDagsList = pathname === "/dags";
 
   return (
     <SidebarProvider
@@ -27,7 +28,14 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
         ) : (
           <>
             <SiteTopbar />
-            <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</div>
+            <div
+              className={cn(
+                "w-full min-w-0 flex-1 px-4 py-8",
+                !isDagsList && "mx-auto max-w-7xl"
+              )}
+            >
+              {children}
+            </div>
           </>
         )}
       </SidebarInset>
