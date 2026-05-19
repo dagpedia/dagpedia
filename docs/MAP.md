@@ -45,7 +45,9 @@ ADR index (newest first). Filename format: `YYYY-MM-DD-NNN-slug.md`. Schema: [ad
 
 ## Conventions (`docs/conventions/`)
 
-_No convention docs yet — see [conventions/README.md](conventions/README.md)._
+| File | Topic |
+|------|-------|
+| [conventions/dagitty-react-flow-adapter.md](conventions/dagitty-react-flow-adapter.md) | DAGitty → React Flow adapter |
 
 ## Workflow (`docs/workflow/`)
 

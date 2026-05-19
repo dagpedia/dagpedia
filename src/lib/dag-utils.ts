@@ -1,57 +1,35 @@
 import type { DagEdge, DagNode, EvidenceLevel, NodeRole } from "@/types/dag";
 import { getNodeLabel } from "./nodes";
-
-const ROLE_TAGS: Record<string, NodeRole> = {
-  exposure: "exposure",
-  outcome: "outcome",
-  mediator: "mediator",
-  covariate: "covariate",
-  instrument: "instrument",
-  collider: "collider",
-};
+import { parseDagittyStructureFromCode } from "./dagitty/adapter";
+import { getDagittyRuntime } from "./dagitty/runtime";
 
 export interface ParsedDagStructure {
   nodes: Map<string, NodeRole | undefined>;
   edges: { from: string; to: string }[];
+  hasExplicitLayout: boolean;
+  positions: Map<string, { x: number; y: number }>;
 }
 
 export function parseDagittyStructure(code: string): ParsedDagStructure {
+  const runtime = getDagittyRuntime();
+  const dagitty = parseDagittyStructureFromCode(code, runtime);
+
   const nodes = new Map<string, NodeRole | undefined>();
-  const edges: { from: string; to: string }[] = [];
+  const positions = new Map<string, { x: number; y: number }>();
 
-  const inner = code
-    .trim()
-    .replace(/^dag\s*\{/i, "")
-    .replace(/\}\s*$/i, "")
-    .trim();
-
-  for (const rawLine of inner.split(/\r?\n/)) {
-    const line = rawLine.trim();
-    if (!line || line.startsWith("//")) continue;
-
-    const edgeMatch = line.match(/^([\w-]+)\s*->\s*([\w-]+)/);
-    if (edgeMatch) {
-      const [, from, to] = edgeMatch;
-      edges.push({ from, to });
-      if (!nodes.has(from)) nodes.set(from, undefined);
-      if (!nodes.has(to)) nodes.set(to, undefined);
-      continue;
+  for (const [id, info] of dagitty.nodes) {
+    nodes.set(id, info.role);
+    if (info.x !== undefined && info.y !== undefined) {
+      positions.set(id, { x: info.x, y: info.y });
     }
-
-    const nodeMatch = line.match(/^([\w-]+)(.*)$/);
-    if (!nodeMatch) continue;
-
-    const [, id, rest] = nodeMatch;
-    let role: NodeRole | undefined;
-    const tags = rest.matchAll(/\[([\w-]+)\]/g);
-    for (const tag of tags) {
-      const mapped = ROLE_TAGS[tag[1].toLowerCase()];
-      if (mapped) role = mapped;
-    }
-    nodes.set(id, role ?? nodes.get(id));
   }
 
-  return { nodes, edges };
+  return {
+    nodes,
+    edges: dagitty.edges,
+    hasExplicitLayout: dagitty.hasExplicitLayout,
+    positions,
+  };
 }
 
 export function inferNodeRoles(
@@ -97,7 +75,9 @@ export function inferNodeRoles(
 
     const isMediator =
       (parents.get(id) ?? []).some((p) => onExposureToOutcomePath.has(p)) &&
-      (children.get(id) ?? []).some((c) => c === outcome || onExposureToOutcomePath.has(c));
+      (children.get(id) ?? []).some(
+        (c) => c === outcome || onExposureToOutcomePath.has(c)
+      );
 
     roles.set(id, isMediator ? "mediator" : "covariate");
   }
@@ -112,12 +92,19 @@ export function buildDagNodes(
   centrality: Map<string, number>
 ): DagNode[] {
   const roles = inferNodeRoles(structure, exposure, outcome);
-  return [...structure.nodes.keys()].map((id) => ({
-    id,
-    label: getNodeLabel(id),
-    role: roles.get(id) ?? "covariate",
-    centrality: centrality.get(id),
-  }));
+  return [...structure.nodes.keys()].map((id) => {
+    const node: DagNode = {
+      id,
+      label: getNodeLabel(id),
+      role: roles.get(id) ?? "covariate",
+      centrality: centrality.get(id),
+    };
+    const pos = structure.positions.get(id);
+    if (structure.hasExplicitLayout && pos) {
+      node.position = pos;
+    }
+    return node;
+  });
 }
 
 export function buildDagEdges(
@@ -131,9 +118,7 @@ export function buildDagEdges(
   }));
 }
 
-export function mapLegacyEvidence(
-  level?: string
-): EvidenceLevel {
+export function mapLegacyEvidence(level?: string): EvidenceLevel {
   switch (level) {
     case "strong":
       return "strong";

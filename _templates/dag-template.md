@@ -36,8 +36,8 @@ edges:
     evidence: speculative
     notes: ""
 
-adjustment_set: [Confounder]       # minimum sufficient adjustment set
-identification: backdoor           # backdoor | frontdoor | iv | unidentified | unknown
+# adjustmentSets and conditionalIndependencies are generated at build time
+# (see public/dag-meta/ and npm run generate-dag-meta)
 
 # ── Optional fields ───────────────────────────────────────────────────────────
 tags: []

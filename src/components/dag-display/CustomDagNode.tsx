@@ -7,6 +7,7 @@ import type { NodeRole } from "@/types/dag";
 export type CustomDagNodeData = {
   label: string;
   role: NodeRole;
+  highlighted?: boolean;
 };
 
 const borderByRole: Record<NodeRole, string> = {
@@ -23,8 +24,10 @@ export function CustomDagNode({ data }: NodeProps) {
   return (
     <div
       className={cn(
-        "min-w-[110px] rounded-md border-2 bg-card px-3 py-2.5 text-center text-sm font-medium shadow-sm",
-        borderByRole[nodeData.role]
+        "min-w-[110px] cursor-grab rounded-md border-2 bg-card px-3 py-2.5 text-center text-sm font-medium shadow-sm active:cursor-grabbing",
+        borderByRole[nodeData.role],
+        nodeData.highlighted &&
+          "border-foreground ring-2 ring-foreground/30 shadow-md"
       )}
     >
       <Handle type="target" position={Position.Left} className="!bg-muted-foreground" />

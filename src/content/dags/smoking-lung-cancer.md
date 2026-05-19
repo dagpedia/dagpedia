@@ -69,14 +69,6 @@ edges:
   - from: genetic_risk
     to: lung_cancer
     evidence: moderate
-adjustmentSets:
-  - nodes: [age, sex]
-    estimand: "Smoking → Lung Cancer total effect"
-conditionalIndependencies:
-  - "Pack-years ⊥ Age | Smoking"
-  - "Pack-years ⊥ Sex | Smoking"
-  - "Asbestos ⊥ Smoking"
-  - "Genetic risk ⊥ Smoking"
 ---
 
 ## Overview
