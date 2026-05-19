@@ -6,6 +6,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { sortDagNodes } from "@/lib/sort-dag-nodes";
+import { cn } from "@/lib/utils";
 import { PanelCard } from "./PanelCard";
 import { RoleBadge } from "./badges";
 import type { DagNode } from "@/types/dag";
@@ -19,10 +21,18 @@ function nodesPanelHeight(count: number) {
   return Math.min(MAX_HEIGHT, Math.max(MIN_HEIGHT, count * ROW_HEIGHT + PANEL_PADDING));
 }
 
-export function NodeList({ nodes }: { nodes: DagNode[] }) {
-  const sorted = [...nodes].sort(
-    (a, b) => (b.centrality ?? 0) - (a.centrality ?? 0)
-  );
+export function NodeList({
+  nodes,
+  exposureId,
+  outcomeId,
+  highlightedNodeId = null,
+}: {
+  nodes: DagNode[];
+  exposureId: string;
+  outcomeId: string;
+  highlightedNodeId?: string | null;
+}) {
+  const sorted = sortDagNodes(nodes, exposureId, outcomeId);
   const height = nodesPanelHeight(sorted.length);
   const scrollable = height >= MAX_HEIGHT;
 
@@ -33,7 +43,16 @@ export function NodeList({ nodes }: { nodes: DagNode[] }) {
         style={{ height, maxHeight: MAX_HEIGHT }}
       >
         {sorted.map((node) => (
-          <li key={node.id} className="space-y-1">
+          <li
+            key={node.id}
+            data-node-id={node.id}
+            className={cn(
+              "space-y-1 rounded-md border-2 px-1 py-1 transition-colors",
+              highlightedNodeId === node.id
+                ? "border-foreground bg-muted/60"
+                : "border-transparent"
+            )}
+          >
             <div className="flex items-center justify-between gap-2">
               <span className="truncate text-sm font-medium">{node.label}</span>
               <RoleBadge role={node.role} />

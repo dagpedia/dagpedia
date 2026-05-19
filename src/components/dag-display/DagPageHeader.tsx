@@ -8,7 +8,6 @@ import { DagTypeBadge, TierBadge } from "./badges";
 import type { DagTier, DagType } from "@/types/dag";
 
 interface DagPageHeaderProps {
-  dagittyCode: string;
   title: string;
   exposure: { id: string; label: string };
   outcome: { id: string; label: string };
@@ -20,7 +19,6 @@ interface DagPageHeaderProps {
 }
 
 export function DagPageHeader({
-  dagittyCode,
   title,
   exposure,
   outcome,
@@ -41,11 +39,11 @@ export function DagPageHeader({
             <div className="space-y-3">
               <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
               <div className="flex flex-wrap items-center gap-2 text-base">
-                <Badge className="bg-red-100 text-red-800 border-transparent">
+                <Badge className="border-transparent bg-red-100 text-red-800">
                   {exposure.label}
                 </Badge>
                 <span className="text-muted-foreground">→</span>
-                <Badge className="bg-violet-100 text-violet-800 border-transparent">
+                <Badge className="border-transparent bg-violet-100 text-violet-800">
                   {outcome.label}
                 </Badge>
                 <span className="text-muted-foreground">
@@ -53,21 +51,23 @@ export function DagPageHeader({
                 </span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <TierBadge tier={tier} />
-              <DagTypeBadge dagType={dagType} />
-              <span className="text-sm text-muted-foreground">v{version}</span>
-              <Button variant="outline" size="sm" type="button" disabled>
-                <GitFork className="size-3.5" />
-                Fork
-              </Button>
-              <Button variant="outline" size="sm" type="button" disabled>
-                <Pencil className="size-3.5" />
-                Edit
-              </Button>
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <TierBadge tier={tier} />
+                <DagTypeBadge dagType={dagType} />
+                <span className="text-sm text-muted-foreground">v{version}</span>
+                <Button variant="outline" size="sm" type="button" disabled>
+                  <GitFork className="size-3.5" />
+                  Fork
+                </Button>
+                <Button variant="outline" size="sm" type="button" disabled>
+                  <Pencil className="size-3.5" />
+                  Edit
+                </Button>
+              </div>
+              <DagittyCodePanel />
             </div>
           </div>
-          <DagittyCodePanel code={dagittyCode} />
         </CardContent>
       </Card>
     </div>

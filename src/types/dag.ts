@@ -19,6 +19,8 @@ export interface DagNode {
   label: string;
   role: NodeRole;
   centrality?: number;
+  /** Present when dagitty source defines layout for all nodes */
+  position?: { x: number; y: number };
 }
 
 export interface DagEdge {

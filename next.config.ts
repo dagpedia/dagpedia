@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["jsdom"],
   pageExtensions: ["ts", "tsx", "md", "mdx"],
 
   images: {

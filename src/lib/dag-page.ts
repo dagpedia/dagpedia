@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { z } from "zod";
 import { getDag, extractDagittyString } from "./dag";
 import { getAllDags } from "./dag";
@@ -10,6 +12,7 @@ import {
 } from "./dag-utils";
 import { computeDegreeCentrality } from "./content-index";
 import type {
+  AdjustmentSet,
   AlternativeDag,
   DagAuthor,
   DagContributor,
@@ -19,6 +22,39 @@ import type {
   DagType,
   WorkflowStatus,
 } from "@/types/dag";
+
+const DAG_META_DIR = path.join(process.cwd(), "public", "dag-meta");
+
+const dagMetaFileSchema = z.object({
+  slug: z.string(),
+  adjustmentSets: z.array(
+    z.object({
+      nodes: z.array(z.string()),
+      estimand: z.string(),
+    })
+  ),
+  conditionalIndependencies: z.array(z.string()),
+});
+
+function loadDagMetaFromJson(slug: string): {
+  adjustmentSets: AdjustmentSet[];
+  conditionalIndependencies: string[];
+} {
+  const filePath = path.join(DAG_META_DIR, `${slug}.json`);
+  if (!fs.existsSync(filePath)) {
+    return { adjustmentSets: [], conditionalIndependencies: [] };
+  }
+  const parsed = dagMetaFileSchema.safeParse(
+    JSON.parse(fs.readFileSync(filePath, "utf-8"))
+  );
+  if (!parsed.success) {
+    return { adjustmentSets: [], conditionalIndependencies: [] };
+  }
+  return {
+    adjustmentSets: parsed.data.adjustmentSets,
+    conditionalIndependencies: parsed.data.conditionalIndependencies,
+  };
+}
 
 const authorSchema = z.union([
   z.string(),
@@ -197,6 +233,7 @@ export function getDagPageData(slug: string): DagPageData | null {
   const titleBySlug = new Map(
     getAllDags().map((d) => [d.slug, d.frontmatter.title])
   );
+  const dagMeta = loadDagMetaFromJson(slug);
 
   return {
     slug,
@@ -218,7 +255,7 @@ export function getDagPageData(slug: string): DagPageData | null {
     alternativeDags: resolveAlternativeDags(fm, titleBySlug),
     nodes: buildDagNodes(structure, fm.exposure, fm.outcome, centrality),
     edges: buildEdges(structure, fm.edges, defaultEvidence),
-    adjustmentSets: fm.adjustmentSets ?? [],
-    conditionalIndependencies: fm.conditionalIndependencies ?? [],
+    adjustmentSets: dagMeta.adjustmentSets,
+    conditionalIndependencies: dagMeta.conditionalIndependencies,
   };
 }
