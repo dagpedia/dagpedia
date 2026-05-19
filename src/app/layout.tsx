@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Topbar } from "@/components/layout/Topbar";
+import { LayoutChrome } from "@/components/layout/LayoutChrome";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "DAGpedia",
@@ -20,17 +21,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
+    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
-        <TooltipProvider>
-        <Topbar />
-        <main className="mx-auto max-w-7xl px-4 py-8 pt-13">{children}</main>
-        <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500">
-          DAGpedia — causal DAGs for epidemiology
-        </footer>
-        <Analytics />
-        <SpeedInsights />
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            <LayoutChrome>{children}</LayoutChrome>
+            <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 dark:border-slate-800">
+              DAGpedia — causal DAGs for epidemiology
+            </footer>
+            <Analytics />
+            <SpeedInsights />
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

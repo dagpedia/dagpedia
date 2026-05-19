@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { cache } from "react";
 import { z } from "zod";
 import { getDag, extractDagittyString } from "./dag";
 import { getAllDags } from "./dag";
@@ -206,7 +207,7 @@ function resolveAlternativeDags(
   }));
 }
 
-export function getDagPageData(slug: string): DagPageData | null {
+export const getDagPageData = cache((slug: string): DagPageData | null => {
   const dag = getDag(slug);
   if (!dag) return null;
 
@@ -258,4 +259,4 @@ export function getDagPageData(slug: string): DagPageData | null {
     adjustmentSets: dagMeta.adjustmentSets,
     conditionalIndependencies: dagMeta.conditionalIndependencies,
   };
-}
+});

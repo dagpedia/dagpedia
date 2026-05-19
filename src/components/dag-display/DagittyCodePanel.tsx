@@ -1,11 +1,11 @@
 "use client";
 
 import { Code2 } from "lucide-react";
+import { useDagittyPanel } from "@/components/dag-display/DagittyPanelContext";
 import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
 
 export function DagittyCodePanel() {
-  const { open, toggleSidebar } = useSidebar();
+  const { open, toggle } = useDagittyPanel();
 
   return (
     <Button
@@ -13,7 +13,7 @@ export function DagittyCodePanel() {
       variant="outline"
       size="sm"
       className="w-fit shrink-0"
-      onClick={toggleSidebar}
+      onClick={toggle}
     >
       <Code2 className="size-3.5" />
       {open ? "Hide daggity code" : "Show daggity code"}
