@@ -1,41 +1,58 @@
 "use client";
 
-import { DagittyCodeSidebarLayout } from "@/components/dag-display/DagittyCodeSidebar";
-import { AppSidebar } from "@/components/layout/AppSidebar";
 import { DagTopbar } from "@/components/layout/DagTopbar";
-import type { DagTier } from "@/types/dag";
+import {
+  DagittyPanelProvider,
+  useDagittyPanel,
+} from "@/components/dag-display/DagittyPanelContext";
+import { DagittyPlainPanel } from "@/components/dag-display/DagittyPlainPanel";
+import type { DagTier, DagType } from "@/types/dag";
 
 interface DagPageShellProps {
   title: string;
   nodeCount: number;
   edgeCount: number;
   tier: DagTier;
+  dagType: DagType;
   dagittyCode: string;
   children: React.ReactNode;
 }
 
-export function DagPageShell({
+function DagPageShellContent({
   title,
   nodeCount,
   edgeCount,
   tier,
+  dagType,
   dagittyCode,
   children,
 }: DagPageShellProps) {
+  const { open, width } = useDagittyPanel();
+
   return (
-    <DagittyCodeSidebarLayout code={dagittyCode}>
-      <div className="min-h-svh w-full">
-        <AppSidebar />
-        <div className="flex min-w-0 flex-1 flex-col pl-52">
-          <DagTopbar
-            title={title}
-            nodeCount={nodeCount}
-            edgeCount={edgeCount}
-            tier={tier}
-          />
-          <div className="min-w-0 px-4 py-6 pt-11 sm:px-6 lg:px-8">{children}</div>
-        </div>
+    <>
+      <DagTopbar
+        title={title}
+        nodeCount={nodeCount}
+        edgeCount={edgeCount}
+        tier={tier}
+        dagType={dagType}
+      />
+      <div
+        className="min-w-0 px-2 py-4 transition-[padding] duration-200 sm:px-3"
+        style={{ paddingRight: open ? width : undefined }}
+      >
+        {children}
       </div>
-    </DagittyCodeSidebarLayout>
+      <DagittyPlainPanel code={dagittyCode} />
+    </>
+  );
+}
+
+export function DagPageShell(props: DagPageShellProps) {
+  return (
+    <DagittyPanelProvider>
+      <DagPageShellContent {...props} />
+    </DagittyPanelProvider>
   );
 }

@@ -7,6 +7,15 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchCommand } from "@/components/layout/SearchCommand";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 import { NAV_ITEMS, isNavActive } from "@/lib/nav";
 
 function GitHubIcon({ className }: { className?: string }) {
@@ -40,8 +49,8 @@ export function AppSidebar() {
 
   return (
     <>
-      <aside className="fixed top-0 left-0 z-50 flex h-svh w-52 flex-col border-r bg-background">
-        <div className="flex flex-col gap-2 p-3 pt-3">
+      <Sidebar side="left" collapsible="offcanvas">
+        <SidebarHeader className="p-2">
           <Button
             variant="outline"
             size="sm"
@@ -56,23 +65,24 @@ export function AppSidebar() {
               ⌘K
             </kbd>
           </Button>
+        </SidebarHeader>
 
-          <nav className="flex flex-col gap-0.5">
+        <SidebarContent>
+          <SidebarMenu>
             {NAV_ITEMS.map(({ label, href }) => (
-              <Button
-                key={href}
-                variant={isNavActive(pathname, href) ? "secondary" : "ghost"}
-                size="sm"
-                className="w-full justify-start"
-                render={<Link href={href} />}
-              >
-                {label}
-              </Button>
+              <SidebarMenuItem key={href}>
+                <SidebarMenuButton
+                  isActive={isNavActive(pathname, href)}
+                  render={<Link href={href} />}
+                >
+                  {label}
+                </SidebarMenuButton>
+              </SidebarMenuItem>
             ))}
-          </nav>
-        </div>
+          </SidebarMenu>
+        </SidebarContent>
 
-        <div className="mt-auto flex flex-col gap-2 border-t p-3">
+        <SidebarFooter className="gap-2 p-2">
           <Button
             type="button"
             variant="outline"
@@ -85,8 +95,8 @@ export function AppSidebar() {
             Sign in with GitHub to Contribute
           </Button>
           <ThemeToggle />
-        </div>
-      </aside>
+        </SidebarFooter>
+      </Sidebar>
 
       <SearchCommand open={searchOpen} onOpenChange={setSearchOpen} />
     </>

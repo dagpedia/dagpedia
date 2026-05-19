@@ -12,7 +12,6 @@ import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
 import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
-import { DagPageHeader } from "./DagPageHeader";
 import { EdgeList } from "./EdgeList";
 import { KeywordsPanel } from "./KeywordsPanel";
 import { NodeList } from "./NodeList";
@@ -24,9 +23,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
 
   return (
-    <article className="w-full space-y-6">
-      <DagPageHeader dagType={data.dagType} />
-
+    <article className="w-full space-y-4">
       <ResizablePanelGroup
         orientation="horizontal"
         className="min-h-[560px] rounded-xl border"

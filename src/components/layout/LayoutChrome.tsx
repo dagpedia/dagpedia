@@ -1,8 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Topbar } from "@/components/layout/Topbar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
+import { SiteTopbar } from "@/components/layout/SiteTopbar";
 import { isDagDetailPage } from "@/lib/nav";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 export function LayoutChrome({ children }: { children: React.ReactNode }) {
@@ -10,16 +12,25 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const dagDetail = isDagDetailPage(pathname);
 
   return (
-    <>
-      {!dagDetail && <Topbar />}
-      <main
-        className={cn(
-          "mx-auto max-w-7xl px-4 py-8",
-          dagDetail ? "max-w-none p-0" : "pt-13"
+    <SidebarProvider
+      defaultOpen
+      style={
+        {
+          "--sidebar-width": "13rem",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar />
+      <SidebarInset className={cn("min-w-0 bg-background", dagDetail && "flex flex-col")}>
+        {dagDetail ? (
+          children
+        ) : (
+          <>
+            <SiteTopbar />
+            <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-8">{children}</div>
+          </>
         )}
-      >
-        {children}
-      </main>
-    </>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
