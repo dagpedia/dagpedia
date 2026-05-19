@@ -5,7 +5,7 @@ export default function DagsPage() {
   const dags = getDagListItems();
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-3xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">DAGs</h1>
         <p className="mt-1 text-base text-muted-foreground">
