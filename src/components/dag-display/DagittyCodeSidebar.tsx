@@ -25,7 +25,7 @@ function DagittyCodeSidebarClose() {
       type="button"
       variant="outline"
       size="icon-sm"
-      className="fixed top-13 right-4 z-[60] size-8 bg-background shadow-sm"
+      className="fixed top-11 right-4 z-[60] size-8 bg-background shadow-sm"
       onClick={() => setOpen(false)}
       aria-label="Close DAGitty code sidebar"
     >

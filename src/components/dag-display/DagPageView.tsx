@@ -12,7 +12,6 @@ import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
 import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
-import { DagittyCodeSidebarLayout } from "./DagittyCodeSidebar";
 import { DagPageHeader } from "./DagPageHeader";
 import { EdgeList } from "./EdgeList";
 import { KeywordsPanel } from "./KeywordsPanel";
@@ -23,28 +22,10 @@ import type { DagPageData } from "@/types/dag";
 export function DagPageView({ data }: { data: DagPageData }) {
   const [hoveredEdgeKey, setHoveredEdgeKey] = useState<string | null>(null);
   const [hoveredNodeId, setHoveredNodeId] = useState<string | null>(null);
-  const exposureNode = data.nodes.find((n) => n.id === data.exposure);
-  const outcomeNode = data.nodes.find((n) => n.id === data.outcome);
 
   return (
-    <DagittyCodeSidebarLayout code={data.dagittyCode}>
     <article className="w-full space-y-6">
-      <DagPageHeader
-        title={data.title}
-        exposure={{
-          id: data.exposure,
-          label: exposureNode?.label ?? data.exposure,
-        }}
-        outcome={{
-          id: data.outcome,
-          label: outcomeNode?.label ?? data.outcome,
-        }}
-        nodeCount={data.nodes.length}
-        edgeCount={data.edges.length}
-        tier={data.tier}
-        dagType={data.dagType}
-        version={data.version}
-      />
+      <DagPageHeader dagType={data.dagType} />
 
       <ResizablePanelGroup
         orientation="horizontal"
@@ -153,6 +134,5 @@ export function DagPageView({ data }: { data: DagPageData }) {
         </section>
       )}
     </article>
-    </DagittyCodeSidebarLayout>
   );
 }
