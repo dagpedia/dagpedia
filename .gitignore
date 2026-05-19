@@ -4,6 +4,9 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # Next.js
 node_modules/
 .next/

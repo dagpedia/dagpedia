@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Check, Copy, PanelRightClose } from "lucide-react";
+import { DagittyHighlightedCode } from "@/components/dag-display/DagittyHighlightedCode";
 import { useDagittyPanel } from "@/components/dag-display/DagittyPanelContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -67,23 +68,21 @@ export function DagittyPlainPanel({ code }: { code: string }) {
           "fixed inset-y-0 right-0 z-40 flex flex-col border-l bg-background",
           "animate-in slide-in-from-right duration-200"
         )}
-        aria-label="DAGitty code"
+        aria-label="dagitty code"
       >
         <button
           type="button"
-          aria-label="Resize DAGitty panel"
+          aria-label="Resize dagitty panel"
           className="absolute top-0 left-0 z-10 h-full w-1.5 cursor-col-resize border-0 bg-transparent p-0 hover:bg-sidebar-border/80 active:bg-sidebar-border"
           onMouseDown={onResizeStart}
         />
-        <header className="flex items-center justify-between gap-2 border-b px-3 py-2 pl-3">
-          <span className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
-            DAGitty
-          </span>
+        <header className="flex shrink-0 items-center justify-between gap-2 border-b px-3 py-2.5">
+          <span className="text-sm font-semibold tracking-tight">dagitty</span>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             size="sm"
-            className="h-8 gap-1.5 px-2 text-sm"
+            className="h-8 gap-1.5 px-2.5 text-sm"
             onClick={copyCode}
           >
             {copied ? (
@@ -95,14 +94,7 @@ export function DagittyPlainPanel({ code }: { code: string }) {
           </Button>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <pre
-            className={cn(
-              "p-3 font-mono text-sm leading-relaxed",
-              "whitespace-pre-wrap break-words text-foreground"
-            )}
-          >
-            {code}
-          </pre>
+          <DagittyHighlightedCode code={code} />
         </div>
       </aside>
 
@@ -113,7 +105,7 @@ export function DagittyPlainPanel({ code }: { code: string }) {
         className="fixed top-11 z-[60] size-8 bg-background shadow-sm"
         style={{ right: width + 16 }}
         onClick={() => setOpen(false)}
-        aria-label="Close DAGitty code panel"
+        aria-label="Close dagitty code panel"
       >
         <PanelRightClose className="size-4" />
       </Button>
