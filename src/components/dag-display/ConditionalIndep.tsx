@@ -17,13 +17,15 @@ export function ConditionalIndep({
   items,
   loading,
   divided = false,
+  bare = false,
 }: {
   items: string[];
   loading?: boolean;
   divided?: boolean;
+  bare?: boolean;
 }) {
   return (
-    <PanelCard title="Conditional independencies" divided={divided}>
+    <PanelCard title="Conditional independencies" divided={divided} bare={bare}>
       {loading ? (
         <p className="text-sm text-muted-foreground">Computing…</p>
       ) : items.length === 0 ? (

@@ -18,16 +18,18 @@ export function EdgeList({
   highlightedEdgeKey = null,
   onEdgeHover,
   divided = false,
+  bare = false,
 }: {
   edges: DagEdge[];
   nodes: DagNode[];
   highlightedEdgeKey?: string | null;
   onEdgeHover?: (edgeKey: string | null) => void;
   divided?: boolean;
+  bare?: boolean;
 }) {
   const label = (id: string) => nodes.find((n) => n.id === id)?.label ?? id;
   return (
-    <PanelCard title="Edges" divided={divided}>
+    <PanelCard title="Edges" divided={divided} bare={bare}>
       <div className="space-y-1">
         <div className="grid grid-cols-[1fr_20px_1fr_80px] gap-x-2 border-b px-1 pb-2 text-sm">
           <span className="font-medium text-muted-foreground">From</span>

@@ -6,13 +6,19 @@ export function PanelCard({
   className,
   divided = false,
   fill = false,
+  bare = false,
 }: {
   title: string;
   children: React.ReactNode;
   className?: string;
   divided?: boolean;
   fill?: boolean;
+  bare?: boolean;
 }) {
+  if (bare) {
+    return <div className={cn("px-4 py-3", className)}>{children}</div>;
+  }
+
   return (
     <section
       className={cn(

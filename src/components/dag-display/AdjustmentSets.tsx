@@ -6,15 +6,17 @@ export function AdjustmentSets({
   nodes,
   loading,
   divided = false,
+  bare = false,
 }: {
   sets: AdjustmentSet[];
   nodes: DagNode[];
   loading?: boolean;
   divided?: boolean;
+  bare?: boolean;
 }) {
   const label = (id: string) => nodes.find((n) => n.id === id)?.label ?? id;
   return (
-    <PanelCard title="Adjustment sets" divided={divided}>
+    <PanelCard title="Adjustment sets" divided={divided} bare={bare}>
       {loading ? (
         <p className="text-sm text-muted-foreground">Computing…</p>
       ) : sets.length === 0 ? (

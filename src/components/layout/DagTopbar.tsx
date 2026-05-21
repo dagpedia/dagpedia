@@ -54,8 +54,10 @@ export function DagTopbar({
         <span className="hidden text-sm text-muted-foreground lg:inline">
           {nodeCount} nodes · {edgeCount} edges
         </span>
-        <TierBadge tier={tier} />
-        <DagTypeBadge dagType={dagType} />
+        <div className="hidden items-center gap-2 lg:flex">
+          <TierBadge tier={tier} />
+          <DagTypeBadge dagType={dagType} />
+        </div>
         <Button variant="outline" size="sm" type="button" disabled>
           <Pencil className="size-3.5" />
           <span className="hidden sm:inline">Edit</span>

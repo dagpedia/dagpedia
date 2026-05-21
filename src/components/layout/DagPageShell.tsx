@@ -1,5 +1,6 @@
 "use client";
 
+import { DagTypeBadge, TierBadge } from "@/components/dag-display/badges";
 import { DagTopbar } from "@/components/layout/DagTopbar";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import {
@@ -43,10 +44,14 @@ function DagPageShellContent({
         dagType={dagType}
       />
       {!isDesktop && (
-        <div className="shrink-0 border-b bg-background px-3 py-2.5">
-          <h1 className="truncate text-base font-semibold leading-tight">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b bg-background px-3 py-2.5">
+          <h1 className="min-w-0 flex-1 truncate text-base font-semibold leading-tight">
             {title}
           </h1>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <TierBadge tier={tier} />
+            <DagTypeBadge dagType={dagType} />
+          </div>
         </div>
       )}
       <div

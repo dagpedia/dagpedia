@@ -16,6 +16,7 @@ export function NodeList({
   onNodeHover,
   divided = false,
   fill = false,
+  bare = false,
 }: {
   nodes: DagNode[];
   exposureId: string;
@@ -24,11 +25,17 @@ export function NodeList({
   onNodeHover?: (nodeId: string | null) => void;
   divided?: boolean;
   fill?: boolean;
+  bare?: boolean;
 }) {
   const sorted = sortDagNodes(nodes, exposureId, outcomeId);
 
   return (
-    <PanelCard title={`Nodes (${sorted.length})`} divided={divided} fill={fill}>
+    <PanelCard
+      title={`Nodes (${sorted.length})`}
+      divided={divided}
+      fill={fill && !bare}
+      bare={bare}
+    >
       <ScrollArea className={cn(fill && "h-full min-h-0 flex-1")}>
         <ul className="space-y-2.5 pr-1">
           {sorted.map((node) => (

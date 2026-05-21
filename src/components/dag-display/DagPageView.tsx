@@ -16,6 +16,7 @@ import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
 import { EdgeList } from "./EdgeList";
 import { KeywordsPanel } from "./KeywordsPanel";
+import { MobileDetailAccordion } from "./MobileDetailAccordion";
 import { NodeList } from "./NodeList";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { VersionPanel } from "./VersionPanel";
@@ -60,16 +61,6 @@ export function DagPageView({ data }: { data: DagPageData }) {
     </>
   );
 
-  const nodeList = (
-    <NodeList
-      nodes={data.nodes}
-      exposureId={data.exposure}
-      outcomeId={data.outcome}
-      highlightedNodeId={hoveredNodeId}
-      onNodeHover={onNodeHover}
-    />
-  );
-
   const metadataSection = (
     <>
       <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
@@ -97,56 +88,141 @@ export function DagPageView({ data }: { data: DagPageData }) {
     </>
   );
 
+  const mobileAccordionSections = [
+    {
+      value: "edges",
+      title: "Edges",
+      content: (
+        <EdgeList
+          bare
+          edges={data.edges}
+          nodes={data.nodes}
+          highlightedEdgeKey={hoveredEdgeKey}
+          onEdgeHover={onEdgeHover}
+        />
+      ),
+    },
+    {
+      value: "conditional-indep",
+      title: "Conditional independencies",
+      content: (
+        <ConditionalIndep bare items={data.conditionalIndependencies} />
+      ),
+    },
+    {
+      value: "nodes",
+      title: `Nodes (${data.nodes.length})`,
+      content: (
+        <NodeList
+          bare
+          nodes={data.nodes}
+          exposureId={data.exposure}
+          outcomeId={data.outcome}
+          highlightedNodeId={hoveredNodeId}
+          onNodeHover={onNodeHover}
+        />
+      ),
+    },
+    {
+      value: "adjustment-sets",
+      title: "Adjustment sets",
+      content: (
+        <AdjustmentSets bare sets={data.adjustmentSets} nodes={data.nodes} />
+      ),
+    },
+    {
+      value: "version",
+      title: "Version",
+      content: (
+        <VersionPanel
+          bare
+          version={data.version}
+          updatedAt={data.updatedAt}
+          status={data.workflowStatus}
+          slug={data.slug}
+        />
+      ),
+    },
+    {
+      value: "contributors",
+      title: "Contributors",
+      content: <ContributorsPanel bare contributors={data.contributors} />,
+    },
+    ...(data.alternativeDags.length > 0
+      ? [
+          {
+            value: "alternative-dags",
+            title: "Alternative DAGs",
+            content: <AlternativeDags bare items={data.alternativeDags} />,
+          },
+        ]
+      : []),
+    ...(data.tags.length > 0
+      ? [
+          {
+            value: "keywords",
+            title: "Keywords",
+            content: <KeywordsPanel bare tags={data.tags} />,
+          },
+        ]
+      : []),
+    ...(data.body.trim()
+      ? [
+          {
+            value: "description",
+            title: "Description",
+            content: <MarkdownBody body={data.body} />,
+          },
+        ]
+      : []),
+    ...(data.references.length > 0
+      ? [
+          {
+            value: "references",
+            title: "References",
+            content: (
+              <ul className="space-y-2 text-base text-muted-foreground">
+                {data.references.map((ref, i) => (
+                  <li key={i}>
+                    {ref.citation}
+                    {ref.doi && (
+                      <>
+                        {" "}
+                        <a
+                          href={`https://doi.org/${ref.doi}`}
+                          className="text-brand hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          DOI
+                        </a>
+                      </>
+                    )}
+                    {ref.pmid && (
+                      <>
+                        {" "}
+                        <a
+                          href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
+                          className="text-brand hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          PubMed
+                        </a>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ),
+          },
+        ]
+      : []),
+  ];
+
   const mobileScrollContent = (
     <>
-      {edgesSection}
-      <Separator />
-      {nodeList}
-      <Separator />
-      {metadataSection}
-      {data.body.trim() && (
-        <section className="border-t px-4 pt-6">
-          <MarkdownBody body={data.body} />
-        </section>
-      )}
-      {data.references.length > 0 && (
-        <section className="border-t px-4 pt-6">
-          <h2 className="mb-3 text-xl font-semibold">References</h2>
-          <ul className="space-y-2 text-base text-muted-foreground">
-            {data.references.map((ref, i) => (
-              <li key={i}>
-                {ref.citation}
-                {ref.doi && (
-                  <>
-                    {" "}
-                    <a
-                      href={`https://doi.org/${ref.doi}`}
-                      className="text-brand hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      DOI
-                    </a>
-                  </>
-                )}
-                {ref.pmid && (
-                  <>
-                    {" "}
-                    <a
-                      href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
-                      className="text-brand hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      PubMed
-                    </a>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <MobileDetailAccordion sections={mobileAccordionSections} />
       <SiteFooter />
     </>
   );

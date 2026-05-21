@@ -5,14 +5,16 @@ import type { AlternativeDag } from "@/types/dag";
 export function AlternativeDags({
   items,
   divided = false,
+  bare = false,
 }: {
   items: AlternativeDag[];
   divided?: boolean;
+  bare?: boolean;
 }) {
   if (items.length === 0) return null;
 
   return (
-    <PanelCard title="Alternative DAGs" divided={divided}>
+    <PanelCard title="Alternative DAGs" divided={divided} bare={bare}>
       <ul className="space-y-2">
         {items.map((alt) => (
           <li key={alt.slug}>
