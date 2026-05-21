@@ -27,7 +27,7 @@ export function MobileDetailAccordion({
 
   return (
     <Accordion
-      type="multiple"
+      multiple
       defaultValue={defaultValue}
       className={cn("w-full", className)}
     >
