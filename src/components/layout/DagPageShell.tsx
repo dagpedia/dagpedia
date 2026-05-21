@@ -7,6 +7,8 @@ import {
   useDagittyPanel,
 } from "@/components/dag-display/DagittyPanelContext";
 import { DagittyPlainPanel } from "@/components/dag-display/DagittyPlainPanel";
+import { useIsLgUp } from "@/hooks/use-media-query";
+import { cn } from "@/lib/utils";
 import type { DagTier, DagType } from "@/types/dag";
 
 interface DagPageShellProps {
@@ -29,9 +31,10 @@ function DagPageShellContent({
   children,
 }: DagPageShellProps) {
   const { open, width } = useDagittyPanel();
+  const isDesktop = useIsLgUp();
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex h-full min-h-0 flex-1 flex-col">
       <DagTopbar
         title={title}
         nodeCount={nodeCount}
@@ -39,12 +42,24 @@ function DagPageShellContent({
         tier={tier}
         dagType={dagType}
       />
+      {!isDesktop && (
+        <div className="shrink-0 border-b bg-background px-3 py-2.5">
+          <h1 className="truncate text-base font-semibold leading-tight">
+            {title}
+          </h1>
+        </div>
+      )}
       <div
-        className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto px-1 py-2 transition-[padding] duration-200 sm:px-1.5"
+        className={cn(
+          "flex min-h-0 min-w-0 flex-1 flex-col transition-[padding] duration-200",
+          isDesktop
+            ? "overflow-y-auto px-1 py-2 sm:px-1.5"
+            : "overflow-hidden px-1 pb-2 pt-2 sm:px-1.5"
+        )}
         style={{ paddingRight: open ? width : undefined }}
       >
         {children}
-        <SiteFooter />
+        {isDesktop && <SiteFooter />}
       </div>
       <DagittyPlainPanel code={dagittyCode} />
     </div>

@@ -26,7 +26,8 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
       <SidebarInset
         className={cn(
           "min-w-0 bg-background",
-          dagDetail && "flex flex-col overflow-hidden lg:h-svh lg:max-h-svh"
+          dagDetail &&
+            "flex h-dvh max-h-dvh flex-col overflow-hidden lg:h-svh lg:max-h-svh"
         )}
       >
         {dagDetail ? (
