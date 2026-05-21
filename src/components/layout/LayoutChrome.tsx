@@ -22,9 +22,14 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
       }
     >
       <AppSidebar />
-      <SidebarInset className={cn("min-w-0 bg-background", dagDetail && "flex flex-col")}>
+      <SidebarInset
+        className={cn(
+          "min-w-0 bg-background",
+          dagDetail && "flex flex-col lg:h-svh lg:max-h-svh"
+        )}
+      >
         {dagDetail ? (
-          children
+          <div className="flex min-h-0 flex-1 flex-col">{children}</div>
         ) : (
           <>
             <SiteTopbar />

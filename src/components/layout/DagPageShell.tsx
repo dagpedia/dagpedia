@@ -30,7 +30,7 @@ function DagPageShellContent({
   const { open, width } = useDagittyPanel();
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <DagTopbar
         title={title}
         nodeCount={nodeCount}
@@ -39,13 +39,13 @@ function DagPageShellContent({
         dagType={dagType}
       />
       <div
-        className="min-w-0 px-2 py-4 transition-[padding] duration-200 sm:px-3"
+        className="flex min-h-0 min-w-0 flex-1 flex-col px-2 py-4 transition-[padding] duration-200 sm:px-3 lg:overflow-y-auto"
         style={{ paddingRight: open ? width : undefined }}
       >
         {children}
       </div>
       <DagittyPlainPanel code={dagittyCode} />
-    </>
+    </div>
   );
 }
 
