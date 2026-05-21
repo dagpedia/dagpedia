@@ -26,9 +26,6 @@ export default function RootLayout({
         <ThemeProvider>
           <TooltipProvider>
             <LayoutChrome>{children}</LayoutChrome>
-            <footer className="border-t border-slate-200 py-6 text-center text-sm text-slate-500 dark:border-slate-800">
-              DAGpedia — causal DAGs for epidemiology
-            </footer>
             <Analytics />
             <SpeedInsights />
           </TooltipProvider>

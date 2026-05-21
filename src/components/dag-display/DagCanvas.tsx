@@ -172,8 +172,8 @@ function DagCanvasInner({
     <div
       ref={containerRef}
       className={cn(
-        "dag-canvas-container relative h-full w-full rounded-xl border bg-muted ring-1 ring-foreground/10",
-        isFullscreen && "rounded-none border-0 ring-0",
+        "dag-canvas-container relative h-full w-full border bg-muted ring-1 ring-foreground/10",
+        isFullscreen && "rounded-none border-0 bg-background ring-0",
         className
       )}
     >

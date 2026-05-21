@@ -1,6 +1,7 @@
 "use client";
 
 import { DagTopbar } from "@/components/layout/DagTopbar";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import {
   DagittyPanelProvider,
   useDagittyPanel,
@@ -39,10 +40,11 @@ function DagPageShellContent({
         dagType={dagType}
       />
       <div
-        className="flex min-h-0 min-w-0 flex-1 flex-col px-2 py-4 transition-[padding] duration-200 sm:px-3 lg:overflow-y-auto"
+        className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto px-1 py-2 transition-[padding] duration-200 sm:px-1.5"
         style={{ paddingRight: open ? width : undefined }}
       >
         {children}
+        <SiteFooter />
       </div>
       <DagittyPlainPanel code={dagittyCode} />
     </div>

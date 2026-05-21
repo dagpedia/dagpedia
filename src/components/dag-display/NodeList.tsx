@@ -26,18 +26,22 @@ export function NodeList({
   exposureId,
   outcomeId,
   highlightedNodeId = null,
+  onNodeHover,
+  divided = false,
 }: {
   nodes: DagNode[];
   exposureId: string;
   outcomeId: string;
   highlightedNodeId?: string | null;
+  onNodeHover?: (nodeId: string | null) => void;
+  divided?: boolean;
 }) {
   const sorted = sortDagNodes(nodes, exposureId, outcomeId);
   const height = nodesPanelHeight(sorted.length);
   const scrollable = height >= MAX_HEIGHT;
 
   return (
-    <PanelCard title={`Nodes (${sorted.length})`}>
+    <PanelCard title={`Nodes (${sorted.length})`} divided={divided}>
       <ul
         className={scrollable ? "space-y-2.5 overflow-y-auto pr-1" : "space-y-2.5"}
         style={{ height, maxHeight: MAX_HEIGHT }}
@@ -46,6 +50,8 @@ export function NodeList({
           <li
             key={node.id}
             data-node-id={node.id}
+            onMouseEnter={() => onNodeHover?.(node.id)}
+            onMouseLeave={() => onNodeHover?.(null)}
             className={cn(
               "space-y-1 rounded-md border-2 px-1 py-1 transition-colors",
               highlightedNodeId === node.id

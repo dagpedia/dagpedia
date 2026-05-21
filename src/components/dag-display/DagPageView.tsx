@@ -24,15 +24,15 @@ export function DagPageView({ data }: { data: DagPageData }) {
 
   return (
     <article className="w-full space-y-4">
-      <div className="lg:h-[calc(100svh-2.75rem-2rem)] lg:shrink-0">
+      <div className="lg:h-[calc(100svh-2.75rem-1rem)] lg:shrink-0">
         <ResizablePanelGroup
           orientation="horizontal"
-          className="h-full min-h-[560px] rounded-xl border lg:min-h-0"
+          className="h-full min-h-[560px] overflow-hidden rounded-xl border bg-card lg:min-h-0"
         >
           <ResizablePanel defaultSize="65%" minSize="40%">
             <ResizablePanelGroup orientation="vertical" className="h-full">
               <ResizablePanel defaultSize="55%" minSize="25%">
-                <div className="h-full min-h-[240px] p-2 lg:min-h-0">
+                <div className="h-full min-h-[240px] p-0 lg:min-h-0">
                   <DagCanvas
                     nodes={data.nodes}
                     edges={data.edges}
@@ -53,36 +53,52 @@ export function DagPageView({ data }: { data: DagPageData }) {
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel defaultSize="45%" minSize="20%">
-                <div className="flex h-full flex-col gap-4 overflow-y-auto p-2">
+                <div className="flex h-full flex-col overflow-y-auto">
                   <EdgeList
                     edges={data.edges}
                     nodes={data.nodes}
                     highlightedEdgeKey={hoveredEdgeKey}
+                    onEdgeHover={(key) => {
+                      setHoveredEdgeKey(key);
+                      if (key) setHoveredNodeId(null);
+                    }}
                   />
-                  <ConditionalIndep items={data.conditionalIndependencies} />
+                  <ConditionalIndep
+                    items={data.conditionalIndependencies}
+                    divided
+                  />
                 </div>
               </ResizablePanel>
             </ResizablePanelGroup>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize="35%" minSize="22%" maxSize="50%">
-            <div className="flex h-full flex-col gap-3 overflow-y-auto p-2">
+            <div className="flex h-full flex-col overflow-y-auto">
               <NodeList
                 nodes={data.nodes}
                 exposureId={data.exposure}
                 outcomeId={data.outcome}
                 highlightedNodeId={hoveredNodeId}
+                onNodeHover={(id) => {
+                  setHoveredNodeId(id);
+                  if (id) setHoveredEdgeKey(null);
+                }}
               />
-              <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
+              <AdjustmentSets
+                sets={data.adjustmentSets}
+                nodes={data.nodes}
+                divided
+              />
               <VersionPanel
                 version={data.version}
                 updatedAt={data.updatedAt}
                 status={data.workflowStatus}
                 slug={data.slug}
+                divided
               />
-              <ContributorsPanel contributors={data.contributors} />
-              <AlternativeDags items={data.alternativeDags} />
-              <KeywordsPanel tags={data.tags} />
+              <ContributorsPanel contributors={data.contributors} divided />
+              <AlternativeDags items={data.alternativeDags} divided />
+              <KeywordsPanel tags={data.tags} divided />
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>

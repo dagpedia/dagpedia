@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteTopbar } from "@/components/layout/SiteTopbar";
 import { isDagDetailPage } from "@/lib/nav";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
@@ -25,7 +26,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
       <SidebarInset
         className={cn(
           "min-w-0 bg-background",
-          dagDetail && "flex flex-col lg:h-svh lg:max-h-svh"
+          dagDetail && "flex flex-col overflow-hidden lg:h-svh lg:max-h-svh"
         )}
       >
         {dagDetail ? (
@@ -35,11 +36,12 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
             <SiteTopbar />
             <div
               className={cn(
-                "w-full min-w-0 flex-1 px-4 py-8",
+                "flex w-full min-w-0 flex-1 flex-col px-4 py-8",
                 !isDagsList && "mx-auto max-w-7xl"
               )}
             >
               {children}
+              <SiteFooter />
             </div>
           </>
         )}
