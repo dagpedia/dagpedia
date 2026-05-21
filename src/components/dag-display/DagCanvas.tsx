@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 import {
   Background,
   Controls,
@@ -107,6 +108,8 @@ function DagCanvasInner({
 }: DagCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const flowColorMode = resolvedTheme === "dark" ? "dark" : "light";
 
   const layoutNodes = useMemo(
     () => buildLayoutNodes(nodes, edges),
@@ -172,12 +175,13 @@ function DagCanvasInner({
     <div
       ref={containerRef}
       className={cn(
-        "dag-canvas-container relative h-full w-full rounded-xl border bg-muted ring-1 ring-foreground/10",
-        isFullscreen && "rounded-none border-0 ring-0",
+        "dag-canvas-container relative h-full w-full border bg-muted ring-1 ring-foreground/10",
+        isFullscreen && "rounded-none border-0 bg-background ring-0",
         className
       )}
     >
       <ReactFlow
+        colorMode={flowColorMode}
         nodes={flowNodes}
         edges={flowEdges}
         onNodesChange={onNodesChange}

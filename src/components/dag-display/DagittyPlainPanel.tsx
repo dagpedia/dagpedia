@@ -63,9 +63,9 @@ export function DagittyPlainPanel({ code }: { code: string }) {
   return (
     <>
       <aside
-        style={{ width }}
+        style={{ width, maxWidth: "100vw" }}
         className={cn(
-          "fixed inset-y-0 right-0 z-40 flex flex-col border-l bg-background",
+          "fixed inset-y-0 right-0 z-40 flex max-w-[100vw] flex-col border-l bg-background",
           "animate-in slide-in-from-right duration-200"
         )}
         aria-label="dagitty code"

@@ -19,16 +19,20 @@ export function VersionPanel({
   updatedAt,
   status,
   slug,
+  divided = false,
+  bare = false,
 }: {
   version: string;
   updatedAt: string;
   status: WorkflowStatus;
   slug: string;
+  divided?: boolean;
+  bare?: boolean;
 }) {
   const active = stepIndex(status);
 
   return (
-    <PanelCard title="Version">
+    <PanelCard title="Version" divided={divided} bare={bare}>
       <div className="space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium">v{version}</span>

@@ -1,27 +1,21 @@
 import { EvidenceBadge } from "./badges";
 
-export function EvidenceLegend() {
+const EVIDENCE_LEVELS = [
+  { level: "strong" as const, description: "RCT or consistent observational evidence" },
+  { level: "moderate" as const, description: "Observational (some inconsistency)" },
+  { level: "assumed" as const, description: "Structural / theoretical assumption" },
+  { level: "weak" as const, description: "Limited or conflicting evidence" },
+];
+
+export function EvidenceLegendContent() {
   return (
-    <div className="mt-3 space-y-1.5 border-t pt-3 text-xs text-muted-foreground">
-      <p className="font-medium uppercase tracking-wide">Evidence</p>
-      <ul className="space-y-1">
-        <li className="flex items-center gap-2">
-          <EvidenceBadge level="strong" />
-          <span>RCT or consistent observational evidence</span>
+    <ul className="space-y-1.5">
+      {EVIDENCE_LEVELS.map(({ level, description }) => (
+        <li key={level} className="flex items-center gap-2">
+          <EvidenceBadge level={level} />
+          <span>{description}</span>
         </li>
-        <li className="flex items-center gap-2">
-          <EvidenceBadge level="moderate" />
-          <span>Observational (some inconsistency)</span>
-        </li>
-        <li className="flex items-center gap-2">
-          <EvidenceBadge level="assumed" />
-          <span>Structural / theoretical assumption</span>
-        </li>
-        <li className="flex items-center gap-2">
-          <EvidenceBadge level="weak" />
-          <span>Limited or conflicting evidence</span>
-        </li>
-      </ul>
-    </div>
+      ))}
+    </ul>
   );
 }

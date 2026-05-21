@@ -4,11 +4,15 @@ import type { DagContributor } from "@/types/dag";
 
 export function ContributorsPanel({
   contributors,
+  divided = false,
+  bare = false,
 }: {
   contributors: DagContributor[];
+  divided?: boolean;
+  bare?: boolean;
 }) {
   return (
-    <PanelCard title="Contributors">
+    <PanelCard title="Contributors" divided={divided} bare={bare}>
       <ul className="space-y-2">
         {contributors.map((person) => (
           <li key={person.name} className="flex items-center gap-2">

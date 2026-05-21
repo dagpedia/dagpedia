@@ -26,7 +26,7 @@ export function DagTopbar({
   dagType,
 }: DagTopbarProps) {
   return (
-    <header className="sticky top-0 z-50 flex h-11 shrink-0 items-center justify-between gap-4 border-b bg-background px-3">
+    <header className="z-50 flex h-11 shrink-0 items-center justify-between gap-4 border-b bg-background px-3 lg:sticky lg:top-0">
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <SidebarTrigger />
         <div className="flex shrink-0 items-center gap-2">
@@ -41,16 +41,23 @@ export function DagTopbar({
             beta
           </Badge>
         </div>
-        <span className="hidden h-4 w-px shrink-0 bg-border md:block" aria-hidden />
-        <h1 className="truncate text-sm font-semibold sm:text-base">{title}</h1>
+        <span
+          className="hidden h-4 w-px shrink-0 bg-border lg:block"
+          aria-hidden
+        />
+        <h1 className="hidden truncate text-sm font-semibold lg:block sm:text-base">
+          {title}
+        </h1>
       </div>
 
       <div className="flex shrink-0 items-center gap-2 sm:gap-3">
         <span className="hidden text-sm text-muted-foreground lg:inline">
           {nodeCount} nodes · {edgeCount} edges
         </span>
-        <TierBadge tier={tier} />
-        <DagTypeBadge dagType={dagType} />
+        <div className="hidden items-center gap-2 lg:flex">
+          <TierBadge tier={tier} />
+          <DagTypeBadge dagType={dagType} />
+        </div>
         <Button variant="outline" size="sm" type="button" disabled>
           <Pencil className="size-3.5" />
           <span className="hidden sm:inline">Edit</span>
