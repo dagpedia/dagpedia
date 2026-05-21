@@ -15,6 +15,7 @@ import { ConditionalIndep } from "./ConditionalIndep";
 import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
 import { EdgeList } from "./EdgeList";
+import { EdgesAndConditionalIndep } from "./EdgesAndConditionalIndep";
 import { KeywordsPanel } from "./KeywordsPanel";
 import { MobileDetailAccordion } from "./MobileDetailAccordion";
 import { NodeList } from "./NodeList";
@@ -50,15 +51,13 @@ export function DagPageView({ data }: { data: DagPageData }) {
   };
 
   const edgesSection = (
-    <>
-      <EdgeList
-        edges={data.edges}
-        nodes={data.nodes}
-        highlightedEdgeKey={hoveredEdgeKey}
-        onEdgeHover={onEdgeHover}
-      />
-      <ConditionalIndep items={data.conditionalIndependencies} divided />
-    </>
+    <EdgesAndConditionalIndep
+      edges={data.edges}
+      nodes={data.nodes}
+      conditionalIndependencies={data.conditionalIndependencies}
+      highlightedEdgeKey={hoveredEdgeKey}
+      onEdgeHover={onEdgeHover}
+    />
   );
 
   const metadataSection = (
@@ -225,7 +224,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
       orientation="horizontal"
       className="h-full min-h-0 overflow-hidden rounded-xl border bg-card"
     >
-      <ResizablePanel defaultSize="65%" minSize="40%">
+      <ResizablePanel defaultSize="67%" minSize="40%">
         <ResizablePanelGroup orientation="vertical" className="h-full">
           <ResizablePanel defaultSize="55%" minSize="25%">
             <div className="h-full min-h-[240px] p-0 lg:min-h-0">
@@ -234,14 +233,14 @@ export function DagPageView({ data }: { data: DagPageData }) {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize="45%" minSize="20%">
-            <div className="flex h-full flex-col overflow-y-auto">
+            <div className="flex h-full min-h-0 flex-col overflow-hidden">
               {edgesSection}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </ResizablePanel>
       <ResizableHandle withHandle />
-      <ResizablePanel defaultSize="35%" minSize="22%" maxSize="50%">
+      <ResizablePanel defaultSize="33%" minSize="22%" maxSize="50%">
         <ResizablePanelGroup orientation="vertical" className="h-full">
           <ResizablePanel defaultSize="50%" minSize="20%">
             <div className="h-full min-h-0 overflow-hidden">
