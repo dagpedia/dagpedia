@@ -220,6 +220,52 @@ export function DagPageView({ data }: { data: DagPageData }) {
       : []),
   ];
 
+  const desktopWorkspace = (
+    <ResizablePanelGroup
+      orientation="horizontal"
+      className="h-full min-h-0 overflow-hidden rounded-xl border bg-card"
+    >
+      <ResizablePanel defaultSize="65%" minSize="40%">
+        <ResizablePanelGroup orientation="vertical" className="h-full">
+          <ResizablePanel defaultSize="55%" minSize="25%">
+            <div className="h-full min-h-[240px] p-0 lg:min-h-0">
+              <DagCanvas {...dagCanvasProps} />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize="45%" minSize="20%">
+            <div className="flex h-full flex-col overflow-y-auto">
+              {edgesSection}
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize="35%" minSize="22%" maxSize="50%">
+        <ResizablePanelGroup orientation="vertical" className="h-full">
+          <ResizablePanel defaultSize="50%" minSize="20%">
+            <div className="h-full min-h-0 overflow-hidden">
+              <NodeList
+                fill
+                nodes={data.nodes}
+                exposureId={data.exposure}
+                outcomeId={data.outcome}
+                highlightedNodeId={hoveredNodeId}
+                onNodeHover={onNodeHover}
+              />
+            </div>
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel defaultSize="50%" minSize="20%">
+            <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain">
+              {metadataSection}
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </ResizablePanel>
+    </ResizablePanelGroup>
+  );
+
   const mobileScrollContent = (
     <>
       <MobileDetailAccordion sections={mobileAccordionSections} />
@@ -264,49 +310,9 @@ export function DagPageView({ data }: { data: DagPageData }) {
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : (
-          <ResizablePanelGroup
-            orientation="horizontal"
-            className="h-full min-h-[560px] overflow-hidden rounded-xl border bg-card lg:min-h-0"
-          >
-          <ResizablePanel defaultSize="65%" minSize="40%">
-            <ResizablePanelGroup orientation="vertical" className="h-full">
-              <ResizablePanel defaultSize="55%" minSize="25%">
-                <div className="h-full min-h-[240px] p-0 lg:min-h-0">
-                  <DagCanvas {...dagCanvasProps} />
-                </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize="45%" minSize="20%">
-                <div className="flex h-full flex-col overflow-y-auto">
-                  {edgesSection}
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="35%" minSize="22%" maxSize="50%">
-            <ResizablePanelGroup orientation="vertical" className="h-full">
-              <ResizablePanel defaultSize="50%" minSize="20%">
-                <div className="h-full min-h-0 overflow-hidden">
-                  <NodeList
-                    fill
-                    nodes={data.nodes}
-                    exposureId={data.exposure}
-                    outcomeId={data.outcome}
-                    highlightedNodeId={hoveredNodeId}
-                    onNodeHover={onNodeHover}
-                  />
-                </div>
-              </ResizablePanel>
-              <ResizableHandle withHandle />
-              <ResizablePanel defaultSize="50%" minSize="20%">
-                <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain">
-                  {metadataSection}
-                </div>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-          </ResizablePanelGroup>
+          <div className="h-full min-h-[560px] lg:min-h-0">
+            {desktopWorkspace}
+          </div>
         )}
       </div>
 
