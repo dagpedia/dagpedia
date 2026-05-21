@@ -7,6 +7,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Separator } from "@/components/ui/separator";
 import { AdjustmentSets } from "./AdjustmentSets";
 import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
@@ -73,33 +74,50 @@ export function DagPageView({ data }: { data: DagPageData }) {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize="35%" minSize="22%" maxSize="50%">
-            <div className="flex h-full flex-col overflow-y-auto">
-              <NodeList
-                nodes={data.nodes}
-                exposureId={data.exposure}
-                outcomeId={data.outcome}
-                highlightedNodeId={hoveredNodeId}
-                onNodeHover={(id) => {
-                  setHoveredNodeId(id);
-                  if (id) setHoveredEdgeKey(null);
-                }}
-              />
-              <AdjustmentSets
-                sets={data.adjustmentSets}
-                nodes={data.nodes}
-                divided
-              />
-              <VersionPanel
-                version={data.version}
-                updatedAt={data.updatedAt}
-                status={data.workflowStatus}
-                slug={data.slug}
-                divided
-              />
-              <ContributorsPanel contributors={data.contributors} divided />
-              <AlternativeDags items={data.alternativeDags} divided />
-              <KeywordsPanel tags={data.tags} divided />
-            </div>
+            <ResizablePanelGroup orientation="vertical" className="h-full">
+              <ResizablePanel defaultSize="50%" minSize="20%">
+                <div className="h-full min-h-0 overflow-hidden">
+                  <NodeList
+                    fill
+                    nodes={data.nodes}
+                    exposureId={data.exposure}
+                    outcomeId={data.outcome}
+                    highlightedNodeId={hoveredNodeId}
+                    onNodeHover={(id) => {
+                      setHoveredNodeId(id);
+                      if (id) setHoveredEdgeKey(null);
+                    }}
+                  />
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize="50%" minSize="20%">
+                <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain">
+                  <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
+                  <Separator />
+                  <VersionPanel
+                    version={data.version}
+                    updatedAt={data.updatedAt}
+                    status={data.workflowStatus}
+                    slug={data.slug}
+                  />
+                  <Separator />
+                  <ContributorsPanel contributors={data.contributors} />
+                  {data.alternativeDags.length > 0 && (
+                    <>
+                      <Separator />
+                      <AlternativeDags items={data.alternativeDags} />
+                    </>
+                  )}
+                  {data.tags.length > 0 && (
+                    <>
+                      <Separator />
+                      <KeywordsPanel tags={data.tags} />
+                    </>
+                  )}
+                </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

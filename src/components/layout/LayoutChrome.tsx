@@ -15,7 +15,7 @@ export function LayoutChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarProvider
-      defaultOpen
+      defaultOpen={false}
       style={
         {
           "--sidebar-width": "13rem",

@@ -2,8 +2,13 @@
 
 import { dagEdgeKey } from "@/lib/dag-edge-key";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { EvidenceBadge } from "./badges";
-import { EvidenceLegend } from "./EvidenceLegend";
+import { EvidenceLegendContent } from "./EvidenceLegend";
 import { PanelCard } from "./PanelCard";
 import type { DagEdge, DagNode } from "@/types/dag";
 
@@ -28,7 +33,21 @@ export function EdgeList({
           <span className="font-medium text-muted-foreground">From</span>
           <span />
           <span className="font-medium text-muted-foreground">To</span>
-          <span className="font-medium text-muted-foreground">Evidence</span>
+          <Tooltip>
+            <TooltipTrigger
+              className="w-fit cursor-help font-medium text-muted-foreground underline decoration-dotted decoration-muted-foreground/50 underline-offset-2"
+              aria-label="Evidence levels"
+            >
+              Evidence
+            </TooltipTrigger>
+            <TooltipContent
+              side="top"
+              align="end"
+              className="max-w-xs bg-popover px-3 py-2 text-popover-foreground"
+            >
+              <EvidenceLegendContent />
+            </TooltipContent>
+          </Tooltip>
         </div>
         {edges.map((edge) => {
           const key = dagEdgeKey(edge.from, edge.to);
@@ -43,7 +62,6 @@ export function EdgeList({
           );
         })}
       </div>
-      <EvidenceLegend />
     </PanelCard>
   );
 }
