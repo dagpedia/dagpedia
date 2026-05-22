@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { Pencil } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DagittyCodePanel } from "@/components/dag-display/DagittyCodePanel";
+import { DagpediaBetaBadge } from "@/components/layout/DagpediaBetaBadge";
 import { DagLogoIcon } from "@/components/layout/DagLogoIcon";
+import { DagpediaLogoText } from "@/components/layout/DagpediaLogoText";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function DagTopbar() {
@@ -16,14 +17,12 @@ export function DagTopbar() {
         <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/"
-            className="flex items-center gap-2 text-sm font-medium hover:opacity-80"
+            className="flex items-center gap-2 hover:opacity-80"
           >
             <DagLogoIcon />
-            <span className="hidden sm:inline">DAGpedia</span>
+            <DagpediaLogoText className="hidden sm:inline" />
           </Link>
-          <Badge variant="secondary" className="hidden sm:inline-flex">
-            beta
-          </Badge>
+          <DagpediaBetaBadge className="hidden sm:inline-flex" />
         </div>
       </div>
 
