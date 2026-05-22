@@ -14,15 +14,15 @@ export function DagTopbar() {
     <header className="z-50 flex h-11 shrink-0 items-center justify-between gap-4 border-b bg-background px-3 lg:sticky lg:top-0">
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <SidebarTrigger />
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
           <Link
             href="/"
-            className="flex items-center gap-2 hover:opacity-80"
+            className="flex min-w-0 items-center gap-1.5 hover:opacity-80 sm:gap-2"
           >
             <DagLogoIcon />
-            <DagpediaLogoText className="hidden sm:inline" />
+            <DagpediaLogoText className="truncate" />
           </Link>
-          <DagpediaBetaBadge className="hidden sm:inline-flex" />
+          <DagpediaBetaBadge className="shrink-0" />
         </div>
       </div>
 

@@ -19,7 +19,7 @@ export function DagMetaBar({
   deprecated,
 }: DagMetaBarProps) {
   return (
-    <div className="box-border flex h-11 shrink-0 items-center gap-2 rounded-xl border bg-card px-3">
+    <div className="box-border flex h-11 shrink-0 items-center justify-between gap-3 rounded-xl border bg-card px-3">
       <div className="flex min-w-0 flex-1 items-center gap-2">
         <h1 className="min-w-0 truncate text-base font-semibold leading-tight">
           {title}
@@ -29,16 +29,20 @@ export function DagMetaBar({
             Deprecated
           </span>
         )}
-        <VersionPopover provenance={provenance} slug={slug} />
-      </div>
-      <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
-        <span className="hidden text-sm text-muted-foreground sm:inline">
+        <span
+          className="shrink-0 text-sm text-muted-foreground/60"
+          aria-hidden
+        >
+          |
+        </span>
+        <span className="hidden shrink-0 text-sm tabular-nums text-muted-foreground sm:inline">
           {nodeCount} nodes · {edgeCount} edges
         </span>
-        <span className="text-sm text-muted-foreground sm:hidden">
+        <span className="shrink-0 text-sm tabular-nums text-muted-foreground sm:hidden">
           {nodeCount}n · {edgeCount}e
         </span>
       </div>
+      <VersionPopover provenance={provenance} slug={slug} />
     </div>
   );
 }

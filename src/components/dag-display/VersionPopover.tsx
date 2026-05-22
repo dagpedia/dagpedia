@@ -57,7 +57,7 @@ function TimelineRow({
       </div>
       <div
         className={cn(
-          "flex min-w-0 flex-1 items-start justify-between gap-3 pb-3",
+          "flex min-w-0 flex-1 items-center justify-between gap-3 pb-3",
           last && "pb-0"
         )}
       >
@@ -103,10 +103,11 @@ function CommitShaLink({
 
   return (
     <Tooltip>
-      <TooltipTrigger render={link} />
+      <TooltipTrigger render={<span className="inline-flex shrink-0">{link}</span>} />
       <TooltipContent
-        side="left"
-        align="end"
+        side="right"
+        align="center"
+        sideOffset={8}
         className="max-w-[280px] flex-col items-stretch gap-2 p-3 text-left"
       >
         <div className="flex items-center gap-2">
