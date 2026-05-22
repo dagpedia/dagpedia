@@ -105,6 +105,21 @@
       "properties": {
         "md_commit_sha": { "type": "string", "minLength": 7 },
         "md_committed_at": { "type": "string" },
+        "md_commit": {
+          "type": ["object", "null"],
+          "properties": {
+            "message": { "type": "string" },
+            "author": {
+              "type": "object",
+              "properties": {
+                "login": { "type": ["string", "null"] },
+                "name": { "type": ["string", "null"] },
+                "avatar_url": { "type": ["string", "null"], "format": "uri" },
+                "profile_url": { "type": ["string", "null"], "format": "uri" }
+              }
+            }
+          }
+        },
         "main_committed_at": { "type": ["string", "null"] },
         "pr_merged_at": { "type": ["string", "null"] },
         "pr_number": { "type": ["integer", "null"], "minimum": 1 },
@@ -112,10 +127,12 @@
           "type": "array",
           "items": {
             "type": "object",
-            "required": ["name", "email", "commits"],
+            "required": ["login", "avatar_url", "profile_url", "commits"],
             "properties": {
-              "name": { "type": "string" },
-              "email": { "type": "string" },
+              "login": { "type": "string" },
+              "name": { "type": ["string", "null"] },
+              "avatar_url": { "type": "string", "format": "uri" },
+              "profile_url": { "type": "string", "format": "uri" },
               "commits": { "type": "integer", "minimum": 1 }
             }
           }

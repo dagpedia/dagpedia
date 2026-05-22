@@ -9,14 +9,41 @@ export type GitContributor = {
   commits: number;
 };
 
+export type GitMdCommit = {
+  message: string;
+  author: {
+    login: string | null;
+    name: string | null;
+    avatar_url: string | null;
+    profile_url: string | null;
+  };
+};
+
 export type GitMetadata = {
   md_commit_sha: string;
   md_committed_at: string;
+  md_commit: GitMdCommit | null;
   main_committed_at: string | null;
   pr_merged_at: string | null;
   pr_number: number | null;
   contributors: GitContributor[];
 };
+
+export function getLocalCommitDetails(sha: string): GitMdCommit | null {
+  if (!sha || sha.startsWith("0000000")) return null;
+  const message = git(`show -s --format=%B ${sha}`);
+  const authorName = git(`show -s --format=%an ${sha}`);
+  if (!message && !authorName) return null;
+  return {
+    message: message.trim(),
+    author: {
+      login: null,
+      name: authorName || null,
+      avatar_url: null,
+      profile_url: null,
+    },
+  };
+}
 
 function git(args: string): string {
   try {
@@ -105,6 +132,7 @@ export function getGitMetadata(slug: string): GitMetadata {
   return {
     md_commit_sha: sha,
     md_committed_at: mdCommittedAt || new Date(0).toISOString(),
+    md_commit: null,
     main_committed_at: mainCommittedAt,
     pr_merged_at: prMergedAt,
     pr_number: prNumber,

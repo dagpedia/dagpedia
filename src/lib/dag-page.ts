@@ -6,7 +6,11 @@ import { loadEvidenceLevelLegend } from "./schema-loader";
 import { computeDegreeCentrality } from "./content-index";
 import { parseDagittyStructure } from "./dag-utils";
 import { getNodeLabel } from "./nodes";
-import type { DagProvenance } from "@/lib/provenance";
+import {
+  mapContributorsFromData,
+  mapMdCommitFromData,
+  type DagProvenance,
+} from "@/lib/provenance";
 import type {
   AdjustmentSet,
   AlternativeDag,
@@ -130,10 +134,11 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
     provenance: {
       mdCommitSha: data.git.md_commit_sha,
       mdCommittedAt: data.git.md_committed_at,
+      mdCommit: mapMdCommitFromData(data.git.md_commit),
       mainCommittedAt: data.git.main_committed_at ?? null,
       prMergedAt: data.git.pr_merged_at ?? null,
       prNumber: data.git.pr_number ?? null,
-      contributors: data.git.contributors ?? [],
+      contributors: mapContributorsFromData(data.git.contributors ?? []),
     } satisfies DagProvenance,
     deprecated: data.deprecated,
     supersededBy: data.superseded_by,

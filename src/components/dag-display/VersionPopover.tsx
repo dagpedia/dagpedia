@@ -1,39 +1,44 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, GitCommit, GitPullRequest } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { buttonVariants } from "@/components/ui/button";
 import {
   Popover,
   PopoverContent,
-  PopoverDescription,
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  type DagContributor,
+  type DagMdCommit,
   type DagProvenance,
-  contributorHue,
-  contributorInitials,
   formatProvenanceDate,
   shortSha,
 } from "@/lib/provenance";
 import { cn } from "@/lib/utils";
 
 const GITHUB_REPO = "https://github.com/dagpedia/dagpedia";
+const GRID_LIMIT = 14;
 
 function TimelineRow({
   label,
   date,
-  detail,
+  trailing,
   active,
   last,
 }: {
   label: string;
   date: string | null;
-  detail?: React.ReactNode;
+  trailing?: React.ReactNode;
   active?: boolean;
   last?: boolean;
 }) {
@@ -50,61 +55,201 @@ function TimelineRow({
         />
         {!last && <span className="mt-0.5 w-px flex-1 bg-border" aria-hidden />}
       </div>
-      <div className={cn("min-w-0 pb-3", last && "pb-0")}>
-        <p className="text-xs font-medium text-foreground">{label}</p>
-        <p className="text-sm tabular-nums text-muted-foreground">
-          {formatProvenanceDate(date)}
-        </p>
-        {detail}
+      <div
+        className={cn(
+          "flex min-w-0 flex-1 items-start justify-between gap-3 pb-3",
+          last && "pb-0"
+        )}
+      >
+        <div className="min-w-0">
+          <p className="text-xs font-medium text-foreground">{label}</p>
+          <p className="text-sm tabular-nums text-muted-foreground">
+            {formatProvenanceDate(date)}
+          </p>
+        </div>
+        {trailing}
       </div>
     </div>
   );
 }
 
-function ContributorStack({
-  contributors,
+function CommitShaLink({
+  short,
+  commitsUrl,
+  mdCommit,
 }: {
-  contributors: DagProvenance["contributors"];
+  short: string;
+  commitsUrl: string;
+  mdCommit: DagMdCommit | null;
 }) {
-  if (contributors.length === 0) {
+  const link = (
+    <Link
+      href={commitsUrl}
+      className="shrink-0 font-mono text-xs font-medium text-primary hover:underline"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {short}
+    </Link>
+  );
+
+  if (!mdCommit) return link;
+
+  const { author } = mdCommit;
+  const showName =
+    author.name &&
+    author.login &&
+    author.name.trim().toLowerCase() !== author.login.toLowerCase();
+
+  return (
+    <Tooltip>
+      <TooltipTrigger render={link} />
+      <TooltipContent
+        side="left"
+        align="end"
+        className="max-w-[280px] flex-col items-stretch gap-2 p-3 text-left"
+      >
+        <div className="flex items-center gap-2">
+          {author.avatarUrl ? (
+            <Image
+              src={author.avatarUrl}
+              alt=""
+              width={24}
+              height={24}
+              className="size-6 shrink-0 rounded-full"
+              unoptimized
+            />
+          ) : null}
+          <div className="min-w-0 leading-tight">
+            {author.login ? (
+              <span className="font-semibold">{author.login}</span>
+            ) : (
+              <span className="font-semibold">{author.name ?? "Unknown"}</span>
+            )}
+            {showName ? (
+              <span className="ml-1.5 font-normal opacity-80">{author.name}</span>
+            ) : null}
+          </div>
+        </div>
+        <p className="line-clamp-4 whitespace-pre-wrap text-xs leading-relaxed opacity-90">
+          {mdCommit.message}
+        </p>
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
+function ContributorAvatar({
+  contributor,
+  size = 32,
+}: {
+  contributor: DagContributor;
+  size?: number;
+}) {
+  return (
+    <Image
+      src={contributor.avatarUrl}
+      alt=""
+      width={size}
+      height={size}
+      className={cn(
+        "shrink-0 rounded-full bg-muted ring-1 ring-border",
+        size === 32 ? "size-8" : "size-6"
+      )}
+      unoptimized
+    />
+  );
+}
+
+function ContributorListItem({ contributor }: { contributor: DagContributor }) {
+  const showName =
+    contributor.name &&
+    contributor.name.trim().toLowerCase() !== contributor.login.toLowerCase();
+
+  return (
+    <li>
+      <Link
+        href={contributor.profileUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex min-w-0 items-center gap-2 rounded-md py-0.5 hover:bg-muted/60"
+      >
+        <ContributorAvatar contributor={contributor} size={24} />
+        <span className="min-w-0 truncate text-sm font-semibold text-foreground">
+          {contributor.login}
+        </span>
+        {showName && (
+          <span className="min-w-0 truncate text-sm text-muted-foreground">
+            {contributor.name}
+          </span>
+        )}
+      </Link>
+    </li>
+  );
+}
+
+function ContributorsSection({
+  contributors,
+  slug,
+}: {
+  contributors: DagContributor[];
+  slug: string;
+}) {
+  const commitsUrl = `${GITHUB_REPO}/commits/main/src/content/dags/${slug}.md`;
+  const count = contributors.length;
+
+  if (count === 0) {
     return (
       <p className="text-xs text-muted-foreground">No contributors in Git history.</p>
     );
   }
 
-  const shown = contributors.slice(0, 6);
-  const extra = contributors.length - shown.length;
+  const grid = contributors.slice(0, GRID_LIMIT);
+  const hidden = count - grid.length;
+  const useGrid = count > 5;
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap items-center gap-1">
-        {shown.map((c) => {
-          const hue = contributorHue(c.email);
-          return (
-            <span
-              key={c.email}
-              title={`${c.name} · ${c.commits} commit${c.commits === 1 ? "" : "s"}`}
-              className="inline-flex size-7 items-center justify-center rounded-full text-[0.65rem] font-semibold text-white shadow-sm ring-2 ring-background"
-              style={{ backgroundColor: `hsl(${hue} 45% 42%)` }}
-            >
-              {contributorInitials(c.name)}
-            </span>
-          );
-        })}
-        {extra > 0 && (
-          <span className="inline-flex size-7 items-center justify-center rounded-full bg-muted text-[0.65rem] font-medium text-muted-foreground ring-2 ring-background">
-            +{extra}
-          </span>
-        )}
+      <div className="flex items-center gap-2">
+        <h4 className="text-sm font-semibold text-foreground">Contributors</h4>
+        <span className="inline-flex min-w-5 items-center justify-center rounded-full border border-border px-1.5 py-0 text-xs font-medium tabular-nums text-muted-foreground">
+          {count}
+        </span>
       </div>
-      <ul className="max-h-28 space-y-1 overflow-y-auto text-xs text-muted-foreground">
-        {contributors.map((c) => (
-          <li key={c.email} className="flex justify-between gap-2">
-            <span className="truncate">{c.name}</span>
-            <span className="shrink-0 tabular-nums">{c.commits}</span>
-          </li>
-        ))}
-      </ul>
+
+      {useGrid ? (
+        <div className="flex flex-wrap gap-1">
+          {grid.map((c) => (
+            <Link
+              key={c.login}
+              href={c.profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={c.login}
+              className="rounded-full transition-opacity hover:opacity-80"
+            >
+              <ContributorAvatar contributor={c} />
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <ul className="space-y-1.5">
+          {contributors.map((c) => (
+            <ContributorListItem key={c.login} contributor={c} />
+          ))}
+        </ul>
+      )}
+
+      {hidden > 0 && (
+        <Link
+          href={commitsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm text-primary hover:underline"
+        >
+          + {hidden} contributors
+        </Link>
+      )}
     </div>
   );
 }
@@ -117,6 +262,7 @@ export function VersionPopover({
   slug: string;
 }) {
   const short = shortSha(provenance.mdCommitSha);
+  const commitsUrl = `${GITHUB_REPO}/commits/main/src/content/dags/${slug}.md`;
   const showPr =
     provenance.prMergedAt &&
     provenance.prMergedAt !== provenance.mainCommittedAt;
@@ -147,13 +293,8 @@ export function VersionPopover({
         <ChevronDown className="size-3 opacity-60" aria-hidden />
       </PopoverTrigger>
       <PopoverContent align="end" side="bottom" className="w-80 gap-0 p-0">
-        <PopoverHeader className="gap-1 border-b px-3 py-2.5">
+        <PopoverHeader className="border-b px-3 py-2.5">
           <PopoverTitle>Source revision</PopoverTitle>
-          <PopoverDescription>
-            <code className="font-mono text-xs">{short}</code>
-            {" · "}
-            {formatProvenanceDate(provenance.mdCommittedAt)}
-          </PopoverDescription>
         </PopoverHeader>
 
         <div className="space-y-3 px-3 py-3">
@@ -164,21 +305,15 @@ export function VersionPopover({
             <TimelineRow
               label="Markdown updated"
               date={provenance.mdCommittedAt}
-              detail={
-                <Link
-                  href={`${GITHUB_REPO}/commit/${provenance.mdCommitSha}`}
-                  className="font-mono text-[0.65rem] text-primary hover:underline"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {short}
-                </Link>
+              trailing={
+                <CommitShaLink
+                  short={short}
+                  commitsUrl={commitsUrl}
+                  mdCommit={provenance.mdCommit}
+                />
               }
               active
-              last={
-                !provenance.mainCommittedAt &&
-                !showPr
-              }
+              last={!provenance.mainCommittedAt && !showPr}
             />
             <TimelineRow
               label="On main (ratified)"
@@ -193,16 +328,16 @@ export function VersionPopover({
                     : "PR merged"
                 }
                 date={provenance.prMergedAt}
-                detail={
+                trailing={
                   provenance.prNumber ? (
                     <Link
                       href={`${GITHUB_REPO}/pull/${provenance.prNumber}`}
-                      className="inline-flex items-center gap-0.5 text-[0.65rem] text-primary hover:underline"
+                      className="inline-flex shrink-0 items-center gap-0.5 text-xs font-medium text-primary hover:underline"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <GitPullRequest className="size-3" aria-hidden />
-                      View pull request
+                      #{provenance.prNumber}
                     </Link>
                   ) : undefined
                 }
@@ -212,23 +347,11 @@ export function VersionPopover({
           </div>
 
           <div className="border-t pt-3">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Contributors
-            </p>
-            <ContributorStack contributors={provenance.contributors} />
+            <ContributorsSection
+              contributors={provenance.contributors}
+              slug={slug}
+            />
           </div>
-
-          <Link
-            href={`${GITHUB_REPO}/commits/main/src/content/dags/${slug}.md`}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "sm" }),
-              "w-full"
-            )}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            View commit history
-          </Link>
         </div>
       </PopoverContent>
     </Popover>

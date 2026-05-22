@@ -76,14 +76,28 @@ export const dagDataFileSchema = z.object({
   git: z.object({
     md_commit_sha: z.string(),
     md_committed_at: z.string(),
+    md_commit: z
+      .object({
+        message: z.string(),
+        author: z.object({
+          login: z.string().nullable().optional(),
+          name: z.string().nullable().optional(),
+          avatar_url: z.string().url().nullable().optional(),
+          profile_url: z.string().url().nullable().optional(),
+        }),
+      })
+      .nullable()
+      .optional(),
     main_committed_at: z.string().nullable().optional(),
     pr_merged_at: z.string().nullable().optional(),
     pr_number: z.number().int().positive().nullable().optional(),
     contributors: z
       .array(
         z.object({
-          name: z.string(),
-          email: z.string(),
+          login: z.string(),
+          name: z.string().nullable().optional(),
+          avatar_url: z.string().url(),
+          profile_url: z.string().url(),
           commits: z.number().int().positive(),
         })
       )

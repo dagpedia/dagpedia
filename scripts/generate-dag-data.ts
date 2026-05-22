@@ -14,7 +14,11 @@ import {
   parseDagittyStructure,
 } from "../src/lib/dag-utils";
 import { getNodeLabel } from "../src/lib/nodes";
-import { getGitMetadata } from "./lib/git-metadata";
+import {
+  fetchGithubCommit,
+  resolveGithubContributors,
+} from "./lib/github-contributors";
+import { getGitMetadata, MD_REL_PREFIX } from "./lib/git-metadata";
 import { loadDagitty } from "./lib/load-dagitty";
 
 const DAGS_DIR = path.join(process.cwd(), "src", "content", "dags");
@@ -142,7 +146,10 @@ function buildLlmText(
   );
 }
 
-function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): DagDataFile {
+async function generateOne(
+  slug: string,
+  runtime: ReturnType<typeof loadDagitty>
+): Promise<DagDataFile> {
   const raw = fs.readFileSync(path.join(DAGS_DIR, `${slug}.md`), "utf-8");
   const { data } = matter(raw);
   const fm = dagFrontmatterSchema.parse(data);
@@ -235,6 +242,18 @@ function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): Dag
     .map((e) => `${e.from}->${e.to}`)
     .sort();
 
+  const gitBase = getGitMetadata(slug);
+  const mdCommit =
+    (await fetchGithubCommit(gitBase.md_commit_sha)) ?? gitBase.md_commit;
+  const git = {
+    ...gitBase,
+    md_commit: mdCommit,
+    contributors: await resolveGithubContributors(
+      `${MD_REL_PREFIX}/${slug}.md`,
+      gitBase.contributors
+    ),
+  };
+
   const file: DagDataFile = {
     uuid: dagUuid,
     id: fm.id,
@@ -253,7 +272,7 @@ function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): Dag
       adjustment_sets: adjustmentPayload,
       conditional_independencies: meta.conditionalIndependencies,
     },
-    git: getGitMetadata(slug),
+    git,
     llm: {
       edge_set_sorted: edgeSetSorted,
       text: buildLlmText(
@@ -280,7 +299,7 @@ function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): Dag
   return file;
 }
 
-function generateAll(): void {
+async function generateAll(): Promise<void> {
   const runtime = loadDagitty();
   fs.mkdirSync(DATA_DIR, { recursive: true });
 
@@ -289,7 +308,7 @@ function generateAll(): void {
 
   for (const file of files) {
     const slug = file.replace(/\.md$/, "");
-    const data = generateOne(slug, runtime);
+    const data = await generateOne(slug, runtime);
     dagDataFileSchema.parse(data);
     const outPath = path.join(DATA_DIR, `${slug}.json`);
     fs.writeFileSync(outPath, JSON.stringify(data, null, 2) + "\n");
@@ -300,14 +319,15 @@ function generateAll(): void {
   console.log(`\n✓ dag data generated (${count} files)`);
 }
 
-function checkAll(): void {
+async function checkAll(): Promise<void> {
   const runtime = loadDagitty();
   const files = fs.readdirSync(DAGS_DIR).filter((f) => f.endsWith(".md"));
   let failed = false;
 
   for (const file of files) {
     const slug = file.replace(/\.md$/, "");
-    const expected = JSON.stringify(generateOne(slug, runtime), null, 2) + "\n";
+    const expected =
+      JSON.stringify(await generateOne(slug, runtime), null, 2) + "\n";
     const outPath = path.join(DATA_DIR, `${slug}.json`);
     if (!fs.existsSync(outPath)) {
       console.error(`✗ missing ${outPath}`);
@@ -327,8 +347,10 @@ function checkAll(): void {
 }
 
 const args = process.argv.slice(2);
-if (args.includes("--check")) {
-  checkAll();
-} else {
-  generateAll();
-}
+void (async () => {
+  if (args.includes("--check")) {
+    await checkAll();
+  } else {
+    await generateAll();
+  }
+})();

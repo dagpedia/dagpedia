@@ -1,5 +1,5 @@
 {
-  "uuid": "99b74d2e-e79d-4799-9b56-3d6de0456021",
+  "uuid": "4de0428d-b8b8-44ee-a132-066a4cb1d9b5",
   "id": "smoking-lung-cancer",
   "title": "Smoking and lung cancer",
   "context": {
@@ -17,92 +17,92 @@
   "graph": {
     "nodes": [
       {
-        "uuid": "f6f05722-48c7-4bcb-81c3-b54d02f09ea6",
+        "uuid": "ec829f50-2214-4bd0-bd23-8af0eed6f572",
         "id": "smoking",
         "role": "exposure"
       },
       {
-        "uuid": "fbd77a27-ae88-446a-919c-f5c41d4fe237",
+        "uuid": "045d45b3-d528-4c52-9983-a6ce26ae7d9c",
         "id": "lung_cancer",
         "role": "outcome"
       },
       {
-        "uuid": "bdd94fb6-42d1-4092-bc86-9798e035ca30",
+        "uuid": "28008d75-cad3-4374-81d2-9c4e6df8fad4",
         "id": "age",
         "role": "covariate"
       },
       {
-        "uuid": "4a9b7f2a-b2d8-42f3-b97a-e89440db3e69",
+        "uuid": "693fb312-4f33-4ae9-81cf-13299ff0f94a",
         "id": "sex",
         "role": "covariate"
       },
       {
-        "uuid": "410a1765-efe5-45c5-94c2-b07e7d7ce224",
+        "uuid": "70172190-a65c-4002-8c21-0c50bc106752",
         "id": "pack_years",
         "role": "mediator"
       },
       {
-        "uuid": "d2017ca7-45a5-4493-8ec1-fe142acb860c",
+        "uuid": "439db820-2fec-4d9b-a89f-8309085576a4",
         "id": "asbestos",
         "role": "covariate"
       },
       {
-        "uuid": "a3c0363d-0161-47de-b228-fb70a2e94b3e",
+        "uuid": "343ad2c6-7881-4b1f-bc55-4df211ef925f",
         "id": "genetic_risk",
         "role": "covariate"
       }
     ],
     "edges": [
       {
-        "uuid": "a565b8fb-7637-47e5-81f3-526d7b21f786",
+        "uuid": "9ae89115-7a71-4158-b6c1-787f25c0a2cb",
         "from": "age",
         "to": "smoking",
         "evidence": "moderate"
       },
       {
-        "uuid": "e5d82cc8-bb53-4079-9458-0abdba5bb131",
+        "uuid": "c639fe60-1d00-456a-9ed7-286e60084253",
         "from": "age",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "a4462ed7-ad9d-46a6-bee7-56c79fa9e8cd",
+        "uuid": "637e77bf-2135-49c0-96f4-db4dc4e371c3",
         "from": "sex",
         "to": "smoking",
         "evidence": "moderate"
       },
       {
-        "uuid": "1079cd23-9010-4546-b00b-c73d4c9d06fc",
+        "uuid": "9ac6b36e-abe7-420a-b22f-011de9dd2804",
         "from": "sex",
         "to": "lung_cancer",
         "evidence": "moderate"
       },
       {
-        "uuid": "2540a314-e419-43d1-81eb-960a06c3328b",
+        "uuid": "a3d12a56-1e61-4f8e-8373-84929b199783",
         "from": "smoking",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "8308d627-31ab-46c1-babc-8a1b41d45def",
+        "uuid": "9274918c-2606-45b4-90ef-99d739722d94",
         "from": "smoking",
         "to": "pack_years",
         "evidence": "strong"
       },
       {
-        "uuid": "1c2c948c-030d-45f8-857e-83a5129e22ab",
+        "uuid": "76045a04-f145-45fe-bfab-1fa38e50c893",
         "from": "pack_years",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "a8b2b6fb-06dc-460b-b85c-a3150811989c",
+        "uuid": "ca0b8f03-3586-4827-a62e-4db6a099d6df",
         "from": "asbestos",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "b40010fb-8cde-4466-8a12-c1debc542fdf",
+        "uuid": "253c485a-6585-44db-9091-c2b14bf9ee8b",
         "from": "genetic_risk",
         "to": "lung_cancer",
         "evidence": "moderate"
@@ -146,14 +146,25 @@
   "git": {
     "md_commit_sha": "faeaf46f95927749c7762de53aab70a563161d1d",
     "md_committed_at": "2026-05-22T00:12:10-04:00",
+    "md_commit": {
+      "message": "feat: two-layer DAG content (contributor MD + generated _data)\n\nImplement Issue #52 by splitting human-edited src/content/dags/*.md from\nCI-generated _data/*.json with UUID-stable graph metadata, computed\nadjustment sets, and llm.text. Add schema enums, validators, bot workflow,\napp loaders, and ADR 2026-05-22-001.\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+      "author": {
+        "login": "tetra4rnav",
+        "name": "Matt Sakamaki",
+        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
+        "profile_url": "https://github.com/tetra4rnav"
+      }
+    },
     "main_committed_at": "2026-05-19T11:26:07-04:00",
     "pr_merged_at": null,
     "pr_number": null,
     "contributors": [
       {
-        "name": "Matt",
-        "email": "jh1cid@gmail.com",
-        "commits": 3
+        "login": "tetra4rnav",
+        "name": "Matt Sakamaki",
+        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
+        "profile_url": "https://github.com/tetra4rnav",
+        "commits": 2
       }
     ]
   },
