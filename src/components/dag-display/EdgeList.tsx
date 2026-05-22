@@ -10,6 +10,11 @@ import {
 } from "@/components/ui/tooltip";
 import { EvidenceBadge } from "./badges";
 import { EvidenceLegendContent } from "./EvidenceLegend";
+import {
+  panelListBodyClass,
+  panelListHeaderClass,
+  panelListRowClass,
+} from "./panel-list-styles";
 import { PanelCard } from "./PanelCard";
 import type { DagEdge, DagNode } from "@/types/dag";
 
@@ -32,14 +37,19 @@ export function EdgeList({
 }) {
   const label = (id: string) => nodes.find((n) => n.id === id)?.label ?? id;
   const table = (
-    <div className="space-y-1">
-      <div className="grid grid-cols-[1fr_20px_1fr_80px] gap-x-2 border-b px-1 pb-2 text-sm">
-        <span className="font-medium text-muted-foreground">From</span>
+    <div className={panelListBodyClass}>
+      <div
+        className={cn(
+          "grid grid-cols-[1fr_20px_1fr_80px] items-center gap-x-2",
+          panelListHeaderClass
+        )}
+      >
+        <span>From</span>
         <span />
-        <span className="font-medium text-muted-foreground">To</span>
+        <span>To</span>
         <Tooltip>
           <TooltipTrigger
-            className="w-fit cursor-help font-medium text-muted-foreground underline decoration-dotted decoration-muted-foreground/50 underline-offset-2"
+            className="w-fit cursor-help underline decoration-dotted decoration-muted-foreground/50 underline-offset-2"
             aria-label="Evidence levels"
           >
             Evidence
@@ -97,10 +107,8 @@ function EdgeRow({
       onMouseEnter={() => onHover?.(key)}
       onMouseLeave={() => onHover?.(null)}
       className={cn(
-        "grid grid-cols-[1fr_20px_1fr_80px] gap-x-2 rounded-md border-2 px-1 py-1 text-sm transition-colors",
-        highlighted
-          ? "border-foreground bg-muted/60"
-          : "border-transparent"
+        "grid grid-cols-[1fr_20px_1fr_80px] items-center gap-x-2 transition-colors",
+        panelListRowClass(highlighted)
       )}
     >
       <span>{label(edge.from)}</span>
