@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { loadDagData } from "../src/lib/dag-data";
+import { getAllDagDataSlugs, loadDagData } from "../src/lib/dag-data";
 import { getNodeLabel } from "../src/lib/nodes";
 
 const CONTENT_ROOT = path.join(process.cwd(), "src", "content");
@@ -44,20 +44,18 @@ function readMdFiles(dir: string): matter.GrayMatterFile<string>[] {
 function generate() {
   const index: SearchEntry[] = [];
 
-  for (const { data } of readMdFiles("dags")) {
-    const id = data.id as string | undefined;
-    if (!id || !data.title) continue;
+  for (const id of getAllDagDataSlugs()) {
     const dagData = loadDagData(id);
     if (!dagData) continue;
     const exposureNode = dagData.graph.nodes.find((n) => n.role === "exposure");
     const outcomeNode = dagData.graph.nodes.find((n) => n.role === "outcome");
     index.push({
       type: "dag",
-      id,
-      title: data.title as string,
+      id: dagData.id,
+      title: dagData.title,
       exposure: exposureNode ? getNodeLabel(exposureNode.id) : "",
       outcome: outcomeNode ? getNodeLabel(outcomeNode.id) : "",
-      keywords: (data.keywords as string[]) ?? [],
+      keywords: dagData.keywords,
     });
   }
 

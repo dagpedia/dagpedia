@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { AdjustmentSets } from "./AdjustmentSets";
+import { ContextPanel } from "./ContextPanel";
 import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
 import { DagCanvas } from "./DagCanvas";
@@ -52,6 +53,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
     <EdgesAndConditionalIndep
       edges={data.edges}
       nodes={data.nodes}
+      evidenceLegend={data.evidenceLegend}
       conditionalIndependencies={data.conditionalIndependencies}
       highlightedEdgeKey={hoveredEdgeKey}
       onEdgeHover={onEdgeHover}
@@ -60,6 +62,8 @@ export function DagPageView({ data }: { data: DagPageData }) {
 
   const metadataScrollSection = (
     <>
+      <ContextPanel context={data.context} />
+      <Separator />
       <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
       {data.alternativeDags.length > 0 && (
         <>
@@ -85,6 +89,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
           bare
           edges={data.edges}
           nodes={data.nodes}
+          evidenceLegend={data.evidenceLegend}
           highlightedEdgeKey={hoveredEdgeKey}
           onEdgeHover={onEdgeHover}
         />
@@ -110,6 +115,11 @@ export function DagPageView({ data }: { data: DagPageData }) {
           onNodeHover={onNodeHover}
         />
       ),
+    },
+    {
+      value: "context",
+      title: "Context",
+      content: <ContextPanel bare context={data.context} />,
     },
     {
       value: "adjustment-sets",

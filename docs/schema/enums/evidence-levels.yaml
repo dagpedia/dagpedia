@@ -1,0 +1,22 @@
+vocabularies:
+  evidenceLevels:
+    open: false
+    entries:
+      - id: strong
+        label: Strong
+        description: RCT or consistent observational evidence
+      - id: moderate
+        label: Moderate
+        description: Observational (some inconsistency)
+      - id: weak
+        label: Weak
+        description: Limited evidence
+      - id: conflicting
+        label: Conflicting
+        description: Conflicting empirical findings
+      - id: expert-opinion
+        label: Expert opinion
+        description: Expert opinion or structural assumption
+      - id: unknown
+        label: Unknown
+        description: Unknown or not yet assessed

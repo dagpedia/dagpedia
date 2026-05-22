@@ -1,4 +1,3 @@
-import { execSync } from "child_process";
 import crypto from "crypto";
 import fs from "fs";
 import path from "path";
@@ -15,11 +14,11 @@ import {
   parseDagittyStructure,
 } from "../src/lib/dag-utils";
 import { getNodeLabel } from "../src/lib/nodes";
+import { getGitMetadata } from "./lib/git-metadata";
 import { loadDagitty } from "./lib/load-dagitty";
 
 const DAGS_DIR = path.join(process.cwd(), "src", "content", "dags");
 const DATA_DIR = path.join(process.cwd(), "_data");
-const MD_REL_PREFIX = "src/content/dags";
 
 function newUuid(): string {
   return crypto.randomUUID();
@@ -27,18 +26,6 @@ function newUuid(): string {
 
 function edgeKey(from: string, to: string): string {
   return `${from} -> ${to}`;
-}
-
-function getMdCommitSha(slug: string): string {
-  const rel = `${MD_REL_PREFIX}/${slug}.md`;
-  try {
-    return execSync(`git log -1 --format=%H -- ${rel}`, {
-      encoding: "utf-8",
-      cwd: process.cwd(),
-    }).trim();
-  } catch {
-    return "0000000000000000000000000000000000000000";
-  }
 }
 
 function loadExisting(slug: string): DagDataFile | null {
@@ -253,6 +240,8 @@ function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): Dag
     id: fm.id,
     title: fm.title,
     context: fm.context,
+    keywords: fm.keywords,
+    alternatives: fm.alternatives,
     graph: {
       nodes: graphNodes,
       edges: graphEdgesOut,
@@ -264,7 +253,7 @@ function generateOne(slug: string, runtime: ReturnType<typeof loadDagitty>): Dag
       adjustment_sets: adjustmentPayload,
       conditional_independencies: meta.conditionalIndependencies,
     },
-    git: { md_commit_sha: getMdCommitSha(slug) },
+    git: getGitMetadata(slug),
     llm: {
       edge_set_sorted: edgeSetSorted,
       text: buildLlmText(

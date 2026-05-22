@@ -1,22 +1,18 @@
 import { cache } from "react";
-import matter from "gray-matter";
-import fs from "fs";
-import path from "path";
-import { getDag, getAllDags } from "./dag";
+import { getDag } from "./dag";
 import { getAllDagDataSlugs, loadDagData } from "./dag-data";
-import { dagFrontmatterSchema } from "./dag-data-schema";
+import { labelSlug, labelSlugs } from "./labeled-slug";
+import { loadEvidenceLevelLegend } from "./schema-loader";
 import { computeDegreeCentrality } from "./content-index";
 import { parseDagittyStructure } from "./dag-utils";
 import { getNodeLabel } from "./nodes";
+import type { DagProvenance } from "@/lib/provenance";
 import type {
   AdjustmentSet,
   AlternativeDag,
-  DagContext,
   DagPageData,
   EvidenceLevel,
 } from "@/types/dag";
-
-const DAGS_DIR = path.join(process.cwd(), "src", "content", "dags");
 
 function mapEvidence(level: string): EvidenceLevel {
   switch (level) {
@@ -25,6 +21,7 @@ function mapEvidence(level: string): EvidenceLevel {
     case "weak":
     case "conflicting":
     case "expert-opinion":
+    case "unknown":
       return level;
     default:
       return "weak";
@@ -72,9 +69,6 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
   const data = loadDagData(slug);
   if (!dag || !data) return null;
 
-  const fmParsed = dagFrontmatterSchema.safeParse(dag.frontmatter);
-  if (!fmParsed.success) return null;
-
   const exposureNode = data.graph.nodes.find((n) => n.role === "exposure");
   const outcomeNode = data.graph.nodes.find((n) => n.role === "outcome");
   if (!exposureNode || !outcomeNode) return null;
@@ -91,12 +85,10 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
   const nodeCountBySlug = new Map<string, number>();
   for (const s of getAllDagDataSlugs()) {
     const d = loadDagData(s);
-    const mdPath = path.join(DAGS_DIR, `${s}.md`);
-    if (fs.existsSync(mdPath)) {
-      const { data: md } = matter(fs.readFileSync(mdPath, "utf-8"));
-      if (typeof md.title === "string") titleBySlug.set(s, md.title);
+    if (d) {
+      titleBySlug.set(s, d.title);
+      nodeCountBySlug.set(s, d.computed.node_count);
     }
-    if (d) nodeCountBySlug.set(s, d.computed.node_count);
   }
 
   const nodes = data.graph.nodes.map((n) => {
@@ -119,10 +111,10 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
     evidence: mapEvidence(e.evidence),
   }));
 
-  const context: DagContext = {
-    population: data.context.population,
-    geographic: data.context.geographic,
-    era: data.context.era,
+  const context = {
+    population: labelSlug("populations", data.context.population),
+    geographic: labelSlug("geographics", data.context.geographic),
+    era: labelSlug("eras", data.context.era),
     note: data.context.note,
   };
 
@@ -134,13 +126,20 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
     exposure: exposureId,
     outcome: outcomeId,
     context,
-    keywords: fmParsed.data.keywords,
-    mdCommitSha: data.git.md_commit_sha,
+    keywords: labelSlugs("keywords", data.keywords),
+    provenance: {
+      mdCommitSha: data.git.md_commit_sha,
+      mdCommittedAt: data.git.md_committed_at,
+      mainCommittedAt: data.git.main_committed_at ?? null,
+      prMergedAt: data.git.pr_merged_at ?? null,
+      prNumber: data.git.pr_number ?? null,
+      contributors: data.git.contributors ?? [],
+    } satisfies DagProvenance,
     deprecated: data.deprecated,
     supersededBy: data.superseded_by,
     dagittyCode: data.graph.dagitty,
     alternativeDags: resolveAlternatives(
-      fmParsed.data.alternatives,
+      data.alternatives,
       titleBySlug,
       nodeCountBySlug
     ),
@@ -148,5 +147,6 @@ export const getDagPageData = cache((slug: string): DagPageData | null => {
     edges,
     adjustmentSets: adjustmentSetsFromData(data, exposureLabel, outcomeLabel),
     conditionalIndependencies: data.computed.conditional_independencies,
+    evidenceLegend: loadEvidenceLevelLegend(),
   };
 });

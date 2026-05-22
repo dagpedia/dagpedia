@@ -8,6 +8,7 @@ import {
 } from "@/components/dag-display/DagittyPanelContext";
 import { DagittyPlainPanel } from "@/components/dag-display/DagittyPlainPanel";
 import { useIsLgUp } from "@/hooks/use-media-query";
+import type { DagProvenance } from "@/lib/provenance";
 import { cn } from "@/lib/utils";
 
 interface DagPageShellProps {
@@ -15,7 +16,7 @@ interface DagPageShellProps {
   nodeCount: number;
   edgeCount: number;
   slug: string;
-  mdCommitSha: string;
+  provenance: DagProvenance;
   deprecated?: boolean;
   dagittyCode: string;
   children: React.ReactNode;
@@ -26,7 +27,7 @@ function DagPageShellContent({
   nodeCount,
   edgeCount,
   slug,
-  mdCommitSha,
+  provenance,
   deprecated,
   dagittyCode,
   children,
@@ -43,7 +44,7 @@ function DagPageShellContent({
           nodeCount={nodeCount}
           edgeCount={edgeCount}
           slug={slug}
-          mdCommitSha={mdCommitSha}
+          provenance={provenance}
           deprecated={deprecated}
         />
       </div>

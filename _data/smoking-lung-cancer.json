@@ -1,5 +1,5 @@
 {
-  "uuid": "68da9354-1e97-4ddd-b6e7-66f492e26f6a",
+  "uuid": "99b74d2e-e79d-4799-9b56-3d6de0456021",
   "id": "smoking-lung-cancer",
   "title": "Smoking and lung cancer",
   "context": {
@@ -7,95 +7,102 @@
     "geographic": "north-america-europe",
     "era": "1990s-present"
   },
+  "keywords": [
+    "smoking",
+    "lung-cancer",
+    "mediation",
+    "respiratory"
+  ],
+  "alternatives": [],
   "graph": {
     "nodes": [
       {
-        "uuid": "53c53546-a07c-46f7-a88a-a7634450cb1f",
+        "uuid": "f6f05722-48c7-4bcb-81c3-b54d02f09ea6",
         "id": "smoking",
         "role": "exposure"
       },
       {
-        "uuid": "f61baf19-00a3-4116-b61d-d45cc22c05a8",
+        "uuid": "fbd77a27-ae88-446a-919c-f5c41d4fe237",
         "id": "lung_cancer",
         "role": "outcome"
       },
       {
-        "uuid": "0d8a7232-240b-402b-b411-26a70f4ec7ee",
+        "uuid": "bdd94fb6-42d1-4092-bc86-9798e035ca30",
         "id": "age",
         "role": "covariate"
       },
       {
-        "uuid": "7df08e58-513a-4b18-b11f-0946b1776e70",
+        "uuid": "4a9b7f2a-b2d8-42f3-b97a-e89440db3e69",
         "id": "sex",
         "role": "covariate"
       },
       {
-        "uuid": "d1678867-de8c-4590-b105-88584cdb0dfa",
+        "uuid": "410a1765-efe5-45c5-94c2-b07e7d7ce224",
         "id": "pack_years",
         "role": "mediator"
       },
       {
-        "uuid": "ccd23d3b-eb0f-444b-8160-ba772479d6e8",
+        "uuid": "d2017ca7-45a5-4493-8ec1-fe142acb860c",
         "id": "asbestos",
         "role": "covariate"
       },
       {
-        "uuid": "fcfecb2d-5e68-42ee-9b30-7bfdfec2e287",
+        "uuid": "a3c0363d-0161-47de-b228-fb70a2e94b3e",
         "id": "genetic_risk",
         "role": "covariate"
       }
     ],
     "edges": [
       {
-        "uuid": "0d315c8b-ee91-441f-8605-8cd118951958",
+        "uuid": "a565b8fb-7637-47e5-81f3-526d7b21f786",
         "from": "age",
         "to": "smoking",
         "evidence": "moderate"
       },
       {
-        "uuid": "8a6f36ad-4e3e-464e-892e-4538627ab5ff",
+        "uuid": "e5d82cc8-bb53-4079-9458-0abdba5bb131",
         "from": "age",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "a1ddcab9-d192-48db-8e41-51c83f8adfe9",
+        "uuid": "a4462ed7-ad9d-46a6-bee7-56c79fa9e8cd",
         "from": "sex",
         "to": "smoking",
         "evidence": "moderate"
       },
       {
-        "uuid": "32f8941f-ef88-40f3-acc4-23882462cb52",
+        "uuid": "1079cd23-9010-4546-b00b-c73d4c9d06fc",
         "from": "sex",
         "to": "lung_cancer",
         "evidence": "moderate"
       },
       {
-        "uuid": "cc907a1f-0c44-4cc4-b4cf-cd4b559c6a1e",
+        "uuid": "2540a314-e419-43d1-81eb-960a06c3328b",
         "from": "smoking",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "a6aa3e0f-f8bb-475c-9c81-ce48d5c1614a",
+        "uuid": "8308d627-31ab-46c1-babc-8a1b41d45def",
         "from": "smoking",
         "to": "pack_years",
         "evidence": "strong"
       },
       {
-        "uuid": "c776f664-f966-4bfd-ad7c-93254d6134fe",
+        "uuid": "1c2c948c-030d-45f8-857e-83a5129e22ab",
         "from": "pack_years",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "9ead14e5-6673-4438-96b0-f1f77f96acfd",
+        "uuid": "a8b2b6fb-06dc-460b-b85c-a3150811989c",
         "from": "asbestos",
         "to": "lung_cancer",
         "evidence": "strong"
       },
       {
-        "uuid": "d4b99eac-bcdb-4efb-8cfb-79d325a5c1dd",
+        "uuid": "b40010fb-8cde-4466-8a12-c1debc542fdf",
         "from": "genetic_risk",
         "to": "lung_cancer",
         "evidence": "moderate"
@@ -137,7 +144,18 @@
     ]
   },
   "git": {
-    "md_commit_sha": "ac51d4ab844120bdf365041253f106f41c02e84f"
+    "md_commit_sha": "faeaf46f95927749c7762de53aab70a563161d1d",
+    "md_committed_at": "2026-05-22T00:12:10-04:00",
+    "main_committed_at": "2026-05-19T11:26:07-04:00",
+    "pr_merged_at": null,
+    "pr_number": null,
+    "contributors": [
+      {
+        "name": "Matt",
+        "email": "jh1cid@gmail.com",
+        "commits": 3
+      }
+    ]
   },
   "llm": {
     "edge_set_sorted": [

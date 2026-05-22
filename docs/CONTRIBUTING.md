@@ -2,7 +2,7 @@
 
 Thank you for contributing. DAGpedia grows through community contribution — every DAG added strengthens the shared epistemic infrastructure for causal inference in epidemiology.
 
-**Project docs:** [MAP.md](MAP.md), schema enums in [schema/](schema/), ADRs in [adr/](adr/).
+**Project docs:** [MAP.md](MAP.md), DAG validation schema in [schema/](schema/README.md), ADRs in [adr/](adr/).
 
 ## Two-layer DAG content (Issue #52)
 
@@ -34,12 +34,8 @@ Add new node keys under `src/content/nodes/` in a **separate PR** before using t
 
 ### 3. Frontmatter (required)
 
-- `id`, `title` (max 80 characters)
-- `context`: `population`, `geographic`, `era` — values from [schema/](schema/)
-- `dagitty`: pipe block with graph; tag `[exposure]` and `[outcome]` only (no `[mediator]` / `[covariate]`)
-- `evidence`: every edge as `from -> to: level` (levels in [evidence-levels.md](schema/evidence-levels.md))
-- `keywords`: from [keywords.md](schema/keywords.md)
-- `alternatives`: list of other DAG ids (or `[]`)
+- All frontmatter rules: [dag-validation.json](schema/dag-validation.json) + [enums/*.yaml](schema/enums/)
+- `id`, `title`, `context`, `dagitty`, `evidence`, `keywords` (required); `alternatives` optional (`[]` if none)
 
 Do **not** include `version`, `contributors`, `nodes`, `edges`, or `adjustment_sets` in frontmatter.
 

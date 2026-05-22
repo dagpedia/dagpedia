@@ -31,11 +31,11 @@ export function DagListCard({ dag }: { dag: DagListItem }) {
                 <div className="flex flex-wrap gap-1.5">
                   {dag.keywords.map((keyword) => (
                     <Badge
-                      key={keyword}
+                      key={keyword.id}
                       variant="outline"
                       className="text-sm font-normal"
                     >
-                      {keyword}
+                      {keyword.label}
                     </Badge>
                   ))}
                 </div>

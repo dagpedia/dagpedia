@@ -17,6 +17,7 @@ const evidenceStyles: Record<EvidenceLevel, string> = {
   weak: "bg-gray-100 text-gray-700 border-transparent",
   conflicting: "bg-orange-100 text-orange-800 border-transparent",
   "expert-opinion": "bg-violet-100 text-violet-800 border-transparent",
+  unknown: "bg-zinc-100 text-zinc-600 border-transparent",
 };
 
 export function RoleBadge({ role }: { role: NodeRole }) {
@@ -27,10 +28,16 @@ export function RoleBadge({ role }: { role: NodeRole }) {
   );
 }
 
-export function EvidenceBadge({ level }: { level: EvidenceLevel }) {
+export function EvidenceBadge({
+  level,
+  label,
+}: {
+  level: EvidenceLevel;
+  label?: string;
+}) {
   return (
     <Badge className={cn("text-sm", evidenceStyles[level])}>
-      {level}
+      {label ?? level}
     </Badge>
   );
 }

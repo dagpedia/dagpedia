@@ -1,3 +1,5 @@
+import type { DagProvenance } from "@/lib/provenance";
+
 export type NodeRole =
   | "exposure"
   | "outcome"
@@ -11,7 +13,20 @@ export type EvidenceLevel =
   | "moderate"
   | "weak"
   | "conflicting"
-  | "expert-opinion";
+  | "expert-opinion"
+  | "unknown";
+
+export type EvidenceLevelLegendItem = {
+  level: EvidenceLevel;
+  label: string;
+  description: string;
+};
+
+/** Vocabulary id stored in content; label resolved from docs/schema/enums. */
+export type LabeledSlug = {
+  id: string;
+  label: string;
+};
 
 export interface DagNode {
   id: string;
@@ -40,6 +55,14 @@ export interface DagContext {
   note?: string;
 }
 
+/** Context with display labels resolved from docs/schema/enums/context.yaml */
+export interface DagContextDisplay {
+  population: LabeledSlug;
+  geographic: LabeledSlug;
+  era: LabeledSlug;
+  note?: string;
+}
+
 export interface AlternativeDag {
   slug: string;
   title: string;
@@ -54,9 +77,9 @@ export interface DagPageData {
   title: string;
   exposure: string;
   outcome: string;
-  context: DagContext;
-  keywords: string[];
-  mdCommitSha: string;
+  context: DagContextDisplay;
+  keywords: LabeledSlug[];
+  provenance: DagProvenance;
   deprecated?: boolean;
   supersededBy?: string;
   dagittyCode: string;
@@ -65,4 +88,5 @@ export interface DagPageData {
   edges: DagEdge[];
   adjustmentSets: AdjustmentSet[];
   conditionalIndependencies: string[];
+  evidenceLegend: EvidenceLevelLegendItem[];
 }

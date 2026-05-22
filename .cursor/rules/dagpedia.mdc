@@ -13,23 +13,23 @@ globs:
 ## Two layers
 
 1. **Contributor MD** — `src/content/dags/<id>.md` only. Never edit `_data/*.json` by hand.
-2. **Generated JSON** — `_data/<id>.json` is produced by `npm run generate-dag-data` (CI bot on PRs).
+2. **Generated JSON** — `_data/<id>.json` is produced by `npm run generate-dag-data` (CI bot on PRs). The app reads all frontmatter fields from JSON at runtime (MD body only from `.md`).
 
 ## Frontmatter (required)
 
-- `id`, `title` (max 80 chars)
-- `context`: `population`, `geographic`, `era` (enums in `docs/schema/`)
-- `dagitty`: pipe block — **single source of truth** for graph structure
-- `evidence`: map keyed `from -> to` (must match every dagitty edge exactly)
-- `keywords`: from `docs/schema/keywords.md`
+All rules: `docs/schema/` (`dag-validation.json` + `enums/*.yaml`). See `docs/schema/README.md`.
+
+- Frontmatter stores vocabulary **ids** (slugs); **labels** from `enums/*.yaml` (`vocabularies.<key>.entries[]` — see README)
+- `context.*`: **open** slugs in [enums/context.yaml](docs/schema/enums/context.yaml) (`populations`, `geographics`, `eras` sections)
+- `keywords`: **open** slug in `enums/keywords.yaml`
+- `evidence` levels: **closed** enum (`open: false`) with `id`, `label`, `description`
+- `dagitty`: graph structure; rules in `dag-validation.json`
 - `alternatives`: list of existing DAG ids (may be empty)
 
 ## Dagitty rules
 
-- Only native attributes: `[exposure]`, `[outcome]`, `[adjusted]`, `[latent]`, `[selected]`, `[pos="x,y"]`
-- Do **not** use `[mediator]`, `[covariate]` — roles are inferred at build time
+- Required node tags and forbidden role tags: `dag-validation.json` → `fields.dagitty`
 - Do **not** put dagitty in the markdown body; use frontmatter `dagitty: |`
-
 ## Do not put in frontmatter
 
 `version`, `date`, `status`, `contributors`, `nodes`, `edges`, `adjustment_sets` — Git or CI derives these.

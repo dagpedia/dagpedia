@@ -3,7 +3,7 @@
   "$id": "https://dagpedia.org/schema/dag-data.json",
   "title": "DAGpedia generated DAG data",
   "type": "object",
-  "required": ["uuid", "id", "title", "context", "graph", "computed", "git", "llm"],
+  "required": ["uuid", "id", "title", "context", "keywords", "alternatives", "graph", "computed", "git", "llm"],
   "additionalProperties": false,
   "properties": {
     "uuid": { "type": "string", "format": "uuid" },
@@ -23,6 +23,15 @@
         "era": { "type": "string" },
         "note": { "type": "string", "maxLength": 200 }
       }
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "alternatives": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
     },
     "graph": {
       "type": "object",
@@ -92,9 +101,25 @@
     },
     "git": {
       "type": "object",
-      "required": ["md_commit_sha"],
+      "required": ["md_commit_sha", "md_committed_at", "contributors"],
       "properties": {
-        "md_commit_sha": { "type": "string", "minLength": 7 }
+        "md_commit_sha": { "type": "string", "minLength": 7 },
+        "md_committed_at": { "type": "string" },
+        "main_committed_at": { "type": ["string", "null"] },
+        "pr_merged_at": { "type": ["string", "null"] },
+        "pr_number": { "type": ["integer", "null"], "minimum": 1 },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "email", "commits"],
+            "properties": {
+              "name": { "type": "string" },
+              "email": { "type": "string" },
+              "commits": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
       }
     },
     "llm": {

@@ -1,5 +1,5 @@
 {
-  "uuid": "d635a8e4-af40-4849-87ed-de1a6d93c81b",
+  "uuid": "028a3c38-adc5-4fb7-a6af-172c554322ae",
   "id": "ses-cvd-classic",
   "title": "Socioeconomic Status and Cardiovascular Disease",
   "context": {
@@ -7,107 +7,116 @@
     "geographic": "global",
     "era": "1990s-present"
   },
+  "keywords": [
+    "social-determinants",
+    "cardiovascular",
+    "classic",
+    "ses",
+    "health-behaviors",
+    "psychosocial"
+  ],
+  "alternatives": [],
   "graph": {
     "nodes": [
       {
-        "uuid": "a9adb251-2acb-4365-a535-d1904b1a30cd",
+        "uuid": "14908301-d294-4496-9f0b-a5eb9140f8cc",
         "id": "socioeconomic_status",
         "role": "exposure"
       },
       {
-        "uuid": "bc8ac5c3-c1f5-4c94-ad12-20eef368fc99",
+        "uuid": "38bd0290-0b64-4c0d-a8b1-eb704edc7773",
         "id": "cardiovascular_disease",
         "role": "outcome"
       },
       {
-        "uuid": "066426d8-371c-4395-a89a-ab35c207e357",
+        "uuid": "80cdf879-0de2-4212-9322-a8cf98ed85b3",
         "id": "healthcare_access",
         "role": "mediator"
       },
       {
-        "uuid": "51f12da0-c714-40ed-b3a8-1ea57fc92564",
+        "uuid": "eed4e1e4-c41c-428d-981a-f163258ecf2d",
         "id": "health_behaviors",
         "role": "mediator"
       },
       {
-        "uuid": "ef0b2cc0-9544-4171-9d2b-4a9c5184b954",
+        "uuid": "62f66498-e015-41d2-8eb1-76a4a7f603d5",
         "id": "psychosocial_stress",
         "role": "mediator"
       },
       {
-        "uuid": "1dab0d8b-1f8a-48e5-8059-31ad7fb6c568",
+        "uuid": "1dd3a72a-c70e-442c-8163-4616c2a82ccb",
         "id": "age",
         "role": "covariate"
       },
       {
-        "uuid": "637d7d50-5e0b-4b39-9d31-9e03379f1a41",
+        "uuid": "a2bd5524-7cda-4d61-ab20-4a9d7aa758ce",
         "id": "sex",
         "role": "covariate"
       }
     ],
     "edges": [
       {
-        "uuid": "e9f262c9-e0a6-4fdf-9f4c-4a380b6924c1",
+        "uuid": "cfefb6da-43d5-44b7-935f-db8b61cf75ab",
         "from": "socioeconomic_status",
         "to": "healthcare_access",
         "evidence": "strong"
       },
       {
-        "uuid": "acc50f0e-0ff5-4eb8-932d-af1608d69ef9",
+        "uuid": "43501988-98c3-43f9-ad11-ffcd7646ff53",
         "from": "socioeconomic_status",
         "to": "health_behaviors",
         "evidence": "strong"
       },
       {
-        "uuid": "218a96fc-8d8d-4adc-9b94-277cfb3e263b",
+        "uuid": "c82aee0e-8aa4-434c-84cb-1040b4e4f7c9",
         "from": "socioeconomic_status",
         "to": "psychosocial_stress",
         "evidence": "strong"
       },
       {
-        "uuid": "b560af6a-89f2-4fbb-b299-a47e5faa041a",
+        "uuid": "9daaab32-dd71-47b2-964f-6ae3f7903c3a",
         "from": "healthcare_access",
         "to": "cardiovascular_disease",
         "evidence": "strong"
       },
       {
-        "uuid": "6b0e5714-ba28-4763-9ceb-44530ee100ad",
+        "uuid": "ca3963f8-1bf3-4fbf-9cf6-f7ea5655e279",
         "from": "health_behaviors",
         "to": "cardiovascular_disease",
         "evidence": "strong"
       },
       {
-        "uuid": "d98f5977-c4ee-4697-9a2c-beab54f4356e",
+        "uuid": "451ff01e-15b6-4061-bf81-fab772ec640d",
         "from": "psychosocial_stress",
         "to": "cardiovascular_disease",
         "evidence": "moderate"
       },
       {
-        "uuid": "85646038-f472-4c72-82e3-e15f112722db",
+        "uuid": "fc951e68-3297-4a44-af9a-c4108c42173d",
         "from": "socioeconomic_status",
         "to": "cardiovascular_disease",
         "evidence": "moderate"
       },
       {
-        "uuid": "c2f1dbcd-eae3-41e2-92a0-40a949ac856d",
+        "uuid": "07fd4603-b485-40f0-8a1b-9434a1812bb9",
         "from": "age",
         "to": "socioeconomic_status",
         "evidence": "strong"
       },
       {
-        "uuid": "01671c89-7605-4d43-90b3-272a293faee6",
+        "uuid": "5697ab78-c767-40b9-9966-8e8716b8b8f1",
         "from": "age",
         "to": "cardiovascular_disease",
         "evidence": "strong"
       },
       {
-        "uuid": "17262f42-8fae-45d8-b921-9ce88800c0c1",
+        "uuid": "155909c1-f66b-4229-b994-2e19bca11be0",
         "from": "sex",
         "to": "socioeconomic_status",
         "evidence": "moderate"
       },
       {
-        "uuid": "778da8e9-7695-45ba-992a-a34dea159bc4",
+        "uuid": "741cfc93-64e9-4c9c-ad01-69dd5646635a",
         "from": "sex",
         "to": "cardiovascular_disease",
         "evidence": "strong"
@@ -149,7 +158,18 @@
     ]
   },
   "git": {
-    "md_commit_sha": "f7cd84cf6864466034b85a20f0980a2eb1a13d28"
+    "md_commit_sha": "faeaf46f95927749c7762de53aab70a563161d1d",
+    "md_committed_at": "2026-05-22T00:12:10-04:00",
+    "main_committed_at": "2026-05-18T16:49:21-04:00",
+    "pr_merged_at": null,
+    "pr_number": null,
+    "contributors": [
+      {
+        "name": "Matt",
+        "email": "jh1cid@gmail.com",
+        "commits": 3
+      }
+    ]
   },
   "llm": {
     "edge_set_sorted": [

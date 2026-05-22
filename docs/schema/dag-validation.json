@@ -1,0 +1,73 @@
+{
+  "$comment": "DAG markdown validation. Open vocabularies: enums/*.yaml (suggested id+label, any valid slug allowed). Closed: evidenceLevels.",
+  "requiredFrontmatter": ["id", "title", "context", "dagitty", "evidence", "keywords"],
+  "optionalFrontmatter": ["alternatives"],
+  "slugPattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+  "vocabularies": {
+    "populations": {
+      "file": "enums/context.yaml",
+      "field": "context.population",
+      "wiredAt": "fields.context.properties.population.vocabulary"
+    },
+    "geographics": {
+      "file": "enums/context.yaml",
+      "field": "context.geographic",
+      "wiredAt": "fields.context.properties.geographic.vocabulary"
+    },
+    "eras": {
+      "file": "enums/context.yaml",
+      "field": "context.era",
+      "wiredAt": "fields.context.properties.era.vocabulary"
+    },
+    "keywords": {
+      "file": "enums/keywords.yaml",
+      "field": "keywords",
+      "wiredAt": "fields.keywords.vocabulary"
+    },
+    "evidenceLevels": {
+      "file": "enums/evidence-levels.yaml",
+      "field": "evidence.<from -> to>",
+      "wiredAt": "fields.evidence.vocabulary"
+    }
+  },
+  "fields": {
+    "id": {
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "mustMatchFilename": true
+    },
+    "title": {
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "context": {
+      "required": ["population", "geographic", "era"],
+      "optional": ["note"],
+      "properties": {
+        "population": { "vocabulary": "populations", "open": true },
+        "geographic": { "vocabulary": "geographics", "open": true },
+        "era": { "vocabulary": "eras", "open": true },
+        "note": { "maxLength": 200 }
+      }
+    },
+    "keywords": {
+      "minItems": 1,
+      "vocabulary": "keywords",
+      "open": true
+    },
+    "evidence": {
+      "vocabulary": "evidenceLevels",
+      "open": false,
+      "keysMustMatchDagittyEdges": true
+    },
+    "dagitty": {
+      "minLength": 1,
+      "requiredNodeTags": ["exposure", "outcome"],
+      "forbiddenNodeTags": ["mediator", "covariate", "instrument", "collider"],
+      "nodeLibraryPath": "src/content/nodes"
+    },
+    "alternatives": {
+      "type": "array",
+      "itemsMustExistAsDagId": true
+    }
+  }
+}

@@ -1,14 +1,15 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import { dagFrontmatterSchema } from "./dag-data-schema";
 import { loadDagData } from "./dag-data";
 import { getNodeLabel } from "./nodes";
+import { labelSlugs } from "./labeled-slug";
+import { vocabularyLabel } from "./schema-loader";
+import type { LabeledSlug } from "@/types/dag";
 
 const DAGS_DIR = path.join(process.cwd(), "src/content/dags");
 
 export interface DagContent {
-  frontmatter: Record<string, unknown>;
   body: string;
   slug: string;
 }
@@ -20,7 +21,7 @@ export interface DagListItem {
   outcomeLabel: string;
   nodeCount: number;
   edgeCount: number;
-  keywords: string[];
+  keywords: LabeledSlug[];
   contextSummary: string;
 }
 
@@ -36,12 +37,8 @@ export function getAllDags(): DagContent[] {
     })
     .filter((dag): dag is DagContent => dag !== null)
     .sort((a, b) => {
-      const titleA =
-        (dagFrontmatterSchema.safeParse(a.frontmatter).data?.title as string) ??
-        a.slug;
-      const titleB =
-        (dagFrontmatterSchema.safeParse(b.frontmatter).data?.title as string) ??
-        b.slug;
+      const titleA = loadDagData(a.slug)?.title ?? a.slug;
+      const titleB = loadDagData(b.slug)?.title ?? b.slug;
       return titleA.localeCompare(titleB);
     });
 }
@@ -49,24 +46,23 @@ export function getAllDags(): DagContent[] {
 export function getDagListItems(): DagListItem[] {
   return getAllDags()
     .map((dag) => {
-      const parsed = dagFrontmatterSchema.safeParse(dag.frontmatter);
       const data = loadDagData(dag.slug);
-      if (!parsed.success || !data) return null;
+      if (!data) return null;
 
       const exposureNode = data.graph.nodes.find((n) => n.role === "exposure");
       const outcomeNode = data.graph.nodes.find((n) => n.role === "outcome");
       if (!exposureNode || !outcomeNode) return null;
 
-      const ctx = parsed.data.context;
+      const ctx = data.context;
       return {
         slug: dag.slug,
-        title: parsed.data.title,
+        title: data.title,
         exposureLabel: getNodeLabel(exposureNode.id),
         outcomeLabel: getNodeLabel(outcomeNode.id),
         nodeCount: data.computed.node_count,
         edgeCount: data.computed.edge_count,
-        keywords: parsed.data.keywords,
-        contextSummary: `${ctx.population} · ${ctx.geographic} · ${ctx.era}`,
+        keywords: labelSlugs("keywords", data.keywords),
+        contextSummary: `${vocabularyLabel("populations", ctx.population)} · ${vocabularyLabel("geographics", ctx.geographic)} · ${vocabularyLabel("eras", ctx.era)}`,
       };
     })
     .filter((item): item is DagListItem => item !== null);
@@ -77,10 +73,9 @@ export function getDag(slug: string): DagContent | null {
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
+  const { content } = matter(raw);
 
   return {
-    frontmatter: data,
     body: content,
     slug,
   };

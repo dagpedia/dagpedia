@@ -1,11 +1,12 @@
 import { VersionPopover } from "@/components/dag-display/VersionPopover";
+import type { DagProvenance } from "@/lib/provenance";
 
 interface DagMetaBarProps {
   title: string;
   nodeCount: number;
   edgeCount: number;
   slug: string;
-  mdCommitSha: string;
+  provenance: DagProvenance;
   deprecated?: boolean;
 }
 
@@ -14,7 +15,7 @@ export function DagMetaBar({
   nodeCount,
   edgeCount,
   slug,
-  mdCommitSha,
+  provenance,
   deprecated,
 }: DagMetaBarProps) {
   return (
@@ -28,7 +29,7 @@ export function DagMetaBar({
             Deprecated
           </span>
         )}
-        <VersionPopover mdCommitSha={mdCommitSha} slug={slug} />
+        <VersionPopover provenance={provenance} slug={slug} />
       </div>
       <div className="flex shrink-0 items-center justify-end gap-1.5 sm:gap-2">
         <span className="hidden text-sm text-muted-foreground sm:inline">

@@ -90,7 +90,7 @@ Schema: `docs/schema/dag-data.schema.json`, runtime validation: `src/lib/dag-dat
 
 ### Validation and CI
 
-- **Python:** `scripts/dag/validate_dag.py` — frontmatter, enums, dagitty parse, evidence ↔ edges, alternatives exist, node ids ⊆ node library
+- **Python:** `scripts/dag/validate_dag.py` — rules from `docs/schema/dag-validation.json` + `enums/*.yaml`
 - **Node:** `generate-dag-data.ts --check` — committed `_data` matches deterministic regeneration
 - **PR workflow:** `.github/workflows/validate-and-generate.yml` validates, regenerates `_data/*.json`, and bot-commits with `[skip ci]` when needed
 - **Main CI:** `.github/workflows/ci.yml` runs validators + `--check` + `npm run build`

@@ -1,12 +1,19 @@
 import { z } from "zod";
+import {
+  asZodEnumTuple,
+  getSlugPattern,
+  loadEvidenceLevels,
+  loadManifest,
+} from "./schema-loader";
 
-export const evidenceLevelSchema = z.enum([
-  "strong",
-  "moderate",
-  "weak",
-  "conflicting",
-  "expert-opinion",
-]);
+const manifest = loadManifest();
+const slugSchema = z.string().regex(getSlugPattern());
+
+export const evidenceLevelSchema = z.enum(
+  asZodEnumTuple(loadEvidenceLevels())
+);
+
+export const openSlugSchema = slugSchema;
 
 export const nodeRoleSchema = z.enum([
   "exposure",
@@ -40,11 +47,18 @@ export const dagDataFileSchema = z.object({
   deleted_at: z.string().optional(),
   deleted_reason: z.string().optional(),
   context: z.object({
-    population: z.string(),
-    geographic: z.string(),
-    era: z.string(),
-    note: z.string().max(200).optional(),
+    population: openSlugSchema,
+    geographic: openSlugSchema,
+    era: openSlugSchema,
+    note: z
+      .string()
+      .max(manifest.fields.context.properties.note.maxLength)
+      .optional(),
   }),
+  keywords: z
+    .array(openSlugSchema)
+    .min(manifest.fields.keywords.minItems),
+  alternatives: z.array(z.string()),
   graph: z.object({
     nodes: z.array(dagDataNodeSchema),
     edges: z.array(dagDataEdgeSchema),
@@ -61,6 +75,19 @@ export const dagDataFileSchema = z.object({
   }),
   git: z.object({
     md_commit_sha: z.string(),
+    md_committed_at: z.string(),
+    main_committed_at: z.string().nullable().optional(),
+    pr_merged_at: z.string().nullable().optional(),
+    pr_number: z.number().int().positive().nullable().optional(),
+    contributors: z
+      .array(
+        z.object({
+          name: z.string(),
+          email: z.string(),
+          commits: z.number().int().positive(),
+        })
+      )
+      .default([]),
   }),
   llm: z.object({
     edge_set_sorted: z.array(z.string()),
@@ -71,18 +98,28 @@ export const dagDataFileSchema = z.object({
 
 export type DagDataFile = z.infer<typeof dagDataFileSchema>;
 
+const idPattern = new RegExp(manifest.fields.id.pattern);
+
 export const dagFrontmatterSchema = z.object({
-  id: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
-  title: z.string().max(80),
+  id: z.string().regex(idPattern),
+  title: z
+    .string()
+    .min(manifest.fields.title.minLength)
+    .max(manifest.fields.title.maxLength),
   context: z.object({
-    population: z.string(),
-    geographic: z.string(),
-    era: z.string(),
-    note: z.string().max(200).optional(),
+    population: openSlugSchema,
+    geographic: openSlugSchema,
+    era: openSlugSchema,
+    note: z
+      .string()
+      .max(manifest.fields.context.properties.note.maxLength)
+      .optional(),
   }),
-  dagitty: z.string().min(1),
+  dagitty: z.string().min(manifest.fields.dagitty.minLength),
   evidence: z.record(z.string(), evidenceLevelSchema),
-  keywords: z.array(z.string()).min(1),
+  keywords: z
+    .array(openSlugSchema)
+    .min(manifest.fields.keywords.minItems),
   alternatives: z.array(z.string()).default([]),
 });
 
