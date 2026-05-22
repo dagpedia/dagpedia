@@ -1,0 +1,29 @@
+---
+title: Causal inference
+description: Living DAGs as shared epistemic infrastructure in epidemiology.
+---
+
+Causal DAGs make assumptions explicit: which variables are confounders, mediators, colliders, or instruments, and which paths must be blocked to estimate a causal effect.
+
+In practice, DAGs are often drawn once for a single paper and then discarded. **Living DAGs** treat the diagram itself as durable knowledge — versioned, annotated, and reusable across studies and teaching.
+
+## Living DAGs (Reynolds 2026)
+
+[Reynolds (2026, *Am J Epidemiol*)](https://doi.org/10.1093/aje/kwag029) argues that epidemiology should move toward DAGs that are:
+
+- **Shared** — visible to the community, not locked in supplementary PDFs
+- **Annotated** — edges carry evidence levels and rationale, not just arrows
+- **Versioned** — updates are tracked as understanding evolves
+- **Reusable** — others can adapt a published structure to new settings
+
+DAGpedia is an implementation of that direction: a catalog where each entry is both a machine-readable graph and a human-readable narrative.
+
+## Why this matters
+
+| Problem | Living DAG approach |
+| ------- | ------------------- |
+| Hidden assumptions | Explicit graph + narrative edge rationale |
+| Irreproducible diagrams | DAGitty source + validation in CI |
+| One-off figures | Persistent URLs and git history per DAG |
+
+You do not need to agree with every edge in the library — contributions must make **assumptions explicit**, not claim universal truth.

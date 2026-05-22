@@ -1,0 +1,40 @@
+---
+title: What is DAGpedia?
+description: Site architecture, two-layer content model, and governance docs.
+---
+
+DAGpedia is a **Next.js** site deployed on **Vercel**. Public DAG entries live under `src/content/dags/` as Markdown with YAML frontmatter — not in the `docs/` folder, which holds **project governance** (ADRs, workflows, schemas).
+
+## Two-layer content model
+
+Each DAG uses a contributor layer and a generated layer:
+
+| Layer | Path | Who edits |
+| ----- | ---- | --------- |
+| Contributor markdown | `src/content/dags/<id>.md` | You (via pull request) |
+| Generated JSON | `_data/<id>.json` | CI only |
+
+**Never hand-edit** `_data/*.json`. Locally, run `npm run generate-dag-data` to preview; on pull requests, CI refreshes generated files when needed.
+
+### Contributor file (`<id>.md`)
+
+Contains:
+
+- YAML frontmatter: `id`, `title`, `context`, `dagitty`, `evidence`, `keywords`, …
+- Narrative sections: operationalization, edge rationale, limitations
+
+Forbidden in frontmatter: `version`, `contributors`, `nodes`, `edges`, `adjustment_sets` — these are derived at build time.
+
+### Generated file (`_data/<id>.json`)
+
+Built from the markdown + dagitty.js analysis: adjustment sets, node roles, `llm.text` summaries, and other machine-readable fields used by the UI and search index.
+
+## Methodological anchor
+
+DAGpedia follows the living DAGs framework:
+
+> Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. *Am J Epidemiol.* 2026;195:1365–1367. https://doi.org/10.1093/aje/kwag029
+
+## Deeper documentation
+
+Architecture decisions are recorded as ADRs in [`docs/adr/`](https://github.com/dagpedia/dagpedia/tree/main/docs/adr). This About section summarizes them for visitors; the repository docs remain the authoritative detail for contributors.
