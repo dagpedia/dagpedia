@@ -17,8 +17,12 @@ export default async function DagSlugLayout({ children, params }: LayoutProps) {
       title={data.title}
       nodeCount={data.nodes.length}
       edgeCount={data.edges.length}
-      tier={data.tier}
       dagType={data.dagType}
+      version={data.version}
+      updatedAt={data.updatedAt}
+      workflowStatus={data.workflowStatus}
+      slug={data.slug}
+      contributors={data.contributors}
       dagittyCode={data.dagittyCode}
     >
       {children}

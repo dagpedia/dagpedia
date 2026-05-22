@@ -12,7 +12,6 @@ import { Separator } from "@/components/ui/separator";
 import { AdjustmentSets } from "./AdjustmentSets";
 import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
-import { ContributorsPanel } from "./ContributorsPanel";
 import { DagCanvas } from "./DagCanvas";
 import { EdgeList } from "./EdgeList";
 import { EdgesAndConditionalIndep } from "./EdgesAndConditionalIndep";
@@ -20,7 +19,6 @@ import { KeywordsPanel } from "./KeywordsPanel";
 import { MobileDetailAccordion } from "./MobileDetailAccordion";
 import { NodeList } from "./NodeList";
 import { SiteFooter } from "@/components/layout/SiteFooter";
-import { VersionPanel } from "./VersionPanel";
 import { cn } from "@/lib/utils";
 import type { DagPageData } from "@/types/dag";
 
@@ -60,18 +58,9 @@ export function DagPageView({ data }: { data: DagPageData }) {
     />
   );
 
-  const metadataSection = (
+  const metadataScrollSection = (
     <>
       <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
-      <Separator />
-      <VersionPanel
-        version={data.version}
-        updatedAt={data.updatedAt}
-        status={data.workflowStatus}
-        slug={data.slug}
-      />
-      <Separator />
-      <ContributorsPanel contributors={data.contributors} />
       {data.alternativeDags.length > 0 && (
         <>
           <Separator />
@@ -128,24 +117,6 @@ export function DagPageView({ data }: { data: DagPageData }) {
       content: (
         <AdjustmentSets bare sets={data.adjustmentSets} nodes={data.nodes} />
       ),
-    },
-    {
-      value: "version",
-      title: "Version",
-      content: (
-        <VersionPanel
-          bare
-          version={data.version}
-          updatedAt={data.updatedAt}
-          status={data.workflowStatus}
-          slug={data.slug}
-        />
-      ),
-    },
-    {
-      value: "contributors",
-      title: "Contributors",
-      content: <ContributorsPanel bare contributors={data.contributors} />,
     },
     ...(data.alternativeDags.length > 0
       ? [
@@ -226,13 +197,13 @@ export function DagPageView({ data }: { data: DagPageData }) {
     >
       <ResizablePanel defaultSize="67%" minSize="40%">
         <ResizablePanelGroup orientation="vertical" className="h-full">
-          <ResizablePanel defaultSize="55%" minSize="25%">
+          <ResizablePanel defaultSize="50%" minSize="25%">
             <div className="h-full min-h-[240px] p-0 lg:min-h-0">
               <DagCanvas {...dagCanvasProps} />
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="45%" minSize="20%">
+          <ResizablePanel defaultSize="50%" minSize="20%">
             <div className="flex h-full min-h-0 flex-col overflow-hidden">
               {edgesSection}
             </div>
@@ -256,8 +227,8 @@ export function DagPageView({ data }: { data: DagPageData }) {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize="50%" minSize="20%">
-            <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain">
-              {metadataSection}
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+              {metadataScrollSection}
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
@@ -272,16 +243,29 @@ export function DagPageView({ data }: { data: DagPageData }) {
     </>
   );
 
+  const hasDesktopScrollBelow =
+    data.body.trim().length > 0 || data.references.length > 0;
+
   return (
     <article
       className={cn(
         "w-full",
-        isDesktop ? "space-y-4" : "flex h-full min-h-0 flex-col"
+        isDesktop
+          ? cn(
+              hasDesktopScrollBelow
+                ? "min-h-full"
+                : "grid h-full min-h-0 grid-rows-[minmax(0,1fr)]"
+            )
+          : "flex h-full min-h-0 flex-col"
       )}
     >
       <div
         className={cn(
-          isDesktop && "lg:h-[calc(100svh-2.75rem-1rem)] lg:shrink-0",
+          "min-h-0 overflow-hidden",
+          isDesktop &&
+            hasDesktopScrollBelow &&
+            "h-[calc(100svh-var(--dag-topbar-h)-var(--dag-meta-bar-h)-var(--dag-content-pb))] shrink-0",
+          isDesktop && !hasDesktopScrollBelow && "h-full",
           !isDesktop && "flex min-h-0 flex-1 flex-col"
         )}
       >
@@ -290,16 +274,16 @@ export function DagPageView({ data }: { data: DagPageData }) {
             orientation="vertical"
             className="min-h-0 flex-1"
           >
-            <ResizablePanel defaultSize="40%" minSize="20%">
-              <div className="flex h-full min-h-[160px] flex-col pb-1.5">
+            <ResizablePanel defaultSize="50%" minSize="20%">
+              <div className="flex h-full min-h-[160px] flex-col pb-1">
                 <div className="min-h-0 flex-1 overflow-hidden rounded-xl border bg-card">
                   <DagCanvas {...dagCanvasProps} />
                 </div>
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize="60%" minSize="25%">
-              <div className="flex h-full min-h-0 flex-col pt-1.5">
+            <ResizablePanel defaultSize="50%" minSize="25%">
+              <div className="flex h-full min-h-0 flex-col pt-1">
                 <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-xl border bg-card">
                   <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain">
                     {mobileScrollContent}
@@ -309,56 +293,59 @@ export function DagPageView({ data }: { data: DagPageData }) {
             </ResizablePanel>
           </ResizablePanelGroup>
         ) : (
-          <div className="h-full min-h-[560px] lg:min-h-0">
-            {desktopWorkspace}
-          </div>
+          <div className="h-full min-h-0">{desktopWorkspace}</div>
         )}
       </div>
 
-      {isDesktop && data.body.trim() && (
-        <section className="border-t pt-6">
-          <MarkdownBody body={data.body} />
-        </section>
+      {isDesktop && hasDesktopScrollBelow && (
+        <div className="mt-4 space-y-4">
+          {data.body.trim() && (
+            <section className="border-t pt-6">
+              <MarkdownBody body={data.body} />
+            </section>
+          )}
+          {data.references.length > 0 && (
+            <section className="border-t pt-6">
+              <h2 className="mb-3 text-xl font-semibold">References</h2>
+              <ul className="space-y-2 text-base text-muted-foreground">
+                {data.references.map((ref, i) => (
+                  <li key={i}>
+                    {ref.citation}
+                    {ref.doi && (
+                      <>
+                        {" "}
+                        <a
+                          href={`https://doi.org/${ref.doi}`}
+                          className="text-brand hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          DOI
+                        </a>
+                      </>
+                    )}
+                    {ref.pmid && (
+                      <>
+                        {" "}
+                        <a
+                          href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
+                          className="text-brand hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          PubMed
+                        </a>
+                      </>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
       )}
 
-      {isDesktop && data.references.length > 0 && (
-        <section className="border-t pt-6">
-          <h2 className="mb-3 text-xl font-semibold">References</h2>
-          <ul className="space-y-2 text-base text-muted-foreground">
-            {data.references.map((ref, i) => (
-              <li key={i}>
-                {ref.citation}
-                {ref.doi && (
-                  <>
-                    {" "}
-                    <a
-                      href={`https://doi.org/${ref.doi}`}
-                      className="text-brand hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      DOI
-                    </a>
-                  </>
-                )}
-                {ref.pmid && (
-                  <>
-                    {" "}
-                    <a
-                      href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
-                      className="text-brand hover:underline"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      PubMed
-                    </a>
-                  </>
-                )}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+      {isDesktop && <SiteFooter />}
     </article>
   );
 }
