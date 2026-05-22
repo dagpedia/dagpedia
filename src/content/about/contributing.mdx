@@ -1,0 +1,52 @@
+---
+title: How to contribute
+description: Propose a new DAG or node, validate locally, and open a pull request.
+---
+
+DAGpedia grows through community contribution. Every DAG strengthens shared epistemic infrastructure for causal inference in epidemiology.
+
+This page is a **visitor-friendly entry point**. The full contributor guide with validation commands and review criteria lives in the repository.
+
+## Quick start
+
+1. **Propose work on GitHub**
+   - [New DAG issue](https://github.com/dagpedia/dagpedia/issues/new?template=new-dag.yml) — submit a causal diagram
+   - [New Node issue](https://github.com/dagpedia/dagpedia/issues/new?template=new-node.yml) — add a variable to the controlled vocabulary
+
+2. **Read the full guide** — [docs/CONTRIBUTING.md](https://github.com/dagpedia/dagpedia/blob/main/docs/CONTRIBUTING.md)
+
+3. **Fork, branch, and open a PR** against `main`
+
+## Two-layer content (summary)
+
+| Layer | Path | You edit? |
+| ----- | ---- | --------- |
+| Markdown source | `src/content/dags/<id>.md` | Yes |
+| Generated JSON | `_data/<id>.json` | No (CI only) |
+
+Copy `_templates/dag-template.md` to `src/content/dags/your-dag-id.md`. Register new node keys in `src/content/nodes/` in a **separate PR** before using them in `dagitty`.
+
+## Validation
+
+```bash
+python scripts/nodes/validate_nodes.py --all
+python scripts/dag/validate_dag.py src/content/dags/your-dag-id.md
+npm run generate-dag-data
+npm run build
+```
+
+Schema and enums: [docs/schema/README.md](https://github.com/dagpedia/dagpedia/blob/main/docs/schema/README.md)
+
+## Workflow docs
+
+- [Issue → DAG workflow](https://github.com/dagpedia/dagpedia/blob/main/docs/workflow/issue-to-dag.md)
+- [PR and review](https://github.com/dagpedia/dagpedia/blob/main/docs/workflow/pr-and-review.md)
+- [Using the validator](https://github.com/dagpedia/dagpedia/blob/main/docs/workflow/using-the-validator.md)
+
+## Review expectations
+
+- Valid DAGitty syntax and schema compliance
+- `evidence` keys match dagitty edges exactly
+- Clear narrative and **explicit assumptions**
+
+We do not require universal agreement on causal structure — assumptions must be stated, not hidden.

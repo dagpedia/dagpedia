@@ -13,3 +13,8 @@ export function isDagDetailPage(pathname: string) {
   const segments = pathname.split("/").filter(Boolean);
   return segments.length === 2 && segments[0] === "dags";
 }
+
+/** True for `/about` documentation section. */
+export function isAboutPage(pathname: string) {
+  return pathname === "/about" || pathname.startsWith("/about/");
+}

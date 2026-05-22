@@ -16,5 +16,6 @@ npm-debug.log*
 .vercel
 
 # Generated at build time
+.source/
 public/search-index.json
 public/dag-meta/

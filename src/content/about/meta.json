@@ -1,0 +1,13 @@
+{
+  "title": "About",
+  "pages": [
+    "index",
+    "causal-inference",
+    "dags",
+    "dagpedia",
+    "use-cases",
+    "contributing",
+    "roadmap",
+    "license"
+  ]
+}

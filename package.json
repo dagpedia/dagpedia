@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "npm run generate-index && next dev",
-    "prebuild": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-meta.ts",
+    "prebuild": "node --input-type=module -e \"import('fumadocs-mdx/next').then(m => m.postInstall())\" && tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-meta.ts",
     "build": "next build",
     "generate-index": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-meta.ts",
     "generate-dag-meta": "tsx scripts/generate-dag-meta.ts",
@@ -26,6 +26,9 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
+    "fumadocs-core": "^15.8.5",
+    "fumadocs-mdx": "^11.10.1",
+    "fumadocs-ui": "^15.8.5",
     "gray-matter": "^4.0.3",
     "jsdom": "^29.1.1",
     "lucide-react": "^1.16.0",

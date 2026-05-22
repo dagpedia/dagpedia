@@ -1,0 +1,30 @@
+---
+title: Roadmap
+description: Features planned for DAGpedia v0.2 and beyond.
+---
+
+DAGpedia **v0.1 (MVP)** focuses on a validated DAG catalog, Next.js site, and contribution workflow. Several enhancements are **accepted in principle** but deferred to **v0.2** unless noted otherwise.
+
+## Deferred to v0.2
+
+### Quality tiers
+
+[ADR: Defer tier system](https://github.com/dagpedia/dagpedia/blob/main/docs/adr/2026-05-16-005-defer-tier-system.md) — Verified / Reviewed / Community tiers are not shown in v0.1. All published DAGs follow the same baseline validation.
+
+### Per-DAG DOIs
+
+[ADR: Per-DAG DOI](https://github.com/dagpedia/dagpedia/blob/main/docs/adr/2026-05-16-004-per-dag-doi.md) — Zenodo DOIs for individual DAGs to credit contributors. v0.1 uses repository-level citation; per-DAG DOI automation is planned later.
+
+### LLM-assisted pre-review
+
+[ADR: LLM as first reviewer](https://github.com/dagpedia/dagpedia/blob/main/docs/adr/2026-05-16-006-llm-as-first-reviewer.md) — Structured automated checks before human maintainers. Implementation deferred; human review remains final.
+
+## UX and discovery
+
+### Command palette search
+
+[ADR: Command palette search UX](https://github.com/dagpedia/dagpedia/blob/main/docs/adr/2026-05-18-007-command-palette-search-ux.md) — ⌘K search across DAGs and nodes. Indexing **About** pages in the same index is a separate follow-up.
+
+## How decisions are tracked
+
+New scope is captured as ADRs under [`docs/adr/`](https://github.com/dagpedia/dagpedia/tree/main/docs/adr). The [docs MAP](https://github.com/dagpedia/dagpedia/blob/main/docs/MAP.md) is auto-generated and lists the full decision log.

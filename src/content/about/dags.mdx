@@ -1,0 +1,31 @@
+---
+title: What is a DAG?
+description: DAGitty format, dagitty.js, and how DAGpedia renders graphs.
+---
+
+On DAGpedia, each causal DAG is stored as a **DAGitty string** — the plain-text format used by [dagitty.net](https://dagitty.net) and the `dagitty` R package.
+
+## Why DAGitty?
+
+DAGitty is the de facto standard in epidemiology. Researchers can:
+
+- Copy a graph from a paper into DAGitty and paste it here
+- Run identification and adjustment-set queries in R (`dagitty`, `ggdag`)
+- Edit interactively in the browser via **dagitty.js** (vendored under `public/vendor/`)
+
+Alternatives such as custom JSON schemas or static images were rejected because they are harder to validate, less portable, and not machine-actionable at runtime.
+
+## Two roles: inference vs layout
+
+DAGpedia separates concerns (see the [dagitty–React Flow adapter](https://github.com/dagpedia/dagpedia/blob/main/docs/conventions/dagitty-react-flow-adapter.md) convention):
+
+| Layer | Technology | Responsibility |
+| ----- | ---------- | ---------------- |
+| Causal structure | **dagitty.js** | Parse graph, roles (exposure/outcome), adjustment sets |
+| Visual layout | **React Flow** | Node positions, pan/zoom, site styling |
+
+The DAGitty string is the **source of truth** for edges and d-separation. Layout coordinates may be refined for readability but do not change causal meaning.
+
+## Evidence on edges
+
+Contributors attach an **evidence level** to each edge in YAML frontmatter (see the [validation schema](https://github.com/dagpedia/dagpedia/blob/main/docs/schema/README.md)). The narrative body should cite sources for non-obvious edges and explain deliberately omitted paths.
