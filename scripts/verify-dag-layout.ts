@@ -1,5 +1,4 @@
-import { getDag, extractDagittyString } from "../src/lib/dag";
-import { parseDagittyStructure } from "../src/lib/dag-utils";
+import { loadDagData } from "../src/lib/dag-data";
 
 const EXPECTED: Record<string, { nodes: number; edges: number }> = {
   "smoking-lung-cancer": { nodes: 7, edges: 9 },
@@ -9,33 +8,25 @@ const EXPECTED: Record<string, { nodes: number; edges: number }> = {
 let failed = false;
 
 for (const [slug, expected] of Object.entries(EXPECTED)) {
-  const dag = getDag(slug);
-  if (!dag) {
-    console.error(`✗ ${slug}: file not found`);
+  const data = loadDagData(slug);
+  if (!data) {
+    console.error(`✗ ${slug}: _data/${slug}.json not found`);
     failed = true;
     continue;
   }
 
-  const code = extractDagittyString(dag.body);
-  if (!code) {
-    console.error(`✗ ${slug}: no dagitty block`);
-    failed = true;
-    continue;
-  }
-
-  const structure = parseDagittyStructure(code);
   const ok =
-    structure.nodes.size === expected.nodes &&
-    structure.edges.length === expected.edges;
+    data.computed.node_count === expected.nodes &&
+    data.computed.edge_count === expected.edges;
 
   if (ok) {
     console.log(
-      `✓ ${slug}: ${structure.nodes.size} nodes, ${structure.edges.length} edges`
+      `✓ ${slug}: ${data.computed.node_count} nodes, ${data.computed.edge_count} edges`
     );
   } else {
     console.error(
       `✗ ${slug}: expected ${expected.nodes} nodes / ${expected.edges} edges, ` +
-        `got ${structure.nodes.size} / ${structure.edges.length}`
+        `got ${data.computed.node_count} / ${data.computed.edge_count}`
     );
     failed = true;
   }

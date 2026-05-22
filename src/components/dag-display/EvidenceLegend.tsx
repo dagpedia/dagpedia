@@ -1,18 +1,16 @@
 import { EvidenceBadge } from "./badges";
+import type { EvidenceLevelLegendItem } from "@/types/dag";
 
-const EVIDENCE_LEVELS = [
-  { level: "strong" as const, description: "RCT or consistent observational evidence" },
-  { level: "moderate" as const, description: "Observational (some inconsistency)" },
-  { level: "assumed" as const, description: "Structural / theoretical assumption" },
-  { level: "weak" as const, description: "Limited or conflicting evidence" },
-];
-
-export function EvidenceLegendContent() {
+export function EvidenceLegendContent({
+  levels,
+}: {
+  levels: EvidenceLevelLegendItem[];
+}) {
   return (
     <ul className="space-y-1.5">
-      {EVIDENCE_LEVELS.map(({ level, description }) => (
+      {levels.map(({ level, label, description }) => (
         <li key={level} className="flex items-center gap-2">
-          <EvidenceBadge level={level} />
+          <EvidenceBadge level={level} label={label} />
           <span>{description}</span>
         </li>
       ))}

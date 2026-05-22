@@ -1,101 +1,44 @@
 ---
-# ── Required fields ──────────────────────────────────────────────────────────
-id: your-dag-id                    # unique slug, matches filename
-title: "Exposure → Outcome"        # display title
-version: "0.1.0"                   # semver
-status: draft                      # draft | review | stable
-
-field: epidemiology                # epidemiology | social-epidemiology | ...
-subfield: ""                       # e.g. cardiovascular, mental-health, ...
-
-exposure: exposure_variable        # standardized slug
-outcome: outcome_variable          # standardized slug
-
+id: your-dag-id
+title: "Exposure and outcome"
+context:
+  population: general-adults
+  geographic: north-america-europe
+  era: 1990s-present
+  # note: "Optional scope note, max 200 chars"
 dagitty: |
   dag {
-    Exposure [pos="0,1"]
-    Outcome [pos="2,1"]
-    Confounder [pos="1,0"]
-
-    Exposure -> Outcome
-    Confounder -> Exposure
-    Confounder -> Outcome
+    exposure_node [exposure]
+    outcome_node [outcome]
+    confounder -> exposure_node
+    confounder -> outcome_node
+    exposure_node -> outcome_node
   }
-
-edges:
-  - from: Exposure
-    to: Outcome
-    evidence: speculative          # speculative | weak | moderate | strong
-    notes: ""
-  - from: Confounder
-    to: Exposure
-    evidence: speculative
-    notes: ""
-  - from: Confounder
-    to: Outcome
-    evidence: speculative
-    notes: ""
-
-# adjustmentSets and conditionalIndependencies are generated at build time
-# (see public/dag-meta/ and npm run generate-dag-meta)
-
-# ── Optional fields ───────────────────────────────────────────────────────────
-tags: []
-
-related_dags: []
-# Example:
-# - id: other-dag-id
-#   relation: shared_exposure      # shared_exposure | shared_outcome |
-#                                  # subgraph | supergraph |
-#                                  # structural_variant | competing
-
-publications: []
-# Example:
-# - doi: 10.1093/aje/kwt172
-#   notes: "Foundational paper establishing this causal pathway"
-
-contributors:
-  - github: your-github-username
-
-date_created: 2026-05-12
-date_updated: 2026-05-12
+evidence:
+  exposure_node -> outcome_node: moderate
+  confounder -> exposure_node: moderate
+  confounder -> outcome_node: moderate
+keywords:
+  - smoking
+alternatives: []
 ---
 
-## Background
+## Operationalization
 
-<!-- Why does this causal question matter? What is the public health or scientific relevance? -->
+Define how each node is measured in practice.
 
-## Causal structure
+## Edge rationale
 
-<!-- What does this DAG encode? Describe the key nodes and edges in plain language. -->
+Explain edges with moderate or weaker evidence. Place DOI/PMID citations here.
 
-```dagitty
-dag {
-  Exposure [pos="0,1"]
-  Outcome [pos="2,1"]
-  Confounder [pos="1,0"]
+## Missing edge rationale
 
-  Exposure -> Outcome
-  Confounder -> Exposure
-  Confounder -> Outcome
-}
-```
+Document edges intentionally omitted and why.
 
-## Assumptions
+## Context and reusability
 
-<!-- What are the key assumptions embedded in this DAG?
-     What has been intentionally omitted, and why? -->
+Describe limits of `context` and when edge interpretations may change.
 
-## Identification strategy
+## Known limitations
 
-<!-- How can the causal effect be estimated given this structure?
-     What is the minimum adjustment set? Are there multiple valid sets? -->
-
-## Known variants
-
-<!-- Are there alternative DAG structures for this research question?
-     Under what conditions would a different structure apply? -->
-
-## Open questions
-
-<!-- What edges are most uncertain? What empirical evidence would change this DAG? -->
+Unmeasured confounding, scope limits, and generalizability concerns.

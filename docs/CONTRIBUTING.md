@@ -2,11 +2,16 @@
 
 Thank you for contributing. DAGpedia grows through community contribution — every DAG added strengthens the shared epistemic infrastructure for causal inference in epidemiology.
 
-**Project docs:** start with [MAP.md](MAP.md) for what lives where. ADRs use typed frontmatter ([schema](adr/schema.json)); run `python scripts/docs/validate_adr.py --all` before pushing doc changes.
+**Project docs:** [MAP.md](MAP.md), DAG validation schema in [schema/](schema/README.md), ADRs in [adr/](adr/).
 
-## Who can contribute?
+## Two-layer DAG content (Issue #52)
 
-Anyone. You don't need to be an expert in every aspect of a causal system — partial DAGs with clearly labeled uncertainty are valuable. The evidence level annotation system is designed precisely for this.
+| Layer | Path | Who edits |
+|-------|------|-----------|
+| Contributor markdown | `src/content/dags/<id>.md` | You (via PR) |
+| Generated JSON | `_data/<id>.json` | CI bot only |
+
+Never hand-edit `_data/*.json`. Run `npm run generate-dag-data` locally to preview; CI commits updates on PRs.
 
 ## How to contribute a new DAG
 
@@ -15,6 +20,8 @@ Anyone. You don't need to be an expert in every aspect of a causal system — pa
 ```bash
 git clone https://github.com/YOUR_USERNAME/dagpedia.git
 cd dagpedia
+npm ci
+pip install pyyaml aiohttp
 ```
 
 ### 2. Copy the template
@@ -23,93 +30,44 @@ cd dagpedia
 cp _templates/dag-template.md src/content/dags/your-dag-id.md
 ```
 
-Use a short, descriptive slug as the filename (flat under `src/content/dags/`).
-Examples: `ses-cvd-classic.md`
+Add new node keys under `src/content/nodes/` in a **separate PR** before using them in `dagitty`.
 
-Add any new variables as `src/content/nodes/<key>.md` in a **separate PR** before referencing them in a DAG.
+### 3. Frontmatter (required)
 
-### 3. Fill in the frontmatter
+- All frontmatter rules: [dag-validation.json](schema/dag-validation.json) + [enums/*.yaml](schema/enums/)
+- `id`, `title`, `context`, `dagitty`, `evidence`, `keywords` (required); `alternatives` optional (`[]` if none)
 
-Every field marked **required** must be completed before submitting.
-Optional fields are encouraged but not blocking.
+Do **not** include `version`, `contributors`, `nodes`, `edges`, or `adjustment_sets` in frontmatter.
 
-Key decisions:
+### 4. Narrative body (recommended sections)
 
-**`status`**
-- `draft` — initial submission, not yet reviewed
-- `review` — under active review
-- `stable` — reviewed and endorsed by ≥1 maintainer
+- **Operationalization** — how nodes are measured
+- **Edge rationale** — citations (DOI/PMID) for non-obvious edges
+- **Missing edge rationale** — omitted edges
+- **Context and reusability**
+- **Known limitations**
 
-**`evidence` levels per edge**
-- `speculative` — theoretical basis only, no empirical support
-- `weak` — limited or conflicting evidence
-- `moderate` — consistent evidence from observational studies
-- `strong` — experimental or high-quality replication evidence
-
-**`identification`**
-- `backdoor` — identifiable via backdoor criterion
-- `frontdoor` — identifiable via front-door criterion
-- `iv` — requires instrumental variable
-- `unidentified` — not identified given current structure
-- `unknown` — requires further analysis
-
-### 4. Write the narrative
-
-The body of the markdown file (below the frontmatter) should include:
-
-- **Background** — why this causal question matters
-- **Assumptions** — what the DAG encodes and what it leaves out
-- **Identification strategy** — how to estimate the effect
-- **Known variants** — alternative DAG structures and when they apply
-- **Open questions** — what remains speculative
-
-### 5. Validate locally (optional but recommended)
+### 5. Validate locally
 
 ```bash
-pip install pyyaml aiohttp
 python scripts/nodes/validate_nodes.py --all
 python scripts/dag/validate_dag.py src/content/dags/your-dag-id.md
+npm run generate-dag-data
+npm run build
 ```
 
-### 6. Submit a pull request
+### 6. Pull request
 
-Push your branch and open a PR against `main`. The PR template will guide you through the checklist.
+Open a PR against `main`. The bot will commit `_data/your-dag-id.json` if needed.
 
-CI will automatically:
-- Validate nodes, DAGs, and ADRs
-- Build the site to ensure no rendering errors
+## Updating an existing DAG
 
-## How to update an existing DAG
+Edit `src/content/dags/<id>.md` only. Git history is the version record. Re-run validation and let CI refresh `_data/`.
 
-1. Edit the `.md` file directly
-2. Increment the `version` field (e.g. `0.1.0` → `0.2.0`)
-3. Add your GitHub username to `contributors`
-4. Submit a PR with a clear description of what changed and why
+## Review criteria
 
-Version history is preserved in git. Major structural changes (adding/removing nodes, reversing edges) should bump the minor version. Evidence level updates or annotation fixes are patch versions.
+- Dagitty syntax and enum/schema compliance
+- `evidence` keys match dagitty edges exactly
+- Clear narrative and explicit assumptions
 
-## Reviewing pull requests
-
-Maintainers review PRs for:
-- Dagitty syntax validity
-- Completeness of required fields
-- Plausibility of evidence level assignments
-- Clarity of the narrative
-
-We do not require the DAG to be "correct" — causal assumptions are inherently contestable. We do require that assumptions are made explicit.
-
-## Copyright and paywalled sources
-
-When a DAG is informed by a paywalled paper, contributors must encode the causal
-structure as a new dagitty representation. Do not reproduce or trace the
-paper's original figure; submit an original encoding of the causal knowledge
-(nodes, edges, and assumptions) in your own words and structure.
-
-## Code of conduct
-
-Be constructive. Scientific disagreement is welcome; personal criticism is not.
-When a DAG encodes contested assumptions, note it in the `status` or open an issue.
-
-## Questions?
-
-Open a [GitHub issue](https://github.com/dagpedia/dagpedia/issues) or start a discussion.
+We do not require universal agreement on causal structure — assumptions must be **explicit**.

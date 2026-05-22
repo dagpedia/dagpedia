@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 import { AdjustmentSets } from "./AdjustmentSets";
+import { ContextPanel } from "./ContextPanel";
 import { AlternativeDags } from "./AlternativeDags";
 import { ConditionalIndep } from "./ConditionalIndep";
 import { DagCanvas } from "./DagCanvas";
@@ -52,6 +53,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
     <EdgesAndConditionalIndep
       edges={data.edges}
       nodes={data.nodes}
+      evidenceLegend={data.evidenceLegend}
       conditionalIndependencies={data.conditionalIndependencies}
       highlightedEdgeKey={hoveredEdgeKey}
       onEdgeHover={onEdgeHover}
@@ -60,6 +62,8 @@ export function DagPageView({ data }: { data: DagPageData }) {
 
   const metadataScrollSection = (
     <>
+      <ContextPanel context={data.context} />
+      <Separator />
       <AdjustmentSets sets={data.adjustmentSets} nodes={data.nodes} />
       {data.alternativeDags.length > 0 && (
         <>
@@ -67,10 +71,10 @@ export function DagPageView({ data }: { data: DagPageData }) {
           <AlternativeDags items={data.alternativeDags} />
         </>
       )}
-      {data.tags.length > 0 && (
+      {data.keywords.length > 0 && (
         <>
           <Separator />
-          <KeywordsPanel tags={data.tags} />
+          <KeywordsPanel keywords={data.keywords} />
         </>
       )}
     </>
@@ -85,6 +89,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
           bare
           edges={data.edges}
           nodes={data.nodes}
+          evidenceLegend={data.evidenceLegend}
           highlightedEdgeKey={hoveredEdgeKey}
           onEdgeHover={onEdgeHover}
         />
@@ -112,6 +117,11 @@ export function DagPageView({ data }: { data: DagPageData }) {
       ),
     },
     {
+      value: "context",
+      title: "Context",
+      content: <ContextPanel bare context={data.context} />,
+    },
+    {
       value: "adjustment-sets",
       title: "Adjustment sets",
       content: (
@@ -127,12 +137,12 @@ export function DagPageView({ data }: { data: DagPageData }) {
           },
         ]
       : []),
-    ...(data.tags.length > 0
+    ...(data.keywords.length > 0
       ? [
           {
             value: "keywords",
             title: "Keywords",
-            content: <KeywordsPanel bare tags={data.tags} />,
+            content: <KeywordsPanel bare keywords={data.keywords} />,
           },
         ]
       : []),
@@ -142,49 +152,6 @@ export function DagPageView({ data }: { data: DagPageData }) {
             value: "description",
             title: "Description",
             content: <MarkdownBody body={data.body} />,
-          },
-        ]
-      : []),
-    ...(data.references.length > 0
-      ? [
-          {
-            value: "references",
-            title: "References",
-            content: (
-              <ul className="space-y-2 text-base text-muted-foreground">
-                {data.references.map((ref, i) => (
-                  <li key={i}>
-                    {ref.citation}
-                    {ref.doi && (
-                      <>
-                        {" "}
-                        <a
-                          href={`https://doi.org/${ref.doi}`}
-                          className="text-brand hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          DOI
-                        </a>
-                      </>
-                    )}
-                    {ref.pmid && (
-                      <>
-                        {" "}
-                        <a
-                          href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
-                          className="text-brand hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          PubMed
-                        </a>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ),
           },
         ]
       : []),
@@ -243,8 +210,7 @@ export function DagPageView({ data }: { data: DagPageData }) {
     </>
   );
 
-  const hasDesktopScrollBelow =
-    data.body.trim().length > 0 || data.references.length > 0;
+  const hasDesktopScrollBelow = data.body.trim().length > 0;
 
   return (
     <article
@@ -299,49 +265,9 @@ export function DagPageView({ data }: { data: DagPageData }) {
 
       {isDesktop && hasDesktopScrollBelow && (
         <div className="mt-4 space-y-4">
-          {data.body.trim() && (
-            <section className="border-t pt-6">
-              <MarkdownBody body={data.body} />
-            </section>
-          )}
-          {data.references.length > 0 && (
-            <section className="border-t pt-6">
-              <h2 className="mb-3 text-xl font-semibold">References</h2>
-              <ul className="space-y-2 text-base text-muted-foreground">
-                {data.references.map((ref, i) => (
-                  <li key={i}>
-                    {ref.citation}
-                    {ref.doi && (
-                      <>
-                        {" "}
-                        <a
-                          href={`https://doi.org/${ref.doi}`}
-                          className="text-brand hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          DOI
-                        </a>
-                      </>
-                    )}
-                    {ref.pmid && (
-                      <>
-                        {" "}
-                        <a
-                          href={`https://pubmed.ncbi.nlm.nih.gov/${ref.pmid}/`}
-                          className="text-brand hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          PubMed
-                        </a>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
+          <section className="border-t pt-6">
+            <MarkdownBody body={data.body} />
+          </section>
         </div>
       )}
 

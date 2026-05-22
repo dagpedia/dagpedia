@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import { getAllDagDataSlugs, loadDagData } from "../src/lib/dag-data";
+import { getNodeLabel } from "../src/lib/nodes";
 
 const CONTENT_ROOT = path.join(process.cwd(), "src", "content");
 const OUTPUT_PATH = path.join(process.cwd(), "public", "search-index.json");
@@ -11,8 +13,7 @@ type DagEntry = {
   title: string;
   exposure: string;
   outcome: string;
-  tags: string[];
-  tier: string;
+  keywords: string[];
 };
 
 type NodeEntry = {
@@ -43,16 +44,18 @@ function readMdFiles(dir: string): matter.GrayMatterFile<string>[] {
 function generate() {
   const index: SearchEntry[] = [];
 
-  for (const { data } of readMdFiles("dags")) {
-    if (!data.id || !data.title) continue;
+  for (const id of getAllDagDataSlugs()) {
+    const dagData = loadDagData(id);
+    if (!dagData) continue;
+    const exposureNode = dagData.graph.nodes.find((n) => n.role === "exposure");
+    const outcomeNode = dagData.graph.nodes.find((n) => n.role === "outcome");
     index.push({
       type: "dag",
-      id: data.id,
-      title: data.title,
-      exposure: data.exposure ?? "",
-      outcome: data.outcome ?? "",
-      tags: data.tags ?? [],
-      tier: data.tier ?? "community",
+      id: dagData.id,
+      title: dagData.title,
+      exposure: exposureNode ? getNodeLabel(exposureNode.id) : "",
+      outcome: outcomeNode ? getNodeLabel(outcomeNode.id) : "",
+      keywords: dagData.keywords,
     });
   }
 

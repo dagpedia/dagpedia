@@ -5,7 +5,7 @@ export type SearchItem =
       title: string;
       exposure: string;
       outcome: string;
-      tags: string[];
+      keywords: string[];
     }
   | {
       type: "node";

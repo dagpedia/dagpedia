@@ -65,7 +65,7 @@ export function SearchCommand({ open, onOpenChange }: Props) {
               {dags.map((item) => (
                 <CommandItem
                   key={item.id}
-                  value={`${item.title} ${item.tags.join(" ")}`}
+                  value={`${item.title} ${item.keywords.join(" ")}`}
                   onSelect={() => handleSelect(`/dags/${item.id}`)}
                 >
                   <GitGraph className="mr-2 h-4 w-4 text-muted-foreground" />

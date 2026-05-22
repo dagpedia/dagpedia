@@ -1,23 +1,24 @@
 import { Badge } from "@/components/ui/badge";
 import { PanelCard } from "./PanelCard";
+import type { LabeledSlug } from "@/types/dag";
 
 export function KeywordsPanel({
-  tags,
+  keywords,
   divided = false,
   bare = false,
 }: {
-  tags: string[];
+  keywords: LabeledSlug[];
   divided?: boolean;
   bare?: boolean;
 }) {
-  if (tags.length === 0) return null;
+  if (keywords.length === 0) return null;
 
   return (
     <PanelCard title="Keywords" divided={divided} bare={bare}>
       <div className="flex flex-wrap gap-1.5">
-        {tags.map((tag) => (
-          <Badge key={tag} variant="secondary" className="text-xs">
-            {tag}
+        {keywords.map((keyword) => (
+          <Badge key={keyword.id} variant="secondary" className="text-xs">
+            {keyword.label}
           </Badge>
         ))}
       </div>

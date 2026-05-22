@@ -39,10 +39,13 @@ jobs:
           node-version: "24"
           cache: "npm"
 
-      - name: Build check
+      - name: Install and check generated DAG data
         run: |
           npm ci
-          npm run build
+          npm run generate-dag-data -- --check
+
+      - name: Build check
+        run: npm run build
 
   deploy:
     name: Deploy to Vercel

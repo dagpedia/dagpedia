@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { ContributeDropdown } from "@/components/layout/ContributeDropdown";
+import { DagpediaBetaBadge } from "@/components/layout/DagpediaBetaBadge";
 import { DagLogoIcon } from "@/components/layout/DagLogoIcon";
+import { DagpediaLogoText } from "@/components/layout/DagpediaLogoText";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export function SiteTopbar() {
@@ -13,12 +14,12 @@ export function SiteTopbar() {
         <SidebarTrigger />
         <Link
           href="/"
-          className="flex items-center gap-2 text-sm font-medium hover:opacity-80"
+          className="flex items-center gap-2 hover:opacity-80"
         >
           <DagLogoIcon />
-          DAGpedia
+          <DagpediaLogoText />
         </Link>
-        <Badge variant="secondary">beta</Badge>
+        <DagpediaBetaBadge />
       </div>
       <ContributeDropdown />
     </header>
