@@ -124,21 +124,15 @@ export function mapLegacyEvidence(level?: string): EvidenceLevel {
       return "strong";
     case "moderate":
       return "moderate";
+    case "conflicting":
+      return "conflicting";
+    case "expert-opinion":
+      return "expert-opinion";
     case "theoretical":
-      return "assumed";
     case "limited":
+    case "assumed":
+    case "weak":
     default:
       return "weak";
-  }
-}
-
-export function inferTier(evidence?: string): import("@/types/dag").DagTier {
-  switch (evidence) {
-    case "strong":
-      return "verified";
-    case "moderate":
-      return "reviewed";
-    default:
-      return "community";
   }
 }

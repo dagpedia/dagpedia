@@ -35,5 +35,10 @@ export type DagittyRuntime = {
       F: unknown[],
       max: number
     ) => DagittyVertex[][];
+    listMsasDirectEffect: (
+      g: DagittyGraph,
+      must: unknown[],
+      must_not: unknown[]
+    ) => DagittyVertex[][];
   };
 };

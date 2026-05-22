@@ -6,20 +6,18 @@ export type NodeRole =
   | "instrument"
   | "collider";
 
-export type EvidenceLevel = "strong" | "moderate" | "weak" | "assumed";
-
-export type DagTier = "verified" | "reviewed" | "community";
-
-export type DagType = "domain-level" | "study-specific";
-
-export type WorkflowStatus = "draft" | "under-review" | "ratified";
+export type EvidenceLevel =
+  | "strong"
+  | "moderate"
+  | "weak"
+  | "conflicting"
+  | "expert-opinion";
 
 export interface DagNode {
   id: string;
   label: string;
   role: NodeRole;
   centrality?: number;
-  /** Present when dagitty source defines layout for all nodes */
   position?: { x: number; y: number };
 }
 
@@ -35,22 +33,11 @@ export interface AdjustmentSet {
   estimand: string;
 }
 
-export interface DagAuthor {
-  name: string;
-  affiliation?: string;
-  orcid?: string;
-}
-
-export interface DagContributor {
-  name: string;
-  affiliation?: string;
-  initials: string;
-}
-
-export interface DagReference {
-  doi?: string;
-  pmid?: string;
-  citation: string;
+export interface DagContext {
+  population: string;
+  geographic: string;
+  era: string;
+  note?: string;
 }
 
 export interface AlternativeDag {
@@ -60,27 +47,20 @@ export interface AlternativeDag {
   note: string;
 }
 
-export interface DagMeta {
+export interface DagPageData {
+  slug: string;
+  body: string;
   id: string;
   title: string;
   exposure: string;
   outcome: string;
-  tier: DagTier;
-  dagType: DagType;
-  workflowStatus: WorkflowStatus;
-  version: string;
-  updatedAt: string;
-  authors: DagAuthor[];
-  contributors: DagContributor[];
-  tags: string[];
-  references: DagReference[];
+  context: DagContext;
+  keywords: string[];
+  mdCommitSha: string;
+  deprecated?: boolean;
+  supersededBy?: string;
   dagittyCode: string;
   alternativeDags: AlternativeDag[];
-}
-
-export interface DagPageData extends DagMeta {
-  slug: string;
-  body: string;
   nodes: DagNode[];
   edges: DagEdge[];
   adjustmentSets: AdjustmentSet[];

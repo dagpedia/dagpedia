@@ -1,0 +1,157 @@
+{
+  "uuid": "68da9354-1e97-4ddd-b6e7-66f492e26f6a",
+  "id": "smoking-lung-cancer",
+  "title": "Smoking and lung cancer",
+  "context": {
+    "population": "general-adults",
+    "geographic": "north-america-europe",
+    "era": "1990s-present"
+  },
+  "graph": {
+    "nodes": [
+      {
+        "uuid": "53c53546-a07c-46f7-a88a-a7634450cb1f",
+        "id": "smoking",
+        "role": "exposure"
+      },
+      {
+        "uuid": "f61baf19-00a3-4116-b61d-d45cc22c05a8",
+        "id": "lung_cancer",
+        "role": "outcome"
+      },
+      {
+        "uuid": "0d8a7232-240b-402b-b411-26a70f4ec7ee",
+        "id": "age",
+        "role": "covariate"
+      },
+      {
+        "uuid": "7df08e58-513a-4b18-b11f-0946b1776e70",
+        "id": "sex",
+        "role": "covariate"
+      },
+      {
+        "uuid": "d1678867-de8c-4590-b105-88584cdb0dfa",
+        "id": "pack_years",
+        "role": "mediator"
+      },
+      {
+        "uuid": "ccd23d3b-eb0f-444b-8160-ba772479d6e8",
+        "id": "asbestos",
+        "role": "covariate"
+      },
+      {
+        "uuid": "fcfecb2d-5e68-42ee-9b30-7bfdfec2e287",
+        "id": "genetic_risk",
+        "role": "covariate"
+      }
+    ],
+    "edges": [
+      {
+        "uuid": "0d315c8b-ee91-441f-8605-8cd118951958",
+        "from": "age",
+        "to": "smoking",
+        "evidence": "moderate"
+      },
+      {
+        "uuid": "8a6f36ad-4e3e-464e-892e-4538627ab5ff",
+        "from": "age",
+        "to": "lung_cancer",
+        "evidence": "strong"
+      },
+      {
+        "uuid": "a1ddcab9-d192-48db-8e41-51c83f8adfe9",
+        "from": "sex",
+        "to": "smoking",
+        "evidence": "moderate"
+      },
+      {
+        "uuid": "32f8941f-ef88-40f3-acc4-23882462cb52",
+        "from": "sex",
+        "to": "lung_cancer",
+        "evidence": "moderate"
+      },
+      {
+        "uuid": "cc907a1f-0c44-4cc4-b4cf-cd4b559c6a1e",
+        "from": "smoking",
+        "to": "lung_cancer",
+        "evidence": "strong"
+      },
+      {
+        "uuid": "a6aa3e0f-f8bb-475c-9c81-ce48d5c1614a",
+        "from": "smoking",
+        "to": "pack_years",
+        "evidence": "strong"
+      },
+      {
+        "uuid": "c776f664-f966-4bfd-ad7c-93254d6134fe",
+        "from": "pack_years",
+        "to": "lung_cancer",
+        "evidence": "strong"
+      },
+      {
+        "uuid": "9ead14e5-6673-4438-96b0-f1f77f96acfd",
+        "from": "asbestos",
+        "to": "lung_cancer",
+        "evidence": "strong"
+      },
+      {
+        "uuid": "d4b99eac-bcdb-4efb-8cfb-79d325a5c1dd",
+        "from": "genetic_risk",
+        "to": "lung_cancer",
+        "evidence": "moderate"
+      }
+    ],
+    "dagitty": "dag {\n  smoking [exposure]\n  lung_cancer [outcome]\n  age -> smoking\n  age -> lung_cancer\n  sex -> smoking\n  sex -> lung_cancer\n  smoking -> lung_cancer\n  smoking -> pack_years\n  pack_years -> lung_cancer\n  asbestos -> lung_cancer\n  genetic_risk -> lung_cancer\n}"
+  },
+  "computed": {
+    "node_count": 7,
+    "edge_count": 9,
+    "adjustment_sets": {
+      "total_effect": [
+        [
+          "age",
+          "sex"
+        ]
+      ],
+      "direct_effect": [
+        [
+          "age",
+          "sex",
+          "pack_years"
+        ]
+      ]
+    },
+    "conditional_independencies": [
+      "smoking ⊥ asbestos",
+      "smoking ⊥ genetic_risk",
+      "age ⊥ sex",
+      "age ⊥ pack_years | smoking",
+      "age ⊥ asbestos",
+      "age ⊥ genetic_risk",
+      "sex ⊥ pack_years | smoking",
+      "sex ⊥ asbestos",
+      "sex ⊥ genetic_risk",
+      "pack_years ⊥ asbestos",
+      "pack_years ⊥ genetic_risk",
+      "asbestos ⊥ genetic_risk"
+    ]
+  },
+  "git": {
+    "md_commit_sha": "ac51d4ab844120bdf365041253f106f41c02e84f"
+  },
+  "llm": {
+    "edge_set_sorted": [
+      "age->lung_cancer",
+      "age->smoking",
+      "asbestos->lung_cancer",
+      "genetic_risk->lung_cancer",
+      "pack_years->lung_cancer",
+      "sex->lung_cancer",
+      "sex->smoking",
+      "smoking->lung_cancer",
+      "smoking->pack_years"
+    ],
+    "text": "DAG: Smoking and lung cancer. Exposure: smoking. Outcome: lung_cancer. Context: general-adults, north-america-europe, 1990s-present. Edges: age->lung_cancer [strong], age->smoking [moderate], asbestos->lung_cancer [strong], genetic_risk->lung_cancer [moderate], pack_years->lung_cancer [strong], sex->lung_cancer [moderate], sex->smoking [moderate], smoking->lung_cancer [strong], smoking->pack_years [strong]. Adjustment set (total effect): age, sex. Mediator: pack_years.",
+    "body_plain": null
+  }
+}

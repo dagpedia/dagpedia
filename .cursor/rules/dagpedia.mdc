@@ -1,0 +1,46 @@
+---
+description: DAGpedia content and two-layer DAG architecture (Issue #52)
+globs:
+  - src/content/dags/**
+  - _data/**
+  - docs/schema/**
+  - scripts/dag/**
+  - scripts/generate-dag-data.ts
+---
+
+# DAGpedia DAG authoring
+
+## Two layers
+
+1. **Contributor MD** — `src/content/dags/<id>.md` only. Never edit `_data/*.json` by hand.
+2. **Generated JSON** — `_data/<id>.json` is produced by `npm run generate-dag-data` (CI bot on PRs).
+
+## Frontmatter (required)
+
+- `id`, `title` (max 80 chars)
+- `context`: `population`, `geographic`, `era` (enums in `docs/schema/`)
+- `dagitty`: pipe block — **single source of truth** for graph structure
+- `evidence`: map keyed `from -> to` (must match every dagitty edge exactly)
+- `keywords`: from `docs/schema/keywords.md`
+- `alternatives`: list of existing DAG ids (may be empty)
+
+## Dagitty rules
+
+- Only native attributes: `[exposure]`, `[outcome]`, `[adjusted]`, `[latent]`, `[selected]`, `[pos="x,y"]`
+- Do **not** use `[mediator]`, `[covariate]` — roles are inferred at build time
+- Do **not** put dagitty in the markdown body; use frontmatter `dagitty: |`
+
+## Do not put in frontmatter
+
+`version`, `date`, `status`, `contributors`, `nodes`, `edges`, `adjustment_sets` — Git or CI derives these.
+
+## Body sections (recommended)
+
+`## Operationalization`, `## Edge rationale` (citations here), `## Missing edge rationale`, `## Context and reusability`, `## Known limitations`
+
+## Validation
+
+```bash
+python scripts/dag/validate_dag.py src/content/dags/your-id.md
+npm run generate-dag-data
+```

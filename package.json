@@ -7,14 +7,15 @@
   },
   "scripts": {
     "dev": "npm run generate-index && next dev",
-    "prebuild": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-meta.ts",
+    "prebuild": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-data.ts",
     "build": "next build",
-    "generate-index": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-meta.ts",
+    "generate-index": "tsx scripts/generate-search-index.ts && tsx scripts/generate-dag-data.ts",
+    "generate-dag-data": "tsx scripts/generate-dag-data.ts",
     "generate-dag-meta": "tsx scripts/generate-dag-meta.ts",
     "verify-dag-layout": "tsx scripts/verify-dag-layout.ts",
     "start": "next start",
     "lint": "next lint",
-    "validate": "python scripts/nodes/validate_nodes.py --all && python scripts/dag/validate_dag.py --all && python scripts/docs/validate_adr.py --all"
+    "validate": "python scripts/nodes/validate_nodes.py --all && python scripts/dag/validate_dag.py --all && python scripts/docs/validate_adr.py --all && tsx scripts/generate-dag-data.ts --check"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

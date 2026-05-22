@@ -7,28 +7,29 @@ body:
     id: dag_id
     attributes:
       label: DAG ID (slug)
-      description: "kebab-case: exposure-outcome-context"
+      description: "kebab-case, matches filename: src/content/dags/<id>.md"
       placeholder: ses-cvd-classic
     validations:
       required: true
 
   - type: dropdown
-    id: evidence_level
+    id: population
     attributes:
-      label: Evidence Level
+      label: Context — population
       options:
-        - strong
-        - moderate
-        - limited
-        - theoretical
+        - general-adults
+        - children-adolescents
+        - older-adults
+        - pregnant-persons
+        - clinical-population
     validations:
       required: true
 
   - type: textarea
     id: nodes_used
     attributes:
-      label: Nodes used
-      description: "List node keys. If any are new, open a separate Node PR first."
+      label: Nodes used (dagitty node ids)
+      description: "Must exist in src/content/nodes/. Open a Node PR first for new keys."
       placeholder: |
         - socioeconomic_status
         - cardiovascular_disease
@@ -38,19 +39,33 @@ body:
   - type: textarea
     id: dagitty_string
     attributes:
-      label: DAG (dagitty syntax)
+      label: DAG (dagitty in frontmatter)
+      description: "Use [exposure] and [outcome] only. No [mediator]/[covariate]."
       render: shell
       placeholder: |
-        dag {
-          exposure -> outcome
-        }
+        dagitty: |
+          dag {
+            exposure [exposure]
+            outcome [outcome]
+            exposure -> outcome
+          }
+    validations:
+      required: true
+
+  - type: textarea
+    id: edge_evidence
+    attributes:
+      label: Per-edge evidence (frontmatter)
+      description: "One line per edge: from -> to: strong|moderate|weak|conflicting|expert-opinion"
+      placeholder: |
+        exposure -> outcome: moderate
     validations:
       required: true
 
   - type: textarea
     id: references
     attributes:
-      label: Key references (PMID or DOI)
+      label: Key references (for Edge rationale section)
       placeholder: |
-        pmid: 12345678
         doi: 10.xxxx/xxxxx
+        pmid: 12345678

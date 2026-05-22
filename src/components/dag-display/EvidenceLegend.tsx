@@ -1,10 +1,23 @@
 import { EvidenceBadge } from "./badges";
 
 const EVIDENCE_LEVELS = [
-  { level: "strong" as const, description: "RCT or consistent observational evidence" },
-  { level: "moderate" as const, description: "Observational (some inconsistency)" },
-  { level: "assumed" as const, description: "Structural / theoretical assumption" },
-  { level: "weak" as const, description: "Limited or conflicting evidence" },
+  {
+    level: "strong" as const,
+    description: "RCT or consistent observational evidence",
+  },
+  {
+    level: "moderate" as const,
+    description: "Observational (some inconsistency)",
+  },
+  { level: "weak" as const, description: "Limited evidence" },
+  {
+    level: "conflicting" as const,
+    description: "Conflicting empirical findings",
+  },
+  {
+    level: "expert-opinion" as const,
+    description: "Expert opinion or structural assumption",
+  },
 ];
 
 export function EvidenceLegendContent() {

@@ -9,18 +9,14 @@ import {
 import { DagittyPlainPanel } from "@/components/dag-display/DagittyPlainPanel";
 import { useIsLgUp } from "@/hooks/use-media-query";
 import { cn } from "@/lib/utils";
-import type { DagContributor, DagType, WorkflowStatus } from "@/types/dag";
 
 interface DagPageShellProps {
   title: string;
   nodeCount: number;
   edgeCount: number;
-  dagType: DagType;
-  version: string;
-  updatedAt: string;
-  workflowStatus: WorkflowStatus;
   slug: string;
-  contributors: DagContributor[];
+  mdCommitSha: string;
+  deprecated?: boolean;
   dagittyCode: string;
   children: React.ReactNode;
 }
@@ -29,12 +25,9 @@ function DagPageShellContent({
   title,
   nodeCount,
   edgeCount,
-  dagType,
-  version,
-  updatedAt,
-  workflowStatus,
   slug,
-  contributors,
+  mdCommitSha,
+  deprecated,
   dagittyCode,
   children,
 }: DagPageShellProps) {
@@ -49,12 +42,9 @@ function DagPageShellContent({
           title={title}
           nodeCount={nodeCount}
           edgeCount={edgeCount}
-          dagType={dagType}
-          version={version}
-          updatedAt={updatedAt}
-          workflowStatus={workflowStatus}
           slug={slug}
-          contributors={contributors}
+          mdCommitSha={mdCommitSha}
+          deprecated={deprecated}
         />
       </div>
       <div

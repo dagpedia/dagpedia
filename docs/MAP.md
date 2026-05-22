@@ -28,6 +28,7 @@ ADR index (newest first). Filename format: `YYYY-MM-DD-NNN-slug.md`. Schema: [ad
 
 | ID | Date | Title | Status | Tags |
 |----|------|-------|--------|------|
+| 2026-05-22-001 | 2026-05-22 | [Two-layer DAG content — contributor MD and generated JSON](adr/2026-05-22-001-two-layer-dag-content.md) | accepted | content, architecture, ci |
 | 2026-05-18-007 | 2026-05-18 | [Command palette (⌘K) as the primary search UX](adr/2026-05-18-007-command-palette-search-ux.md) | accepted | search, ui |
 | 2026-05-18-006 | 2026-05-18 | [Build-time static search index generation](adr/2026-05-18-006-build-time-search-index.md) | accepted | search |
 | 2026-05-18-005 | 2026-05-18 | [Four principles for Node-DAG referential integrity](adr/2026-05-18-005-node-dag-referential-integrity.md) | accepted | nodes, validation |
