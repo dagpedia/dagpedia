@@ -144,29 +144,21 @@
     ]
   },
   "git": {
-    "md_commit_sha": "faeaf46f95927749c7762de53aab70a563161d1d",
-    "md_committed_at": "2026-05-22T00:12:10-04:00",
+    "md_commit_sha": "ac51d4ab844120bdf365041253f106f41c02e84f",
+    "md_committed_at": "2026-05-19T11:26:07-04:00",
     "md_commit": {
-      "message": "feat: two-layer DAG content (contributor MD + generated _data)\n\nImplement Issue #52 by splitting human-edited src/content/dags/*.md from\nCI-generated _data/*.json with UUID-stable graph metadata, computed\nadjustment sets, and llm.text. Add schema enums, validators, bot workflow,\napp loaders, and ADR 2026-05-22-001.\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+      "message": "feat: integrate dagitty parsing with build-time meta and DAG page UX\n\nWire dagitty.js via jsdom for SSR parsing and adjustment-set generation,\nreplace client-side analysis with generated dag-meta JSON, and improve the\nDAG viewer with resizable panels, hover sync, and a right offcanvas sidebar\nfor DAGitty source code.\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
       "author": {
-        "login": "tetra4rnav",
-        "name": "Matt Sakamaki",
-        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
-        "profile_url": "https://github.com/tetra4rnav"
+        "login": null,
+        "name": "Matt",
+        "avatar_url": null,
+        "profile_url": null
       }
     },
-    "main_committed_at": "2026-05-19T11:26:07-04:00",
+    "main_committed_at": "2026-05-22T00:12:10-04:00",
     "pr_merged_at": null,
     "pr_number": null,
-    "contributors": [
-      {
-        "login": "tetra4rnav",
-        "name": "Matt Sakamaki",
-        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
-        "profile_url": "https://github.com/tetra4rnav",
-        "commits": 2
-      }
-    ]
+    "contributors": []
   },
   "llm": {
     "edge_set_sorted": [

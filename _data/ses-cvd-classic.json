@@ -158,29 +158,21 @@
     ]
   },
   "git": {
-    "md_commit_sha": "faeaf46f95927749c7762de53aab70a563161d1d",
-    "md_committed_at": "2026-05-22T00:12:10-04:00",
+    "md_commit_sha": "f7cd84cf6864466034b85a20f0980a2eb1a13d28",
+    "md_committed_at": "2026-05-18T16:49:21-04:00",
     "md_commit": {
-      "message": "feat: two-layer DAG content (contributor MD + generated _data)\n\nImplement Issue #52 by splitting human-edited src/content/dags/*.md from\nCI-generated _data/*.json with UUID-stable graph metadata, computed\nadjustment sets, and llm.text. Add schema enums, validators, bot workflow,\napp loaders, and ADR 2026-05-22-001.\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
+      "message": "feat: implement DAG detail page with React Flow and dagitty analysis\n\nCo-authored-by: Cursor <cursoragent@cursor.com>",
       "author": {
-        "login": "tetra4rnav",
-        "name": "Matt Sakamaki",
-        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
-        "profile_url": "https://github.com/tetra4rnav"
+        "login": null,
+        "name": "Matt",
+        "avatar_url": null,
+        "profile_url": null
       }
     },
-    "main_committed_at": "2026-05-18T16:49:21-04:00",
+    "main_committed_at": "2026-05-22T00:12:10-04:00",
     "pr_merged_at": null,
     "pr_number": null,
-    "contributors": [
-      {
-        "login": "tetra4rnav",
-        "name": "Matt Sakamaki",
-        "avatar_url": "https://avatars.githubusercontent.com/u/41766859?v=4",
-        "profile_url": "https://github.com/tetra4rnav",
-        "commits": 2
-      }
-    ]
+    "contributors": []
   },
   "llm": {
     "edge_set_sorted": [
