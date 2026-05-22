@@ -61,7 +61,10 @@ function renderMarkdown(text: string) {
     if (trimmed.startsWith("## ")) {
       flushList();
       elements.push(
-        <h2 key={key++} className="mb-3 mt-8 text-2xl font-semibold text-slate-900">
+        <h2
+          key={key++}
+          className="mb-3 mt-8 border-b pb-1 text-lg font-semibold text-slate-900"
+        >
           {trimmed.slice(3)}
         </h2>
       );

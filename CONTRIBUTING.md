@@ -33,7 +33,8 @@ npm run dev    # http://localhost:3000
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint (`next lint`) — run before opening a PR |
-| `npm run validate` | All Python validators (nodes → DAGs → ADRs; refreshes `docs/MAP.md`) |
+| `npm run validate` | Python validators + `_data` sync check (`generate-dag-data --check`) |
+| `npm run generate-dag-data` | Regenerate `_data/*.json` from DAG markdown (do not edit JSON by hand) |
 
 Individual validators (from repo root):
 
@@ -59,7 +60,9 @@ Workflow: [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
 1. Validate all nodes (`scripts/nodes/validate_nodes.py --all`)
 2. Validate all DAGs (`scripts/dag/validate_dag.py --all`)
 3. Validate ADRs and ensure `docs/MAP.md` is up to date (`scripts/docs/validate_adr.py --all` + `git diff --exit-code docs/MAP.md`)
-4. `npm ci` and `npm run build`
+4. `npm ci`, `npm run generate-dag-data -- --check`, and `npm run build`
+
+**On DAG pull requests:** [`.github/workflows/validate-and-generate.yml`](.github/workflows/validate-and-generate.yml) regenerates `_data/*.json` and commits back to the PR branch. Contributors edit only `src/content/dags/*.md`.
 
 **On push to `main` only:** deploy to Vercel production (requires repository secrets).
 
@@ -74,7 +77,7 @@ Run `npm run validate` and `npm run lint` locally before pushing to avoid CI fai
 3. Add new **nodes** in `src/content/nodes/` in a separate PR before referencing them from a DAG.
 4. Open a PR against **`main`** with a clear title and description of what changed and why.
 5. Use GitHub **issue templates** (**New DAG**, **New Node**) when starting work; there is no separate PR template file yet.
-6. Respond to review feedback; when revising a DAG, bump `version` and add your GitHub username to `contributors`.
+6. Respond to review feedback; revision history lives in Git (no `version` or `contributors` in frontmatter).
 
 Maintainers review for dagitty syntax, required frontmatter, plausible evidence levels, and narrative clarity. DAGs need not be universally “correct” — assumptions must be **explicit**.
 

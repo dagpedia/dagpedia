@@ -1,262 +1,157 @@
-import fs from "fs";
-import path from "path";
 import { cache } from "react";
-import { z } from "zod";
-import { getDag, extractDagittyString } from "./dag";
-import { getAllDags } from "./dag";
-import {
-  buildDagEdges,
-  buildDagNodes,
-  inferTier,
-  mapLegacyEvidence,
-  parseDagittyStructure,
-} from "./dag-utils";
+import { getDag } from "./dag";
+import { getAllDagDataSlugs, loadDagData } from "./dag-data";
+import { labelSlug, labelSlugs } from "./labeled-slug";
+import { loadEvidenceLevelLegend } from "./schema-loader";
 import { computeDegreeCentrality } from "./content-index";
+import { parseDagittyStructure } from "./dag-utils";
+import { getNodeLabel } from "./nodes";
+import {
+  mapContributorsFromData,
+  mapMdCommitFromData,
+  type DagProvenance,
+} from "@/lib/provenance";
 import type {
   AdjustmentSet,
   AlternativeDag,
-  DagAuthor,
-  DagContributor,
   DagPageData,
-  DagReference,
-  DagTier,
-  DagType,
-  WorkflowStatus,
+  EvidenceLevel,
 } from "@/types/dag";
 
-const DAG_META_DIR = path.join(process.cwd(), "public", "dag-meta");
-
-const dagMetaFileSchema = z.object({
-  slug: z.string(),
-  adjustmentSets: z.array(
-    z.object({
-      nodes: z.array(z.string()),
-      estimand: z.string(),
-    })
-  ),
-  conditionalIndependencies: z.array(z.string()),
-});
-
-function loadDagMetaFromJson(slug: string): {
-  adjustmentSets: AdjustmentSet[];
-  conditionalIndependencies: string[];
-} {
-  const filePath = path.join(DAG_META_DIR, `${slug}.json`);
-  if (!fs.existsSync(filePath)) {
-    return { adjustmentSets: [], conditionalIndependencies: [] };
+function mapEvidence(level: string): EvidenceLevel {
+  switch (level) {
+    case "strong":
+    case "moderate":
+    case "weak":
+    case "conflicting":
+    case "expert-opinion":
+    case "unknown":
+      return level;
+    default:
+      return "weak";
   }
-  const parsed = dagMetaFileSchema.safeParse(
-    JSON.parse(fs.readFileSync(filePath, "utf-8"))
-  );
-  if (!parsed.success) {
-    return { adjustmentSets: [], conditionalIndependencies: [] };
+}
+
+function adjustmentSetsFromData(
+  data: NonNullable<ReturnType<typeof loadDagData>>,
+  exposureLabel: string,
+  outcomeLabel: string
+): AdjustmentSet[] {
+  const sets: AdjustmentSet[] = [];
+  const { adjustment_sets } = data.computed;
+
+  for (const nodes of adjustment_sets.total_effect ?? []) {
+    sets.push({
+      nodes,
+      estimand: `${exposureLabel} → ${outcomeLabel} total effect`,
+    });
   }
-  return {
-    adjustmentSets: parsed.data.adjustmentSets,
-    conditionalIndependencies: parsed.data.conditionalIndependencies,
-  };
-}
-
-const authorSchema = z.union([
-  z.string(),
-  z.object({
-    name: z.string(),
-    affiliation: z.string().optional(),
-    orcid: z.string().optional(),
-  }),
-]);
-
-const dagFrontmatterSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  exposure: z.string(),
-  outcome: z.string(),
-  tier: z.enum(["verified", "reviewed", "community"]).optional(),
-  dagType: z.enum(["domain-level", "study-specific"]).optional(),
-  dag_type: z.enum(["domain-level", "study-specific"]).optional(),
-  workflowStatus: z.enum(["draft", "under-review", "ratified"]).optional(),
-  workflow_status: z.enum(["draft", "under-review", "ratified"]).optional(),
-  evidence_level: z
-    .enum(["strong", "moderate", "limited", "theoretical"])
-    .optional(),
-  nodes: z
-    .array(z.union([z.object({ key: z.string() }), z.string()]))
-    .optional(),
-  version: z.string(),
-  updatedAt: z.string().optional(),
-  updated_at: z.string().optional(),
-  created_at: z.string().optional(),
-  authors: z.array(authorSchema).optional(),
-  contributors: z
-    .array(
-      z.object({
-        name: z.string(),
-        affiliation: z.string().optional(),
-        initials: z.string(),
-      })
-    )
-    .optional(),
-  tags: z.array(z.string()).optional(),
-  references: z
-    .array(
-      z.object({
-        doi: z.string().optional(),
-        pmid: z.string().optional(),
-        citation: z.string().optional(),
-        label: z.string().optional(),
-      })
-    )
-    .optional(),
-  alternativeDags: z
-    .array(
-      z.object({
-        slug: z.string(),
-        title: z.string(),
-        nodeCount: z.number(),
-        note: z.string(),
-      })
-    )
-    .optional(),
-  related_dags: z.array(z.string()).optional(),
-  dag: z.string().optional(),
-  edges: z
-    .array(
-      z.object({
-        from: z.string(),
-        to: z.string(),
-        evidence: z
-          .enum(["strong", "moderate", "weak", "assumed", "limited", "theoretical"])
-          .optional(),
-      })
-    )
-    .optional(),
-  adjustmentSets: z
-    .array(
-      z.object({
-        nodes: z.array(z.string()),
-        estimand: z.string(),
-      })
-    )
-    .optional(),
-  conditionalIndependencies: z.array(z.string()).optional(),
-});
-
-function normalizeAuthors(raw: z.infer<typeof dagFrontmatterSchema>["authors"]): DagAuthor[] {
-  if (!raw?.length) return [];
-  return raw.map((entry) =>
-    typeof entry === "string" ? { name: entry } : entry
-  );
-}
-
-function normalizeContributors(
-  authors: DagAuthor[],
-  contributors: z.infer<typeof dagFrontmatterSchema>["contributors"]
-): DagContributor[] {
-  if (contributors?.length) return contributors;
-  return authors.map((author) => ({
-    name: author.name,
-    affiliation: author.affiliation,
-    initials: author.name
-      .split(/\s+/)
-      .map((part) => part.charAt(0))
-      .join("")
-      .slice(0, 2)
-      .toUpperCase(),
-  }));
-}
-
-function normalizeReferences(
-  refs: z.infer<typeof dagFrontmatterSchema>["references"]
-): DagReference[] {
-  if (!refs?.length) return [];
-  return refs.map((ref) => ({
-    doi: ref.doi,
-    pmid: ref.pmid,
-    citation: ref.citation ?? ref.label ?? "",
-  }));
-}
-
-function buildEdges(
-  structure: ReturnType<typeof parseDagittyStructure>,
-  fmEdges: z.infer<typeof dagFrontmatterSchema>["edges"],
-  defaultEvidence: ReturnType<typeof mapLegacyEvidence>
-) {
-  if (fmEdges?.length) {
-    return fmEdges.map((edge) => ({
-      from: edge.from,
-      to: edge.to,
-      evidence: edge.evidence
-        ? mapLegacyEvidence(edge.evidence)
-        : defaultEvidence,
-    }));
+  for (const nodes of adjustment_sets.direct_effect ?? []) {
+    sets.push({
+      nodes,
+      estimand: `${exposureLabel} → ${outcomeLabel} direct effect`,
+    });
   }
-  return buildDagEdges(structure, defaultEvidence);
+  return sets;
 }
 
-function resolveAlternativeDags(
-  fm: z.infer<typeof dagFrontmatterSchema>,
-  allTitles: Map<string, string>
+function resolveAlternatives(
+  ids: string[],
+  titleBySlug: Map<string, string>,
+  nodeCountBySlug: Map<string, number>
 ): AlternativeDag[] {
-  if (fm.alternativeDags?.length) return fm.alternativeDags;
-  if (!fm.related_dags?.length) return [];
-  return fm.related_dags.map((slug) => ({
+  return ids.map((slug) => ({
     slug,
-    title: allTitles.get(slug) ?? slug,
-    nodeCount: 0,
-    note: "Related DAG",
+    title: titleBySlug.get(slug) ?? slug,
+    nodeCount: nodeCountBySlug.get(slug) ?? 0,
+    note: "Alternative structure",
   }));
 }
 
 export const getDagPageData = cache((slug: string): DagPageData | null => {
   const dag = getDag(slug);
-  if (!dag) return null;
+  const data = loadDagData(slug);
+  if (!dag || !data) return null;
 
-  const parsed = dagFrontmatterSchema.safeParse(dag.frontmatter);
-  if (!parsed.success) return null;
+  const exposureNode = data.graph.nodes.find((n) => n.role === "exposure");
+  const outcomeNode = data.graph.nodes.find((n) => n.role === "outcome");
+  if (!exposureNode || !outcomeNode) return null;
 
-  const fm = parsed.data;
-  const dagittyCode =
-    fm.dag?.trim() || extractDagittyString(dag.body) || "";
-  if (!dagittyCode) return null;
+  const exposureId = exposureNode.id;
+  const outcomeId = outcomeNode.id;
+  const exposureLabel = getNodeLabel(exposureId);
+  const outcomeLabel = getNodeLabel(outcomeId);
 
-  const structure = parseDagittyStructure(dagittyCode);
+  const structure = parseDagittyStructure(data.graph.dagitty);
   const centrality = computeDegreeCentrality(structure);
-  const defaultEvidence = mapLegacyEvidence(fm.evidence_level);
 
-  const tier: DagTier = fm.tier ?? inferTier(fm.evidence_level);
-  const dagType: DagType = fm.dagType ?? fm.dag_type ?? "domain-level";
-  const workflowStatus: WorkflowStatus =
-    fm.workflowStatus ??
-    fm.workflow_status ??
-    (tier === "verified" ? "ratified" : "under-review");
+  const titleBySlug = new Map<string, string>();
+  const nodeCountBySlug = new Map<string, number>();
+  for (const s of getAllDagDataSlugs()) {
+    const d = loadDagData(s);
+    if (d) {
+      titleBySlug.set(s, d.title);
+      nodeCountBySlug.set(s, d.computed.node_count);
+    }
+  }
 
-  const authors = normalizeAuthors(fm.authors);
-  const titleBySlug = new Map(
-    getAllDags().map((d) => [d.slug, d.frontmatter.title])
-  );
-  const dagMeta = loadDagMetaFromJson(slug);
+  const nodes = data.graph.nodes.map((n) => {
+    const node: DagPageData["nodes"][number] = {
+      id: n.id,
+      label: getNodeLabel(n.id),
+      role: n.role,
+      centrality: centrality.get(n.id),
+    };
+    const pos = structure.positions.get(n.id);
+    if (structure.hasExplicitLayout && pos) {
+      node.position = pos;
+    }
+    return node;
+  });
+
+  const edges = data.graph.edges.map((e) => ({
+    from: e.from,
+    to: e.to,
+    evidence: mapEvidence(e.evidence),
+  }));
+
+  const context = {
+    population: labelSlug("populations", data.context.population),
+    geographic: labelSlug("geographics", data.context.geographic),
+    era: labelSlug("eras", data.context.era),
+    note: data.context.note,
+  };
 
   return {
     slug,
     body: dag.body,
-    id: fm.id,
-    title: fm.title,
-    exposure: fm.exposure,
-    outcome: fm.outcome,
-    tier,
-    dagType,
-    workflowStatus,
-    version: fm.version,
-    updatedAt: fm.updatedAt ?? fm.updated_at ?? fm.created_at ?? "",
-    authors,
-    contributors: normalizeContributors(authors, fm.contributors),
-    tags: fm.tags ?? [],
-    references: normalizeReferences(fm.references),
-    dagittyCode,
-    alternativeDags: resolveAlternativeDags(fm, titleBySlug),
-    nodes: buildDagNodes(structure, fm.exposure, fm.outcome, centrality),
-    edges: buildEdges(structure, fm.edges, defaultEvidence),
-    adjustmentSets: dagMeta.adjustmentSets,
-    conditionalIndependencies: dagMeta.conditionalIndependencies,
+    id: data.id,
+    title: data.title,
+    exposure: exposureId,
+    outcome: outcomeId,
+    context,
+    keywords: labelSlugs("keywords", data.keywords),
+    provenance: {
+      mdCommitSha: data.git.md_commit_sha,
+      mdCommittedAt: data.git.md_committed_at,
+      mdCommit: mapMdCommitFromData(data.git.md_commit),
+      mainCommittedAt: data.git.main_committed_at ?? null,
+      prMergedAt: data.git.pr_merged_at ?? null,
+      prNumber: data.git.pr_number ?? null,
+      contributors: mapContributorsFromData(data.git.contributors ?? []),
+    } satisfies DagProvenance,
+    deprecated: data.deprecated,
+    supersededBy: data.superseded_by,
+    dagittyCode: data.graph.dagitty,
+    alternativeDags: resolveAlternatives(
+      data.alternatives,
+      titleBySlug,
+      nodeCountBySlug
+    ),
+    nodes,
+    edges,
+    adjustmentSets: adjustmentSetsFromData(data, exposureLabel, outcomeLabel),
+    conditionalIndependencies: data.computed.conditional_independencies,
+    evidenceLegend: loadEvidenceLevelLegend(),
   };
 });

@@ -16,11 +16,17 @@ import {
   panelListRowClass,
 } from "./panel-list-styles";
 import { PanelCard } from "./PanelCard";
-import type { DagEdge, DagNode } from "@/types/dag";
+import type {
+  DagEdge,
+  DagNode,
+  EvidenceLevel,
+  EvidenceLevelLegendItem,
+} from "@/types/dag";
 
 export function EdgeList({
   edges,
   nodes,
+  evidenceLegend,
   highlightedEdgeKey = null,
   onEdgeHover,
   divided = false,
@@ -29,13 +35,19 @@ export function EdgeList({
 }: {
   edges: DagEdge[];
   nodes: DagNode[];
+  evidenceLegend: EvidenceLevelLegendItem[];
   highlightedEdgeKey?: string | null;
   onEdgeHover?: (edgeKey: string | null) => void;
   divided?: boolean;
   fill?: boolean;
   bare?: boolean;
 }) {
-  const label = (id: string) => nodes.find((n) => n.id === id)?.label ?? id;
+  const nodeLabel = (id: string) => nodes.find((n) => n.id === id)?.label ?? id;
+  const evidenceLabelByLevel = new Map(
+    evidenceLegend.map((item) => [item.level, item.label])
+  );
+  const evidenceLabel = (level: EvidenceLevel) =>
+    evidenceLabelByLevel.get(level) ?? level;
   const table = (
     <div className={panelListBodyClass}>
       <div
@@ -59,7 +71,7 @@ export function EdgeList({
             align="end"
             className="max-w-xs bg-popover px-3 py-2 text-popover-foreground"
           >
-            <EvidenceLegendContent />
+            <EvidenceLegendContent levels={evidenceLegend} />
           </TooltipContent>
         </Tooltip>
       </div>
@@ -69,7 +81,8 @@ export function EdgeList({
           <EdgeRow
             key={key}
             edge={edge}
-            label={label}
+            nodeLabel={nodeLabel}
+            evidenceLabel={evidenceLabel}
             highlighted={highlightedEdgeKey === key}
             onHover={onEdgeHover}
           />
@@ -91,12 +104,14 @@ export function EdgeList({
 
 function EdgeRow({
   edge,
-  label,
+  nodeLabel,
+  evidenceLabel,
   highlighted,
   onHover,
 }: {
   edge: DagEdge;
-  label: (id: string) => string;
+  nodeLabel: (id: string) => string;
+  evidenceLabel: (level: EvidenceLevel) => string;
   highlighted: boolean;
   onHover?: (edgeKey: string | null) => void;
 }) {
@@ -111,13 +126,13 @@ function EdgeRow({
         panelListRowClass(highlighted)
       )}
     >
-      <span>{label(edge.from)}</span>
+      <span>{nodeLabel(edge.from)}</span>
       <span className="text-center text-muted-foreground" aria-hidden>
         →
       </span>
-      <span>{label(edge.to)}</span>
+      <span>{nodeLabel(edge.to)}</span>
       <span>
-        <EvidenceBadge level={edge.evidence} />
+        <EvidenceBadge level={edge.evidence} label={evidenceLabel(edge.evidence)} />
       </span>
     </div>
   );

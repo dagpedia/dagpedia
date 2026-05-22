@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { DagPageView } from "@/components/dag-display/DagPageView";
-import { getAllDags } from "@/lib/dag";
+import { getDagListItems } from "@/lib/dag";
 import { getDagPageData } from "@/lib/dag-page";
 
 type PageProps = {
@@ -8,7 +8,7 @@ type PageProps = {
 };
 
 export function generateStaticParams() {
-  return getAllDags().map((dag) => ({ slug: dag.slug }));
+  return getDagListItems().map((dag) => ({ slug: dag.slug }));
 }
 
 export default async function DagPage({ params }: PageProps) {

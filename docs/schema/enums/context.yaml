@@ -1,0 +1,40 @@
+vocabularies:
+  populations:
+    open: true
+    entries:
+      - id: general-adults
+        label: General adults
+      - id: children-adolescents
+        label: Children and adolescents
+      - id: older-adults
+        label: Older adults
+      - id: pregnant-persons
+        label: Pregnant persons
+      - id: clinical-population
+        label: Clinical population
+  geographics:
+    open: true
+    entries:
+      - id: global
+        label: Global
+      - id: north-america-europe
+        label: North America and Europe
+      - id: east-asia
+        label: East Asia
+      - id: latin-america
+        label: Latin America
+      - id: sub-saharan-africa
+        label: Sub-Saharan Africa
+      - id: south-asia
+        label: South Asia
+  eras:
+    open: true
+    entries:
+      - id: pre-1990
+        label: Pre-1990
+      - id: 1990s-present
+        label: 1990s–present
+      - id: 2000s-present
+        label: 2000s–present
+      - id: 2010s-present
+        label: 2010s–present

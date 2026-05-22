@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dagpedia.org/schema/dag-data.json",
+  "title": "DAGpedia generated DAG data",
+  "type": "object",
+  "required": ["uuid", "id", "title", "context", "keywords", "alternatives", "graph", "computed", "git", "llm"],
+  "additionalProperties": false,
+  "properties": {
+    "uuid": { "type": "string", "format": "uuid" },
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "title": { "type": "string", "maxLength": 80 },
+    "deprecated": { "type": "boolean" },
+    "superseded_by": { "type": "string" },
+    "status": { "enum": ["tombstone"] },
+    "deleted_at": { "type": "string" },
+    "deleted_reason": { "type": "string" },
+    "context": {
+      "type": "object",
+      "required": ["population", "geographic", "era"],
+      "properties": {
+        "population": { "type": "string" },
+        "geographic": { "type": "string" },
+        "era": { "type": "string" },
+        "note": { "type": "string", "maxLength": 200 }
+      }
+    },
+    "keywords": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "alternatives": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" }
+    },
+    "graph": {
+      "type": "object",
+      "required": ["nodes", "edges", "dagitty"],
+      "properties": {
+        "nodes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["uuid", "id", "role"],
+            "properties": {
+              "uuid": { "type": "string", "format": "uuid" },
+              "id": { "type": "string" },
+              "role": {
+                "enum": [
+                  "exposure",
+                  "outcome",
+                  "mediator",
+                  "covariate",
+                  "instrument",
+                  "collider"
+                ]
+              }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["uuid", "from", "to", "evidence"],
+            "properties": {
+              "uuid": { "type": "string", "format": "uuid" },
+              "from": { "type": "string" },
+              "to": { "type": "string" },
+              "evidence": { "type": "string" }
+            }
+          }
+        },
+        "dagitty": { "type": "string" }
+      }
+    },
+    "computed": {
+      "type": "object",
+      "required": ["node_count", "edge_count", "adjustment_sets", "conditional_independencies"],
+      "properties": {
+        "node_count": { "type": "integer", "minimum": 0 },
+        "edge_count": { "type": "integer", "minimum": 0 },
+        "adjustment_sets": {
+          "type": "object",
+          "properties": {
+            "total_effect": {
+              "type": "array",
+              "items": { "type": "array", "items": { "type": "string" } }
+            },
+            "direct_effect": {
+              "type": "array",
+              "items": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "conditional_independencies": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "git": {
+      "type": "object",
+      "required": ["md_commit_sha", "md_committed_at", "contributors"],
+      "properties": {
+        "md_commit_sha": { "type": "string", "minLength": 7 },
+        "md_committed_at": { "type": "string" },
+        "md_commit": {
+          "type": ["object", "null"],
+          "properties": {
+            "message": { "type": "string" },
+            "author": {
+              "type": "object",
+              "properties": {
+                "login": { "type": ["string", "null"] },
+                "name": { "type": ["string", "null"] },
+                "avatar_url": { "type": ["string", "null"], "format": "uri" },
+                "profile_url": { "type": ["string", "null"], "format": "uri" }
+              }
+            }
+          }
+        },
+        "main_committed_at": { "type": ["string", "null"] },
+        "pr_merged_at": { "type": ["string", "null"] },
+        "pr_number": { "type": ["integer", "null"], "minimum": 1 },
+        "contributors": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["login", "avatar_url", "profile_url", "commits"],
+            "properties": {
+              "login": { "type": "string" },
+              "name": { "type": ["string", "null"] },
+              "avatar_url": { "type": "string", "format": "uri" },
+              "profile_url": { "type": "string", "format": "uri" },
+              "commits": { "type": "integer", "minimum": 1 }
+            }
+          }
+        }
+      }
+    },
+    "llm": {
+      "type": "object",
+      "required": ["edge_set_sorted", "text"],
+      "properties": {
+        "edge_set_sorted": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "text": { "type": "string" },
+        "body_plain": { "type": ["string", "null"] }
+      }
+    }
+  }
+}

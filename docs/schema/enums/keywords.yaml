@@ -1,0 +1,24 @@
+vocabularies:
+  keywords:
+    open: true
+    entries:
+      - id: smoking
+        label: Smoking
+      - id: lung-cancer
+        label: Lung cancer
+      - id: mediation
+        label: Mediation
+      - id: respiratory
+        label: Respiratory
+      - id: social-determinants
+        label: Social determinants
+      - id: cardiovascular
+        label: Cardiovascular
+      - id: classic
+        label: Classic
+      - id: ses
+        label: SES
+      - id: health-behaviors
+        label: Health behaviors
+      - id: psychosocial
+        label: Psychosocial

@@ -1,0 +1,60 @@
+name: Validate and generate DAG data
+
+on:
+  pull_request:
+    paths:
+      - "src/content/dags/**"
+      - "src/content/nodes/**"
+      - "docs/schema/**"
+      - "scripts/**"
+      - "_data/**"
+      - ".github/workflows/validate-and-generate.yml"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate-and-generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Validate nodes
+        run: python scripts/nodes/validate_nodes.py --all
+        env:
+          SKIP_MESH_VALIDATION: "1"
+
+      - name: Validate DAG markdown
+        run: python scripts/dag/validate_dag.py --all
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate _data JSON
+        run: npm run generate-dag-data
+
+      - name: Commit generated _data
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: regenerate _data from DAG markdown [skip ci]"
+          file_pattern: "_data/*.json"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com

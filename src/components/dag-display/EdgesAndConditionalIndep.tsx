@@ -7,17 +7,19 @@ import {
 } from "@/components/ui/resizable";
 import { ConditionalIndep } from "./ConditionalIndep";
 import { EdgeList } from "./EdgeList";
-import type { DagEdge, DagNode } from "@/types/dag";
+import type { DagEdge, DagNode, EvidenceLevelLegendItem } from "@/types/dag";
 
 export function EdgesAndConditionalIndep({
   edges,
   nodes,
+  evidenceLegend,
   conditionalIndependencies,
   highlightedEdgeKey = null,
   onEdgeHover,
 }: {
   edges: DagEdge[];
   nodes: DagNode[];
+  evidenceLegend: EvidenceLevelLegendItem[];
   conditionalIndependencies: string[];
   highlightedEdgeKey?: string | null;
   onEdgeHover?: (edgeKey: string | null) => void;
@@ -32,6 +34,7 @@ export function EdgesAndConditionalIndep({
           fill
           edges={edges}
           nodes={nodes}
+          evidenceLegend={evidenceLegend}
           highlightedEdgeKey={highlightedEdgeKey}
           onEdgeHover={onEdgeHover}
         />

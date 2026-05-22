@@ -1,14 +1,15 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import type { DagFrontmatter } from "./types";
+import { loadDagData } from "./dag-data";
 import { getNodeLabel } from "./nodes";
-import type { DagTier, DagType } from "@/types/dag";
+import { labelSlugs } from "./labeled-slug";
+import { vocabularyLabel } from "./schema-loader";
+import type { LabeledSlug } from "@/types/dag";
 
 const DAGS_DIR = path.join(process.cwd(), "src/content/dags");
 
 export interface DagContent {
-  frontmatter: DagFrontmatter;
   body: string;
   slug: string;
 }
@@ -18,12 +19,10 @@ export interface DagListItem {
   title: string;
   exposureLabel: string;
   outcomeLabel: string;
-  tier: DagTier;
-  dagType?: DagType;
-  evidenceLevel: string;
   nodeCount: number;
-  tags: string[];
-  version: string;
+  edgeCount: number;
+  keywords: LabeledSlug[];
+  contextSummary: string;
 }
 
 export function getAllDags(): DagContent[] {
@@ -37,25 +36,36 @@ export function getAllDags(): DagContent[] {
       return getDag(slug);
     })
     .filter((dag): dag is DagContent => dag !== null)
-    .sort((a, b) => a.frontmatter.title.localeCompare(b.frontmatter.title));
+    .sort((a, b) => {
+      const titleA = loadDagData(a.slug)?.title ?? a.slug;
+      const titleB = loadDagData(b.slug)?.title ?? b.slug;
+      return titleA.localeCompare(titleB);
+    });
 }
 
 export function getDagListItems(): DagListItem[] {
-  return getAllDags().map((dag) => {
-    const { frontmatter, slug } = dag;
-    return {
-      slug,
-      title: frontmatter.title,
-      exposureLabel: getNodeLabel(frontmatter.exposure),
-      outcomeLabel: getNodeLabel(frontmatter.outcome),
-      tier: frontmatter.tier ?? "community",
-      dagType: frontmatter.dagType,
-      evidenceLevel: frontmatter.evidence_level,
-      nodeCount: frontmatter.nodes?.length ?? 0,
-      tags: frontmatter.tags ?? [],
-      version: frontmatter.version,
-    };
-  });
+  return getAllDags()
+    .map((dag) => {
+      const data = loadDagData(dag.slug);
+      if (!data) return null;
+
+      const exposureNode = data.graph.nodes.find((n) => n.role === "exposure");
+      const outcomeNode = data.graph.nodes.find((n) => n.role === "outcome");
+      if (!exposureNode || !outcomeNode) return null;
+
+      const ctx = data.context;
+      return {
+        slug: dag.slug,
+        title: data.title,
+        exposureLabel: getNodeLabel(exposureNode.id),
+        outcomeLabel: getNodeLabel(outcomeNode.id),
+        nodeCount: data.computed.node_count,
+        edgeCount: data.computed.edge_count,
+        keywords: labelSlugs("keywords", data.keywords),
+        contextSummary: `${vocabularyLabel("populations", ctx.population)} · ${vocabularyLabel("geographics", ctx.geographic)} · ${vocabularyLabel("eras", ctx.era)}`,
+      };
+    })
+    .filter((item): item is DagListItem => item !== null);
 }
 
 export function getDag(slug: string): DagContent | null {
@@ -63,10 +73,9 @@ export function getDag(slug: string): DagContent | null {
   if (!fs.existsSync(filePath)) return null;
 
   const raw = fs.readFileSync(filePath, "utf-8");
-  const { data, content } = matter(raw);
+  const { content } = matter(raw);
 
   return {
-    frontmatter: data as DagFrontmatter,
     body: content,
     slug,
   };
@@ -78,7 +87,8 @@ export function extractDagittyString(body: string): string | null {
 }
 
 export function getDagsByNode(nodeKey: string): DagContent[] {
-  return getAllDags().filter((dag) =>
-    dag.frontmatter.nodes.some((n) => n.key === nodeKey)
-  );
+  return getAllDags().filter((dag) => {
+    const data = loadDagData(dag.slug);
+    return data?.graph.nodes.some((n) => n.id === nodeKey) ?? false;
+  });
 }

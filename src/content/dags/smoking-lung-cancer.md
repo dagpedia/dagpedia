@@ -1,115 +1,70 @@
 ---
 id: smoking-lung-cancer
-title: "Smoking and lung cancer"
-exposure: smoking
-outcome: lung_cancer
-tier: verified
-dagType: domain-level
-workflowStatus: ratified
-evidence_level: strong
-version: "3.0.0"
-updated_at: "2026-03-01"
-tags:
+title: Smoking and lung cancer
+context:
+  population: general-adults
+  geographic: north-america-europe
+  era: 1990s-present
+dagitty: |
+  dag {
+    smoking [exposure]
+    lung_cancer [outcome]
+    age -> smoking
+    age -> lung_cancer
+    sex -> smoking
+    sex -> lung_cancer
+    smoking -> lung_cancer
+    smoking -> pack_years
+    pack_years -> lung_cancer
+    asbestos -> lung_cancer
+    genetic_risk -> lung_cancer
+  }
+evidence:
+  smoking -> lung_cancer: strong
+  smoking -> pack_years: strong
+  pack_years -> lung_cancer: strong
+  age -> lung_cancer: strong
+  age -> smoking: moderate
+  sex -> smoking: moderate
+  sex -> lung_cancer: moderate
+  asbestos -> lung_cancer: strong
+  genetic_risk -> lung_cancer: moderate
+keywords:
   - smoking
   - lung-cancer
   - mediation
   - respiratory
-authors:
-  - name: Reynolds RJ
-    affiliation: UCF
-contributors:
-  - name: Sakamaki M
-    initials: MS
-    affiliation: JHSPH
-references:
-  - doi: "10.1093/aje/kwag029"
-    label: "Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. Am J Epidemiol. 2026;195:1365–1367."
-alternativeDags:
-  - slug: smoking-lung-cancer-direct
-    title: "Smoking → Lung Cancer (direct only)"
-    nodeCount: 5
-    note: "No mediator"
-  - slug: smoking-lung-cancer-radon
-    title: "Smoking → Lung Cancer (with radon)"
-    nodeCount: 8
-    note: "Extended model"
-nodes:
-  - key: smoking
-  - key: lung_cancer
-  - key: pack_years
-  - key: age
-  - key: sex
-  - key: asbestos
-  - key: genetic_risk
-edges:
-  - from: smoking
-    to: lung_cancer
-    evidence: strong
-  - from: smoking
-    to: pack_years
-    evidence: strong
-  - from: pack_years
-    to: lung_cancer
-    evidence: strong
-  - from: age
-    to: lung_cancer
-    evidence: strong
-  - from: age
-    to: smoking
-    evidence: moderate
-  - from: sex
-    to: smoking
-    evidence: moderate
-  - from: sex
-    to: lung_cancer
-    evidence: moderate
-  - from: asbestos
-    to: lung_cancer
-    evidence: strong
-  - from: genetic_risk
-    to: lung_cancer
-    evidence: moderate
+alternatives: []
 ---
 
-## Overview
+## Operationalization
 
-This DAG represents the causal structure linking smoking to lung cancer, incorporating
-pack-years as a mediator of cumulative dose, and age, sex, asbestos exposure, and
-genetic predisposition as covariates.
+- **smoking**: Current or former cigarette smoking status (ever/never or current/former).
+- **pack_years**: Cumulative dose (packs per day × years smoked).
+- **lung_cancer**: Incident lung cancer (histology-specific variants may be added in study-specific DAGs).
+- **age**, **sex**: Standard demographic covariates.
+- **asbestos**: Occupational or environmental asbestos exposure.
+- **genetic_risk**: Family history or polygenic risk score for lung cancer.
 
-Smoking affects lung cancer both directly and through the cumulative dose pathway
-(pack-years). Age is a common cause of both smoking initiation and lung cancer risk
-and must be adjusted for. Asbestos exposure and genetic risk are independent of
-smoking and act as additional direct causes of lung cancer.
+## Edge rationale
 
-## Assumptions
+The smoking–lung cancer association is supported by extensive observational and mechanistic evidence. Pack-years mediates part of the effect through cumulative dose.
 
-- Smoking affects lung cancer both directly and via cumulative dose (pack-years as mediator)
-- Age is a common cause of smoking and lung cancer — must be adjusted for
-- Sex influences smoking behavior and lung cancer risk independently
-- Asbestos and genetic risk are independent of smoking (no common causes)
-- No unmeasured confounding between pack-years and lung cancer is assumed
+- Reynolds RJ. Living DAGs: the future of DAGs in epidemiology. *Am J Epidemiol*. 2026. DOI: [10.1093/aje/kwag029](https://doi.org/10.1093/aje/kwag029)
 
-## DAG
+Moderate evidence for age and sex effects on smoking reflects heterogeneity across populations and eras.
 
-```dagitty
-dag {
-  smoking [exposure]
-  lung_cancer [outcome]
-  pack_years [mediator]
-  age [covariate]
-  sex [covariate]
-  asbestos [covariate]
-  genetic_risk [covariate]
+## Missing edge rationale
 
-  smoking -> lung_cancer
-  smoking -> pack_years
-  pack_years -> lung_cancer
-  age -> lung_cancer
-  age -> smoking
-  sex -> smoking
-  sex -> lung_cancer
-  asbestos -> lung_cancer
-  genetic_risk -> lung_cancer
-}
-```
+- No direct edge from asbestos or genetic risk to smoking (assumed independent in this domain-level DAG).
+- Radon, air pollution, and occupational exposures other than asbestos are omitted for scope.
+
+## Context and reusability
+
+Intended for general adult populations in North America and Europe from the 1990s onward. Occupational cohorts may require an asbestos–smoking interaction or different asbestos operationalization.
+
+## Known limitations
+
+- Unmeasured confounding between pack-years and lung cancer is possible.
+- Genetic risk and asbestos may correlate with SES in some settings (not modeled here).
+- Generalization outside the declared context may weaken edge interpretations.
