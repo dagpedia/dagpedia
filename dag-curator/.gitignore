@@ -1,0 +1,32 @@
+# deps
+node_modules/
+.pnp
+.pnp.js
+
+# build
+.next/
+out/
+dist/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# local SQLite
+*.db
+*.db-shm
+*.db-wal
+
+# OS
+.DS_Store
+*.pem
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
